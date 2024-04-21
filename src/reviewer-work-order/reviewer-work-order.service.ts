@@ -2,7 +2,7 @@ import { Injectable, Inject, Logger } from '@nestjs/common';
 import { IReviewerWorkOrder } from './reviewer-work-order.interface';
 import { ReviewerWorkOrder } from './reviewer-work-order.model';
 import { WorkFlowAssignLog } from '../workflow-assign-log/workflow-assign-log.model';
-import Employee from 'src/employee/employee.model';
+import {Employee} from 'src/employee/employee.model';
 import { CustomerAccountList } from 'src/customer/customer.model';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CustomerService } from 'src/customer/customer.service';

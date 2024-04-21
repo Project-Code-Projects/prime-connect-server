@@ -68,7 +68,7 @@ import { EmployeeStatsModule } from './employee_stats/employee_stats.module';
     EmployeeRoleModule,
     DocubucketModule,
     PdfModule,
-    MainWorkOrderModule,DepartmentModule,TeamModule,EmployeeModule,RoleModule,EmployeeLoginModule,EmployeeStatsModule
+    MainWorkOrderModule,DepartmentModule,TeamModule,EmployeeModule,RoleModule,EmployeeLoginModule,EmployeeStatsModule,
 
     ScheduleModule.forRoot(),
   ],
@@ -82,4 +82,3 @@ import { EmployeeStatsModule } from './employee_stats/employee_stats.module';
   ],
 })
 export class AppModule {}
->>>>>>> origin/fahim

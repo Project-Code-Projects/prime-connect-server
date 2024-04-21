@@ -17,7 +17,7 @@ import { IPdfData } from 'src/pdf-data/pdf-data.interface';
 import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { PdfService } from 'src/pdf/pdf.service';
 import { ReviewerWorkOrderService } from 'src/reviewer-work-order/reviewer-work-order.service';
-
+import * as Multer from 'multer';
 @Controller('customer')
 export class CustomerController {
   constructor(
@@ -37,7 +37,7 @@ export class CustomerController {
   @UseInterceptors(FilesInterceptor('files'))
   async postCustomer(
     @Body() customer: ICustomer,
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles() files: Array<Multer.File>,
   ): Promise<ICustomer> {
     const existingCustomer = await this.customerService.findByNid(
       customer.nid_no,
