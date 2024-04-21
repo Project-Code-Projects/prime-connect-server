@@ -1,10 +1,11 @@
 import { Sequelize } from 'sequelize-typescript';
-import { department } from './entities/department/department.model';
-import { team } from './entities/team/team.model';
-import { role } from './entities/role/role.model';
-import { employee } from './entities/employee/employee.model';
-import { employee_login } from './entities/employee_login/employee_login.model';
-import { employee_stats } from './entities/employee_stats/employee_stats.model';
+import { Department } from '../department/department.model';
+import { Team } from '../team/team.model';
+import { Role } from '../role/role.model';
+import { Employee } from '../employee/employee.model';
+import { EmployeeLogin } from '../employee_login/employee_login.model';
+import { EmployeeStats } from '../employee_stats/employee_stats.model';
+import { TeamRole } from '../team_role/team_role.model';
 
 export const databaseProviders = [
   {
@@ -12,11 +13,15 @@ export const databaseProviders = [
     useFactory: async () => {
       const sequelize = new Sequelize({
         dialect: 'postgres',
-        host: 'ep-bitter-frost-28031087.eu-central-1.pg.koyeb.app',
+        host: 'ep-wild-cell-a2u0265d.eu-central-1.pg.koyeb.app',
+        // host: 'localhost',
         port: 5432,
         username: 'koyeb-adm',
-        password: 'sZBmxOp2n3SR',
+        // username: 'postgres',
+        password: '7fWnr6JZyUXe',
+        // password: 'bsc16190',
         database: 'koyebdb',
+        // database: 'admin',
         dialectOptions: {
           ssl: {
             require: true,
@@ -25,12 +30,13 @@ export const databaseProviders = [
         },
       });
       sequelize.addModels([
-        department,
-        team,
-        role,
-        employee,
-        employee_login,
-        employee_stats,
+        Department,
+        Team,
+        Role,
+        Employee,
+        EmployeeLogin,
+        EmployeeStats,
+        TeamRole
       ]);
       await sequelize.sync();
       return sequelize;
