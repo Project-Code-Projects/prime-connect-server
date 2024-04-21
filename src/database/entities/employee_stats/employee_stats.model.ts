@@ -1,14 +1,13 @@
 import { Column, Model, Table, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
-import { Employee } from '../employee/employee.model';
+import { employee } from '../employee/employee.model';
 
 @Table ({
     timestamps: false, // Disable timestamps
-    tableName: 'employee_stats',
     freezeTableName: true, // Prevent table name changes
 })
 
-export class EmployeeStats extends Model<EmployeeStats> {
+export class employee_stats extends Model<employee_stats> {
     @Column({
         autoIncrement: true,
         primaryKey: true,
@@ -18,15 +17,25 @@ export class EmployeeStats extends Model<EmployeeStats> {
     id: number;
 
     @Column({
+        allowNull: false,
+    })
+    workflow_id: number;
+
+    @Column({
+        allowNull: false,
+    })
+    role_id: number;
+
+    @Column({
         type: DataTypes.DATE,
         allowNull: false,
     })
-    total_estimated_time: Date;
+    start_timestamp: Date;
 
     @Column({
         type: DataTypes.DATE,
     })
-    toal_required_time: Date;
+    end_timestamp: Date;
 
     @Column({
         type: DataTypes.DATE
@@ -37,23 +46,13 @@ export class EmployeeStats extends Model<EmployeeStats> {
         allowNull: true,
     })
     error_count: number;
-        
-    @Column({
-        allowNull: false,
-    })
-    role_id: number;
 
-    @Column({
-        allowNull: false,
-    })
-    team_id: number;
-
-    @ForeignKey(() => Employee)
+    @ForeignKey(() => employee)
     @Column({
         allowNull: false
     })
     employee_id: number;
   
-    @BelongsTo(() => Employee)
-    employee: Employee;
+    @BelongsTo(() => employee)
+    employee: employee;
 }

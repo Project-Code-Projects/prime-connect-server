@@ -1,7 +1,7 @@
-import { Employee } from './employee.model';
+import { employee } from './employee.model';
 
 export const employeeProvider = 
     {
       provide: 'EMPLOYEE_REPOSITORY',
-      useValue: Employee,
+      useValue: employee,
     }

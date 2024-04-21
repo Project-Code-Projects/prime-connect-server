@@ -1,25 +1,32 @@
 import { Controller, Post, Get, Put, Delete, Body,Param } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { Employee } from '../employee/employee.model';
+import { employee } from '../employee/employee.model';
 import { EmployeeService } from '../employee/employee.service';
-import { TeamRoleService } from '../team_role/team_role.service';
 
 @Controller('/role')
 export class RoleController {
-  constructor(private readonly roleService: RoleService, private employeeService: EmployeeService, private teamRoleService: TeamRoleService) {}
+  constructor(private readonly roleService: RoleService, private employeeService: EmployeeService) {}
 
   @Post()
   async create(@Body() createRoleDto: any) {
-    const { team_id,access,isAuthor,sequence } = createRoleDto;
-    const newRole = await this.roleService.createRole(createRoleDto);
-    const { id,name,description } = newRole;
-    const teamRole = await this.teamRoleService.createTeamRole({ team_id, role_id: id, access, isAuthor, sequence });
-    return { id,name,description,TeamRole: teamRole};
+    return this.roleService.createRole(createRoleDto);
   }
 
   @Get()
   async findAllRole() {
     return this.roleService.findAllRole();
+  }
+  @Get('/team/:id')
+  async findAllRoleByTeamId(@Param('id') id: number) {
+    const roles = this.roleService.findAllRoleByTeamId(id);
+    let employees: employee[] = [];
+
+    const roleId: number[] = (await roles).map(role => role.id);
+    const roleName: string[] = (await roles).map(role => role.name);
+
+    employees = await this.employeeService.findAllEmployeeByRoleId(roleId);
+
+    return { roleId,roleName, employees };
   }
 
   @Put('/:id')
@@ -27,8 +34,8 @@ export class RoleController {
     await this.roleService.updateRole(id, updateData);
   }
 
-  @Delete('/:id/:team_id')
-  async deleteRole(@Param('id') id: number, @Param('team_id') team_id: number): Promise<void> {
-   await this.teamRoleService.deleteTeamRole(team_id,id);
+  @Delete('/:id')
+  async deleteRole(@Param('id') id: string): Promise<void> {
+    await this.roleService.deleteRole(id);
   }
 }

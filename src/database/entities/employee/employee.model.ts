@@ -8,16 +8,15 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
-import { Role } from '../role/role.model';
-import { EmployeeLogin } from '../employee_login/employee_login.model';
-import { EmployeeStats } from '../employee_stats/employee_stats.model';
+import { role } from '../role/role.model';
+import { employee_login } from '../employee_login/employee_login.model';
+import { employee_stats } from '../employee_stats/employee_stats.model';
 
 @Table({
   timestamps: false, // Disable timestamps
-  tableName: 'employee',
   freezeTableName: true, // Prevent table name changes
 })
-export class Employee extends Model<Employee> {
+export class employee extends Model<employee> {
   @Column({
     autoIncrement: true,
     primaryKey: true,
@@ -33,18 +32,9 @@ export class Employee extends Model<Employee> {
   name: string;
 
   @Column({
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  })
-  age: number;
-
-  @Column({
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
-    validate:{
-      isEmail: true
-    }
   })
   email: string;
 
@@ -62,28 +52,23 @@ export class Employee extends Model<Employee> {
   active: boolean;
 
   @Column({
-    type: DataTypes.STRING,
-    allowNull: true,
-  })
-  admin: string;
-  @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.BOOLEAN,
     allowNull: false,
   })
-  team_id: number;
+  admin: boolean;
 
-  @ForeignKey(() => Role)
-  @Column({
-  allowNull: true,
+  @ForeignKey(() => role)
+ @Column({
+  allowNull: false,
  })
- role_id: number;
+role_id: number;
 
-  @BelongsTo(() => Role)
-  role: Role;
+  @BelongsTo(() => role)
+  role: role;
 
-  @HasOne(() => EmployeeLogin)
-  login: EmployeeLogin;
+  @HasOne(() => employee_login)
+  login: employee_login;
 
-  @HasMany(() => EmployeeStats)
-  statusLogs: EmployeeStats[];
+  @HasMany(() => employee_stats)
+  statusLogs: employee_stats[];
 }

@@ -15,13 +15,6 @@ export class TeamController {
     return this.teamService.findAllTeam();
   }
 
-  @Get('/role/:id')
-  async findAllRoleByTeamId(@Param('id') id: number) {
-    const roles = this.teamService.findOne(id);
-    // console.log(roles);
-    return roles;
-  }
-
   @Put(':id')
   async updateTeam( @Param('id') id: string, @Body() updateData: Partial<any>, ): Promise<void> {
     await this.teamService.updateTeam(id, updateData);
@@ -34,6 +27,7 @@ export class TeamController {
 
   @Get('/:id')
   async findOne(@Param('id') id: number): Promise<any>{
+    console.log("controller id: " + id);
     return this.teamService.findOneById(id);
   }
 }

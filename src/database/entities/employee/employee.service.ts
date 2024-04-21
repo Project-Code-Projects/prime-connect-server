@@ -1,38 +1,31 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Employee } from './employee.model';
+import { employee } from './employee.model';
 
 @Injectable()
 export class EmployeeService {
   constructor(
     @Inject('EMPLOYEE_REPOSITORY')
-    private employeeRepository: typeof Employee
+    private employeeRepository: typeof employee
   ) {}
 
-  async createEmployee(createEmployeeDto: any): Promise<Employee> {
-    return this.employeeRepository.create<Employee>(createEmployeeDto);
+  async createEmployee(createEmployeeDto: any): Promise<employee> {
+    return this.employeeRepository.create<employee>(createEmployeeDto);
   }  
 
   async findAllEmployee(): Promise<any[]> {
     return this.employeeRepository.findAll<any>();
   }
 
-  async findOne(id: number): Promise<any>{
-    return this.employeeRepository.findOne<Employee>({where: { id }})
-  }
-
   async findByEmail(email:string): Promise<any> {
-    return this.employeeRepository.findOne<Employee>( { where: {email} } );
+    return this.employeeRepository.findOne<employee>( { where: {email} } );
   }
 
-  async findAllEmployeeByTeamId(id: number): Promise<any[]> {
-    const employees = await this.employeeRepository.findAll<any>({ where: {team_id: id, active:true },attributes: ['id', 'name','email','admin','role_id'], });
-    // console.log(employees.map((employee) => employee));
-    return employees;
+  async findAllEmployeeByRoleId(id: number[]): Promise<employee[]> {
+    return this.employeeRepository.findAll<employee>({ where: { role_id: id } });
   }
 
-  async updateEmployeeInfo(id: string, updateData: Partial<any>): Promise<any> {
+  async updateEmployeeInfo(id: string, updateData: Partial<any>): Promise<void> {
     await this.employeeRepository.update(updateData, { where: { id } });
-    return this.employeeRepository.findByPk(id);
   }
 
   async deleteEmployee(id: string): Promise<void> {

@@ -9,23 +9,23 @@ import { EmployeeLoginService } from '../employee_login/employee_login.service';
 import { employeeLoginProvider } from '../employee_login/employee_login.provider';
 
 @Module({
-    imports: [DatabaseModule],
+    imports: [DatabaseModule,JwtModule.register({ secret: 'my_secret_key', signOptions: { expiresIn: '12h' } })],
     controllers: [TeamController],
     providers: [
       TeamService,
       teamProvider,
-      // JwtMiddleware,
-      // EmployeeLoginService,
-      // employeeLoginProvider
+      JwtMiddleware,
+      EmployeeLoginService,
+      employeeLoginProvider
     ],
   })
 
-  //   export class TeamModule implements NestModule {
-  //   configure(consumer: MiddlewareConsumer) {
-  //     consumer
-  //       .apply(JwtMiddleware).forRoutes(TeamController);
-  //   }
-  // }
+    export class TeamModule implements NestModule {
+    configure(consumer: MiddlewareConsumer) {
+      consumer
+        .apply(JwtMiddleware).forRoutes(TeamController);
+    }
+  }
 
-  export class TeamModule {}
+  // export class TeamModule {}
   // ,JwtModule.register({ secret: 'my_secret_key', signOptions: { expiresIn: '12h' } })

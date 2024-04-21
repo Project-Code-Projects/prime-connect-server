@@ -1,7 +1,7 @@
-import { Role } from './role.model';
+import { role } from './role.model';
 
 export const roleProvider = 
 {
   provide: 'ROLE_REPOSITORY',
-  useValue: Role,
+  useValue: role,
 }
