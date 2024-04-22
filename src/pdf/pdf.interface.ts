@@ -1,5 +1,5 @@
 export interface IPdf {
-  id: number;
+  id?: number;
   pdf_name: string;
   pdf_type: string;
 }
