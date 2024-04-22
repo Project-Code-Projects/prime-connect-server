@@ -16,6 +16,8 @@ import Pdf from 'src/pdf/pdf.model';
 import DistributeWorkOrder from 'src/distribute-work-order/distribute-work-order.model';
 import FieldData from 'src/field-data/field-data.model';
 import FieldTable from 'src/field-table/field-table.model';
+import { TeamField } from 'src/team-field/team_field.model';
+import { TeamPdf } from 'src/team-pdf/team_pdf.model';
 
 export const databaseProviders = [
   {
@@ -59,8 +61,10 @@ export const databaseProviders = [
         DistributeWorkOrder,
         FieldData,
         FieldTable,
-        PdfData,
+
         DocuBucket,
+        TeamField,
+        TeamPdf,
       ]);
       await sequelize.sync();
       return sequelize;

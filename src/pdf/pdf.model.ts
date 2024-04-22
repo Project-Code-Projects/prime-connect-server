@@ -1,6 +1,14 @@
-import { Sequelize, Model, Column, Table } from 'sequelize-typescript';
+import {
+  Sequelize,
+  Model,
+  Column,
+  Table,
+  BelongsToMany,
+} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { IPdf } from './pdf.interface';
+import { TeamPdf } from 'src/team-pdf/team_pdf.model';
+import { Team } from 'src/team/team.model';
 
 @Table({
   tableName: 'pdf',
@@ -14,6 +22,9 @@ export class Pdf extends Model<Pdf> implements IPdf {
   pdf_name: string;
   @Column
   pdf_type: string;
+
+  @BelongsToMany(() => Team, () => TeamPdf)
+  teams: Array<Team & { TeamPdf: TeamPdf }>;
 }
 
 export default Pdf;

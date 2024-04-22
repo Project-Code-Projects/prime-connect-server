@@ -1,6 +1,14 @@
-import { Sequelize, Model, Column, Table } from 'sequelize-typescript';
+import {
+  Sequelize,
+  Model,
+  Column,
+  Table,
+  BelongsToMany,
+} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { IFieldTable } from './field-table.interface';
+import { Team } from 'src/team/team.model';
+import { TeamField } from 'src/team-field/team_field.model';
 
 @Table({
   tableName: 'field_table',
@@ -20,17 +28,8 @@ export class FieldTable extends Model<FieldTable> implements IFieldTable {
   @Column
   estimated_time: number;
 
-  @Column
-  page: number;
-
-  @Column({ defaultValue: 0 })
-  co_ordinate: number;
-
-  @Column
-  sequence: number;
-
-  @Column
-  team_id: number;
+  @BelongsToMany(() => Team, () => TeamField)
+  teams: Array<Team & { TeamField: TeamField }>;
 }
 
 export default FieldTable;
