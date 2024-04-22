@@ -55,7 +55,7 @@ export class CustomerController {
 
     if (existingCustomer) {
       await this.customerService.createAccList({
-        acc_id: nextAccId,
+        // acc_id: nextAccId,
         customer_id: existingCustomer.id,
         acc_type: 'personal',
         status: 'need approval',
@@ -97,7 +97,7 @@ export class CustomerController {
 
     const createdCustomer = await this.customerService.create(customer);
     await this.customerService.createAccList({
-      acc_id: nextAccId,
+      // acc_id: nextAccId,
       customer_id: createdCustomer.id,
       acc_type: 'personal',
       status: 'need approval',

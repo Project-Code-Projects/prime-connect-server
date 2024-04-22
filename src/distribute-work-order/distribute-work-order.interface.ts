@@ -1,9 +1,8 @@
 export interface IDistributeWorkOrder {
   id?: number;
-  acc_id: number | null;
-  status: string;
+  work_order_id: number;
+  field_id: number;
   assigned_to: number;
-  start_time: Date;
-  checked: boolean;
-  work_order_type: string;
+  estimated_time: number;
+  status: string;
 }

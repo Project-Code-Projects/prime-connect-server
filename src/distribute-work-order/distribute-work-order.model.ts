@@ -5,12 +5,13 @@ import {
   Table,
   HasMany,
   BelongsTo,
+  ForeignKey,
+  HasOne,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { IDistributeWorkOrder } from './distribute-work-order.interface';
-import { WorkFlowAssignLog } from '../workflow-assign-log/workflow-assign-log.model';
-import { Employee } from '../employee/employee.model';
-import { Customer } from 'src/customer/customer.model';
+import FieldTable from 'src/field-table/field-table.model';
+import MainWorkOrder from 'src/main-work-order/main-work-order.model';
 
 @Table({
   tableName: 'distribute_work_orders',
@@ -23,25 +24,26 @@ export class DistributeWorkOrder
 {
   @Column({ primaryKey: true, autoIncrement: true, type: DataTypes.INTEGER })
   id: number;
+
+  @ForeignKey(() => MainWorkOrder)
   @Column
-  acc_id: number;
-  @Column
-  status: string | null;
+  work_order_id: number;
+  @BelongsTo(() => MainWorkOrder)
+  mainWorkOrder!: MainWorkOrder;
+
+  @Column(DataTypes.ARRAY(DataTypes.INTEGER))
+  field_id: number;
   @Column
   assigned_to: number | null;
-  @Column
-  start_time: Date | null;
-
-  @Column({ defaultValue: false })
-  checked: boolean;
 
   @Column
-  work_order_type: string;
+  estimated_time: number | null;
+
+  @Column
+  status: string | null;
 
   // @HasMany(() => WorkFlowAssignLog)
   // workflowAssignLogs!: WorkFlowAssignLog[];
   // @BelongsTo(() => Employee, 'assigned_to')
   // assignedEmployee!: Employee;
 }
-
-export default DistributeWorkOrder;

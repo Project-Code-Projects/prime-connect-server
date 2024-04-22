@@ -1,4 +1,4 @@
-import { Customer, CustomerAccountList } from './customer.model';
+import { Customer } from './customer.model';
 
 import { Pdf } from 'src/pdf/pdf.model';
 
@@ -8,11 +8,6 @@ export const customerProviders = [
   {
     provide: 'CUSTOMER_REPOSITORY',
     useValue: Customer,
-  },
-
-  {
-    provide: 'CUSTOMER_ACCOUNT_REPOSITORY',
-    useValue: CustomerAccountList,
   },
 
   {

@@ -3,7 +3,8 @@ import { WorkflowAssignLogController } from './workflow-assign-log.controller';
 
 import { Employee } from '../employee/employee.model';
 import { EmployeeRole } from '../employee-role/employee-role.model';
-import { Customer, CustomerAccountList } from '../customer/customer.model';
+import { Customer } from '../customer/customer.model';
+import { AccountList } from 'src/account-list/account-list.model';
 
 export const workFlowAssignLogProviders = [
   {
@@ -24,7 +25,7 @@ export const workFlowAssignLogProviders = [
     useValue: Customer,
   },
   {
-    provide: 'CUSTOMER_ACCOUNT_LIST_REPOSITORY',
-    useValue: CustomerAccountList,
+    provide: 'ACCOUNT_LIST_REPOSITORY',
+    useValue: AccountList,
   },
 ];
