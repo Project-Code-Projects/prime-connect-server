@@ -3,7 +3,7 @@ import { Customer, CustomerAccountList } from './customer.model';
 import { Pdf } from 'src/pdf/pdf.model';
 
 import { DocuBucket } from 'src/docu-bucket/docu-bucket.model';
-import { ReviewerWorkOrder } from 'src/reviewer-work-order/reviewer-work-order.model';
+import { MainWorkOrder } from 'src/main-work-order/main-work-order.model';
 export const customerProviders = [
   {
     provide: 'CUSTOMER_REPOSITORY',
@@ -26,7 +26,7 @@ export const customerProviders = [
   },
 
   {
-    provide: 'REVIEWER_WORK_ORDER_REPOSITORY',
-    useValue: ReviewerWorkOrder,
+    provide: 'MAIN_WORK_ORDER_REPOSITORY',
+    useValue: MainWorkOrder,
   },
 ];

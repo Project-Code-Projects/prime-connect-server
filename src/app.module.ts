@@ -1,4 +1,3 @@
-
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -6,13 +5,13 @@ import { CustomerController } from './customer/customer.controller';
 import { CustomerModule } from './customer/customer.module';
 import { FieldDataModule } from './field-data/field-data.module';
 import { FieldTableModule } from './field-table/field-table.module';
-import { ReviewerWorkOrderModule } from './reviewer-work-order/reviewer-work-order.module';
+import { MainWorkOrderModule } from './main-work-order/main-work-order.module';
 import { WorkFlowAssignLogModule } from './workflow-assign-log/workflow-assign-log.module';
 
 import { CustomerService } from './customer/customer.service';
 import { EmployeeStatsService } from './employee-stats/employee-stats.service';
 import { EmployeeService } from './employee/employee.service';
-import { ReviewerWorkOrderService } from './reviewer-work-order/reviewer-work-order.service';
+import { MainWorkOrderService } from './main-work-order/main-work-order.service';
 import { WorkFlowAssignLogService } from './workflow-assign-log/workflow-assign-log.service';
 
 import { ScheduleModule } from '@nestjs/schedule';
@@ -32,10 +31,10 @@ import { employeeProviders } from './employee/employee.providers';
 import { FieldDataController } from './field-data/field-data.controller';
 import { fieldDataProviders } from './field-data/field-data.providers';
 import { FieldDataService } from './field-data/field-data.service';
-import { MainWorkOrderController } from './main-work-order/main-work-order.controller';
-import { MainWorkOrderModule } from './main-work-order/main-work-order.module';
-import { mainworkOrderProviders } from './main-work-order/main-work-order.providers';
-import { MainWorkOrderService } from './main-work-order/main-work-order.service';
+import { DistributeWorkOrderController } from './distribute-work-order/distribute-work-order.controller';
+import { DistributeWorkOrderModule } from './distribute-work-order/distribute-work-order.module';
+import { distributeWorkOrderProviders } from './distribute-work-order/distribute-work-order.providers';
+import { DistributeWorkOrderService } from './distribute-work-order/distribute-work-order.service';
 import { PdfDataController } from './pdf-data/pdf-data.controller';
 import { PdfDataModule } from './pdf-data/pdf-data.module';
 import { pdfDataProviders } from './pdf-data/pdf-data.providers';
@@ -44,8 +43,8 @@ import { PdfController } from './pdf/pdf.controller';
 import { PdfModule } from './pdf/pdf.module';
 import { pdfProviders } from './pdf/pdf.providers';
 import { PdfService } from './pdf/pdf.service';
-import { ReviewerWorkOrderController } from './reviewer-work-order/reviewer-work-order.controller';
-import { reviewerWorkOrderProviders } from './reviewer-work-order/reviewer-work-order.providers';
+import { MainWorkOrderController } from './main-work-order/main-work-order.controller';
+import { mainWorkOrderProviders } from './main-work-order/main-work-order.providers';
 import { WorkflowAssignLogController } from './workflow-assign-log/workflow-assign-log.controller';
 import { workFlowAssignLogProviders } from './workflow-assign-log/workflow-assign-log.providers';
 import { DepartmentModule } from './department/department.module';
@@ -63,22 +62,22 @@ import { EmployeeStatsModule } from './employee_stats/employee_stats.module';
     EmployeeModule,
     EmployeeStatsModule,
     WorkFlowAssignLogModule,
-    ReviewerWorkOrderModule,
+    MainWorkOrderModule,
     PdfDataModule,
     EmployeeRoleModule,
     DocubucketModule,
     PdfModule,
-    MainWorkOrderModule,DepartmentModule,TeamModule,EmployeeModule,RoleModule,EmployeeLoginModule,EmployeeStatsModule,
+    DistributeWorkOrderModule,
+    DepartmentModule,
+    TeamModule,
+    EmployeeModule,
+    RoleModule,
+    EmployeeLoginModule,
+    EmployeeStatsModule,
 
     ScheduleModule.forRoot(),
   ],
-  controllers: [
-    AppController,
-
-  ],
-  providers: [
-    AppService,
-    
-  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

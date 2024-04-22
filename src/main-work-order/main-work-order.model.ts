@@ -26,6 +26,11 @@ export class MainWorkOrder
   @Column
   acc_id: number;
   @Column
+  customer_id: number;
+
+  @Column
+  acc_type: string;
+  @Column
   status: string | null;
   @Column
   assigned_to: number | null;
@@ -33,10 +38,7 @@ export class MainWorkOrder
   start_time: Date | null;
 
   @Column({ defaultValue: false })
-  checked: boolean;
-
-  @Column
-  work_order_type: string;
+  isAssigned: boolean;
 
   // @HasMany(() => WorkFlowAssignLog)
   // workflowAssignLogs!: WorkFlowAssignLog[];

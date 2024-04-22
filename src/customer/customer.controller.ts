@@ -16,7 +16,7 @@ import { PdfDataService } from 'src/pdf-data/pdf-data.service';
 import { IPdfData } from 'src/pdf-data/pdf-data.interface';
 import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { PdfService } from 'src/pdf/pdf.service';
-import { ReviewerWorkOrderService } from 'src/reviewer-work-order/reviewer-work-order.service';
+import { MainWorkOrderService } from 'src/main-work-order/main-work-order.service';
 import * as Multer from 'multer';
 @Controller('customer')
 export class CustomerController {
@@ -25,7 +25,7 @@ export class CustomerController {
     private readonly pdfDataService: PdfDataService,
     private readonly docubucketService: DocubucketService,
     private readonly pdfService: PdfService,
-    private readonly reviewerWorkOrderService: ReviewerWorkOrderService,
+    private readonly mainWorkOrderService: MainWorkOrderService,
   ) {}
 
   @Get()
@@ -61,7 +61,7 @@ export class CustomerController {
         status: 'need approval',
         current_state: 'pending',
       });
-      await this.reviewerWorkOrderService.createReviewerWorkOrder({
+      await this.mainWorkOrderService.createReviewerWorkOrder({
         acc_id: nextAccId,
         customer_id: existingCustomer.id,
         acc_type: 'personal',
@@ -103,7 +103,7 @@ export class CustomerController {
       status: 'need approval',
       current_state: 'pending',
     });
-    await this.reviewerWorkOrderService.createReviewerWorkOrder({
+    await this.mainWorkOrderService.createReviewerWorkOrder({
       acc_id: nextAccId,
       customer_id: createdCustomer.id,
       acc_type: 'personal',

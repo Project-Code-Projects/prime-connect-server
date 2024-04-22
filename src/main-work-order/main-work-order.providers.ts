@@ -1,11 +1,11 @@
 import { MainWorkOrder } from './main-work-order.model';
 import { WorkFlowAssignLog } from '../workflow-assign-log/workflow-assign-log.model';
-import { EmployeeRole } from '../employee-role/employee-role.model';
-import { ReviewerWorkOrder } from 'src/reviewer-work-order/reviewer-work-order.model';
+import { Employee } from '../employee/employee.model';
+import { CustomerAccountList } from 'src/customer/customer.model';
 
-export const mainworkOrderProviders = [
+export const mainWorkOrderProviders = [
   {
-    provide: 'MAIN_WORKORDER_REPOSITORY',
+    provide: 'MAIN_WORK_ORDER_REPOSITORY',
     useValue: MainWorkOrder,
   },
   {
@@ -13,11 +13,11 @@ export const mainworkOrderProviders = [
     useValue: WorkFlowAssignLog,
   },
   {
-    provide: 'EMPLOYEE_ROLE_REPOSITORY',
-    useValue: EmployeeRole,
+    provide: 'EMPLOYEE_REPOSITORY',
+    useValue: Employee,
   },
   {
-    provide: 'REVIEWER_WORKORDER_REPOSITORY',
-    useValue: ReviewerWorkOrder,
+    provide: 'CUSTOMER_ACCOUNT_LIST_REPOSITORY',
+    useValue: CustomerAccountList,
   },
 ];
