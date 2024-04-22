@@ -18,8 +18,7 @@ export class TeamController {
     if(exist_pdf){
       const len = exist_pdf.length;
       for(let i = 0; i < len; i++){
-        const pdfId = exist_pdf[i].id;
-        const teamPdf = {team_id:team.id,pdf_id:pdfId};
+        const teamPdf = {team_id:team.id,pdf_id:exist_pdf[i]};
         this.teamPdfService.createTeamPdf(teamPdf);
       }
     }
@@ -27,8 +26,8 @@ export class TeamController {
     if(new_pdf){
       const len = new_pdf.length;
       for(let i = 0; i < len; i++){
-        const {pdf_name,pdf_type} = new_pdf[i];
-        const newPdf = await this.pdfService.addPdf({pdf_name,pdf_type});
+        const {name,type} = new_pdf[i];
+        const newPdf = await this.pdfService.addPdf({pdf_name:name,pdf_type:type});
         const teamPdf = {team_id:team.id,pdf_id:newPdf.id};
         this.teamPdfService.createTeamPdf(teamPdf);
       }
@@ -37,9 +36,8 @@ export class TeamController {
     if(exist_field){
       const len = exist_field.length;
       for(let i = 0; i < len; i++){
-        const fieldId = exist_field[i].id;
-        const {page,co_ordinate,sequence} = exist_field[i];
-        const teamField = {team_id:team.id,field_id:fieldId,page,co_ordinate,sequence};
+        const { id,page,co_ordinate,sequence } = exist_field[i];
+        const teamField = {page,co_ordinate,sequence,team_id:team.id,field_id:id};
         this.teamFieldService.createTeamField(teamField);
       }
     }
@@ -47,12 +45,14 @@ export class TeamController {
     if(new_field){
       const len = new_field.length;
       for(let i = 0; i < len; i++){
-        const {field_name,field_type,estimated_time,page,co_ordinate,sequence} = new_field[i];
-        const newField = await this.fieldTableService.addFieldTable({field_name,field_type,estimated_time});
-        const teamField = {team_id:team.id,field_id:newField.id,page,co_ordinate,sequence};
+        const {name,type,estimated_time,page,co_ordinate,sequence} = new_field[i];
+        const newField = await this.fieldTableService.addFieldTable({field_name:name,field_type:type,estimated_time});
+        const teamField = {page,co_ordinate,sequence,team_id:team.id,field_id:newField.id};
         this.teamFieldService.createTeamField(teamField);
       }
     }
+
+    return team;
   }
 
   @Get()
