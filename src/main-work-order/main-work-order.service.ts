@@ -21,7 +21,7 @@ export class MainWorkOrderService {
     @Inject('ACCOUNT_LIST_REPOSITORY')
     private readonly accountListModel: typeof AccountList,
   ) {}
-  async createReviewerWorkOrder(
+  async createMainWorkOrder(
     revWorkOrder: IMainWorkOrder,
   ): Promise<MainWorkOrder> {
     return this.mainWorkOrderModel.create(revWorkOrder);
