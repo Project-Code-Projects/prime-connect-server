@@ -7,9 +7,9 @@ export class TeamController {
 
   @Post()
   async create(@Body() createTeamDto: any) {
-    const {id,name,description,dept_id} = createTeamDto;
-    const team = {id,name,description,dept_id};
-    return this.teamService.create(team);
+    const {id,name,description,dept_id,exist_pdf,new_pdf,exist_field,new_field} = createTeamDto;
+    const teamInfo = {id,name,description,dept_id};
+    const team = this.teamService.create(teamInfo);
   }
 
   @Get()
