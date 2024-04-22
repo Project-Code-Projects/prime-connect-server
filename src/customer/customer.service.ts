@@ -1,14 +1,16 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ICustomer, ICustomerAccountNo } from './customer.interface';
-import { Customer, CustomerAccountList } from './customer.model';
+import { ICustomer } from './customer.interface';
+import { Customer } from './customer.model';
+import { IAccountList } from 'src/account-list/account-list.interface';
+import { AccountList } from 'src/account-list/account-list.model';
 
 @Injectable()
 export class CustomerService {
   constructor(
     @Inject('CUSTOMER_REPOSITORY')
     private readonly customerModel: typeof Customer,
-    @Inject('CUSTOMER_ACCOUNT_REPOSITORY')
-    private readonly customerAccountListModel: typeof CustomerAccountList,
+    @Inject('ACCOUNT_LIST_REPOSITORY')
+    private readonly customerAccountListModel: typeof AccountList,
   ) {}
   async findAllCustomer(): Promise<Customer[]> {
     return this.customerModel.findAll();
@@ -26,22 +28,20 @@ export class CustomerService {
   async findByPhone(phone: number): Promise<Customer> {
     return this.customerModel.findOne({ where: { phone } });
   }
-  async createAccList(
-    accList: ICustomerAccountNo,
-  ): Promise<CustomerAccountList> {
+  async createAccList(accList: IAccountList): Promise<AccountList> {
     return this.customerAccountListModel.create(accList);
   }
 
-  async findAllAccList(): Promise<CustomerAccountList[]> {
+  async findAllAccList(): Promise<AccountList[]> {
     return this.customerAccountListModel.findAll();
   }
   async findMaxAccId(): Promise<number> {
-    return this.customerAccountListModel.max('acc_id');
+    return this.customerAccountListModel.max('id');
   }
   async updateAccountList(accId: number, current_state: string): Promise<void> {
     await this.customerAccountListModel.update(
       { current_state },
-      { where: { acc_id: accId } },
+      { where: { id: accId } },
     );
   }
 }

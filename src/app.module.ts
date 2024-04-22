@@ -53,6 +53,7 @@ import { EmployeeModule } from './employee/employee.module';
 import { RoleModule } from './role/role.module';
 import { EmployeeLoginModule } from './employee_login/employee_login.module';
 import { EmployeeStatsModule } from './employee_stats/employee_stats.module';
+import { AccountListModule } from './account-list/account-list.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { EmployeeStatsModule } from './employee_stats/employee_stats.module';
     RoleModule,
     EmployeeLoginModule,
     EmployeeStatsModule,
+    AccountListModule,
 
     ScheduleModule.forRoot(),
   ],

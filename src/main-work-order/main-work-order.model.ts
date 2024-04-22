@@ -11,6 +11,8 @@ import { IMainWorkOrder } from './main-work-order.interface';
 import { WorkFlowAssignLog } from '../workflow-assign-log/workflow-assign-log.model';
 import { Employee } from '../employee/employee.model';
 import { Customer } from 'src/customer/customer.model';
+import { DistributeWorkOrder } from 'src/distribute-work-order/distribute-work-order.model';
+import { ForeignKey } from 'sequelize-typescript';
 
 @Table({
   tableName: 'main_work_orders',
@@ -40,7 +42,8 @@ export class MainWorkOrder
   @Column({ defaultValue: false })
   isAssigned: boolean;
 
-  // @HasMany(() => WorkFlowAssignLog)
+  @HasMany(() => DistributeWorkOrder)
+  distributeWorkOrders!: DistributeWorkOrder[];
   // workflowAssignLogs!: WorkFlowAssignLog[];
   // @BelongsTo(() => Employee, 'assigned_to')
   // assignedEmployee!: Employee;

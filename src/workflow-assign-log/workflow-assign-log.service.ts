@@ -5,7 +5,8 @@ import { Employee } from '../employee/employee.model';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { EmployeeRole } from '../employee-role/employee-role.model';
 import { Op } from 'sequelize';
-import { Customer, CustomerAccountList } from '../customer/customer.model';
+import { Customer } from '../customer/customer.model';
+import { AccountList } from 'src/account-list/account-list.model';
 
 export interface IWorkFlowAssignLogWithNames {
   id: number;
@@ -29,7 +30,7 @@ export class WorkFlowAssignLogService {
     private readonly employeeRoleModel: typeof EmployeeRole,
     @Inject('CUSTOMER_REPOSITORY')
     private readonly customerModel: typeof Customer,
-    @Inject('CUSTOMER_ACCOUNT_LIST_REPOSITORY')
-    private readonly customerAccountListModel: typeof CustomerAccountList,
+    @Inject('ACCOUNT_LIST_REPOSITORY')
+    private readonly accountListModel: typeof AccountList,
   ) {}
 }

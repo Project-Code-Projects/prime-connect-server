@@ -3,7 +3,7 @@ import { IMainWorkOrder } from './main-work-order.interface';
 import { MainWorkOrder } from './main-work-order.model';
 import { WorkFlowAssignLog } from '../workflow-assign-log/workflow-assign-log.model';
 import { Employee } from 'src/employee/employee.model';
-import { CustomerAccountList } from 'src/customer/customer.model';
+import { AccountList } from 'src/account-list/account-list.model';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CustomerService } from 'src/customer/customer.service';
 
@@ -18,8 +18,8 @@ export class MainWorkOrderService {
     private readonly workFlowAssignLogModel: typeof WorkFlowAssignLog,
     @Inject('EMPLOYEE_REPOSITORY')
     private readonly employeeModel: typeof Employee,
-    @Inject('CUSTOMER_ACCOUNT_LIST_REPOSITORY')
-    private readonly customerACCListModel: typeof CustomerAccountList,
+    @Inject('ACCOUNT_LIST_REPOSITORY')
+    private readonly accountListModel: typeof AccountList,
   ) {}
   async createReviewerWorkOrder(
     revWorkOrder: IMainWorkOrder,
@@ -63,9 +63,9 @@ export class MainWorkOrderService {
     assigned_to: number,
   ): Promise<void> {
     try {
-      await this.customerACCListModel.update(
+      await this.accountListModel.update(
         { current_state: 'reviewer' },
-        { where: { acc_id: id } },
+        { where: { id: id } },
       );
       await this.mainWorkOrderModel.update(
         {
