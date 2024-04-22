@@ -74,9 +74,9 @@ export class Employee extends Model<Employee> {
 
   @ForeignKey(() => Role)
   @Column({
-  allowNull: true,
- })
- role_id: number;
+    allowNull: false,
+  })
+  role_id: number;
 
   @BelongsTo(() => Role)
   role: Role;

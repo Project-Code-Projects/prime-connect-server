@@ -3,8 +3,8 @@ import { DataTypes } from 'sequelize';
 import { Employee } from '../employee/employee.model';
 
 @Table ({
-    timestamps: false, // Disable timestamps
     tableName: 'employee_login',
+    timestamps: false, // Disable timestamps
     freezeTableName: true, // Prevent table name changes
 })
 
@@ -32,6 +32,7 @@ export class EmployeeLogin extends Model<EmployeeLogin> {
 
     @ForeignKey(() => Employee)
     @Column({
+        type: DataTypes.INTEGER,
         allowNull: false
     })
     employee_id: number;
