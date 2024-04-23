@@ -142,7 +142,7 @@ export class MainWorkOrderService {
                 err_type: '',
                 err_comment: '',
                 sequence: tableField.sequence,
-                page: 0,
+                page: tableField.page,
                 assigned_to: 0, // You may need to set an appropriate value for assigned_to
               });
 
