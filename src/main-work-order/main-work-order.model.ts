@@ -50,6 +50,8 @@ export class MainWorkOrder
 
   @Column({ defaultValue: false })
   isAssigned: boolean;
+  @Column
+  checked: boolean;
 
   @HasMany(() => DistributeWorkOrder)
   distributeWorkOrders!: DistributeWorkOrder[];

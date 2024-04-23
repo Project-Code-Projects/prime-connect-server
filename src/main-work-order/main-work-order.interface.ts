@@ -8,4 +8,5 @@ export interface IMainWorkOrder {
   assigned_to: number;
   start_time: Date;
   isAssigned: boolean;
+  checked: boolean;
 }

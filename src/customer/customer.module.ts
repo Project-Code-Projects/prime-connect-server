@@ -15,6 +15,8 @@ import { pdfProviders } from 'src/pdf/pdf.providers';
 import { PdfService } from 'src/pdf/pdf.service';
 import { PdfModule } from 'src/pdf/pdf.module';
 import { MainWorkOrderService } from 'src/main-work-order/main-work-order.service';
+import { teamRoleProvider } from 'src/team_role/team_role.provider';
+import { TeamRoleService } from 'src/team_role/team_role.service';
 
 @Module({
   imports: [DatabaseModule, PdfDataModule, PdfModule, MainWorkOrderModule],
@@ -25,11 +27,13 @@ import { MainWorkOrderService } from 'src/main-work-order/main-work-order.servic
     DocubucketService,
     PdfService,
     MainWorkOrderService,
+    TeamRoleService,
     ...customerProviders,
     ...pdfDataProviders,
     ...docuBucketProviders,
     ...pdfProviders,
     ...mainWorkOrderProviders,
+    teamRoleProvider,
   ],
 })
 export class CustomerModule {}

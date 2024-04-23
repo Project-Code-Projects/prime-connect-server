@@ -47,13 +47,7 @@ export class MainWorkOrderController {
   }
 
   @Post('assign-task')
-  async assignTask(): Promise<void> {
-    await this.mainWorkOrderService.distributeTask();
-  }
-
-  @Post('update')
-  async updateWorkOrder(@Body('id') id: number): Promise<IMainWorkOrder[]> {
-    await this.mainWorkOrderService.updateReviwerWorkOrder(id);
-    return this.mainWorkOrderService.findAllWorkOrder();
+  async assignTask(): Promise<any> {
+    return this.mainWorkOrderService.distributeTaskByCron();
   }
 }

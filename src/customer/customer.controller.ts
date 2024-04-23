@@ -61,14 +61,16 @@ export class CustomerController {
         status: 'need approval',
         current_state: 'pending',
       });
-      await this.mainWorkOrderService.createReviewerWorkOrder({
+      await this.mainWorkOrderService.createMainWorkOrder({
         acc_id: nextAccId,
         customer_id: existingCustomer.id,
         acc_type: 'personal',
         status: 'need approval',
+        team_id: 2,
         assigned_to: null,
         start_time: new Date(),
         isAssigned: false,
+        checked: null,
       });
 
       await Promise.all(
@@ -103,14 +105,16 @@ export class CustomerController {
       status: 'need approval',
       current_state: 'pending',
     });
-    await this.mainWorkOrderService.createReviewerWorkOrder({
+    await this.mainWorkOrderService.createMainWorkOrder({
       acc_id: nextAccId,
       customer_id: createdCustomer.id,
       acc_type: 'personal',
       status: 'need approval',
+      team_id: 2,
       assigned_to: null,
       start_time: new Date(),
       isAssigned: false,
+      checked: false,
     });
     await Promise.all(
       matchedPdfIds.map(async (pdfId, index) => {

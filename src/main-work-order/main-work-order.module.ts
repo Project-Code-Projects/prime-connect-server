@@ -16,6 +16,8 @@ import { workFlowAssignLogProviders } from 'src/workflow-assign-log/workflow-ass
 import { CustomerService } from 'src/customer/customer.service';
 import { CustomerModule } from 'src/customer/customer.module';
 import { customerProviders } from 'src/customer/customer.providers';
+import { TeamRoleService } from 'src/team_role/team_role.service';
+import { teamRoleProvider } from 'src/team_role/team_role.provider';
 
 @Module({
   imports: [DatabaseModule, EmployeeModule, WorkFlowAssignLogModule],
@@ -25,10 +27,12 @@ import { customerProviders } from 'src/customer/customer.providers';
     EmployeeService,
 
     WorkFlowAssignLogService,
+    TeamRoleService,
 
     ...employeeProviders,
     ...workFlowAssignLogProviders,
     ...mainWorkOrderProviders,
+    teamRoleProvider,
   ],
 })
 export class MainWorkOrderModule {}
