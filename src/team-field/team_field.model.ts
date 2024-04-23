@@ -41,6 +41,7 @@ export class TeamField extends Model<TeamField> {
   @Column({
     type: DataTypes.INTEGER,
     allowNull: false,
+    unique: false,
   })
   team_id: number;
 
@@ -48,6 +49,7 @@ export class TeamField extends Model<TeamField> {
   @Column({
     type: DataTypes.INTEGER,
     allowNull: false,
+    unique: false,
   })
   field_id: number;
 }

@@ -16,19 +16,43 @@ import { workFlowAssignLogProviders } from 'src/workflow-assign-log/workflow-ass
 import { CustomerService } from 'src/customer/customer.service';
 import { CustomerModule } from 'src/customer/customer.module';
 import { customerProviders } from 'src/customer/customer.providers';
+import { TeamRoleService } from 'src/team_role/team_role.service';
+import { teamRoleProvider } from 'src/team_role/team_role.provider';
+import { fieldDataProviders } from 'src/field-data/field-data.providers';
+import { fieldTableProviders } from 'src/field-table/field-table.providers';
+import { FieldDataService } from 'src/field-data/field-data.service';
+import { FieldTableService } from 'src/field-table/field-table.service';
+import { FieldDataModule } from 'src/field-data/field-data.module';
+import { FieldTableModule } from 'src/field-table/field-table.module';
+import { teamFieldProvider } from 'src/team-field/team_field.providers';
+import { TeamFieldService } from 'src/team-field/team_field.service';
 
 @Module({
-  imports: [DatabaseModule, EmployeeModule, WorkFlowAssignLogModule],
+  imports: [
+    DatabaseModule,
+    EmployeeModule,
+    WorkFlowAssignLogModule,
+    FieldDataModule,
+    FieldTableModule,
+  ],
   controllers: [MainWorkOrderController],
   providers: [
     MainWorkOrderService,
     EmployeeService,
 
     WorkFlowAssignLogService,
+    TeamRoleService,
+    FieldDataService,
+    FieldTableService,
+    TeamFieldService,
 
     ...employeeProviders,
     ...workFlowAssignLogProviders,
     ...mainWorkOrderProviders,
+    teamRoleProvider,
+    ...fieldDataProviders,
+    ...fieldTableProviders,
+    teamFieldProvider,
   ],
 })
 export class MainWorkOrderModule {}

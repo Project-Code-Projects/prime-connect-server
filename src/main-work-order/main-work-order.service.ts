@@ -6,6 +6,13 @@ import { Employee } from 'src/employee/employee.model';
 import { AccountList } from 'src/account-list/account-list.model';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CustomerService } from 'src/customer/customer.service';
+import { TeamRoleService } from 'src/team_role/team_role.service';
+import { TeamRole } from 'src/team_role/team_role.model';
+import { FieldData } from 'src/field-data/field-data.model';
+import { FieldTable } from 'src/field-table/field-table.model';
+import { IFieldData } from 'src/field-data/field-data.interface';
+import { IFieldTable } from 'src/field-table/field-table.interface';
+import { TeamField } from 'src/team-field/team_field.model';
 
 @Injectable()
 export class MainWorkOrderService {
@@ -20,8 +27,15 @@ export class MainWorkOrderService {
     private readonly employeeModel: typeof Employee,
     @Inject('ACCOUNT_LIST_REPOSITORY')
     private readonly accountListModel: typeof AccountList,
+    private readonly teamRoleService: TeamRoleService,
+    @Inject('FIELD_DATA_REPOSITORY')
+    private readonly fieldDataModel: typeof FieldData,
+    @Inject('FIELD_TABLE_REPOSITORY')
+    private readonly fieldTableModel: typeof FieldTable,
+    @Inject('TEAM_FIELD_REPOSITORY')
+    private readonly teamFieldModel: typeof TeamField,
   ) {}
-  async createReviewerWorkOrder(
+  async createMainWorkOrder(
     revWorkOrder: IMainWorkOrder,
   ): Promise<MainWorkOrder> {
     return this.mainWorkOrderModel.create(revWorkOrder);
@@ -42,6 +56,8 @@ export class MainWorkOrderService {
   async findAllWorkOrder(): Promise<MainWorkOrder[]> {
     return this.mainWorkOrderModel.findAll();
   }
+
+  //task assignment
   async assignTask(workOrder_id: number, employee_id: number): Promise<void> {
     try {
       await this.workFlowAssignLogModel.create({
@@ -57,15 +73,15 @@ export class MainWorkOrderService {
       );
     }
   }
-  async updateReviewerWorkOrder(
-    id: number,
-
+  async updateMainWorkOrder(
+    workOrderId: number,
+    accId: number,
     assigned_to: number,
   ): Promise<void> {
     try {
       await this.accountListModel.update(
         { current_state: 'reviewer' },
-        { where: { id: id } },
+        { where: { id: accId } },
       );
       await this.mainWorkOrderModel.update(
         {
@@ -73,55 +89,22 @@ export class MainWorkOrderService {
           start_time: new Date(),
           isAssigned: true,
         },
-        { where: { id } },
+        { where: { id: workOrderId } },
       );
+
       console.log(
-        `work order updated for task ${id} with assigned_to ${assigned_to}`,
+        `work order updated for task ${workOrderId} with assigned_to ${assigned_to}`,
       );
     } catch (error) {
-      console.log(`Error updating work order for task ${id}:`, error);
+      console.log(`Error updating work order for task ${workOrderId}:`, error);
       throw error;
     }
   }
-  // async distributeTask(): Promise<void> {
-  //   try {
-  //     const activeEmployees = await this.employeeModel.findAll({
-  //       where: { active: true, admin: null, role_id: 2 },
-  //     });
 
-  //     await Promise.all(
-  //       activeEmployees.map(async (employee) => {
-  //         const tasks = await this.reviewerWorkOrderModel.findAll({
-  //           where: {
-  //             status: 'need approval',
-  //             isAssigned: false,
-  //           },
-  //           limit: this.threshold,
-  //         });
-
-  //         await Promise.all(
-  //           tasks.map(async (task) => {
-  //             await this.assignTask(task.id, employee.id);
-  //             await this.updateReviewerWorkOrder(
-  //               task.id,
-
-  //               employee.id,
-  //             );
-  //           }),
-  //         );
-  //       }),
-  //     );
-
-  //     console.log('Tasks distributed successfully.');
-  //   } catch (error) {
-  //     console.error('Error distributing tasks:', error);
-  //   }
-  // }
-
-  async distributeTask(): Promise<void> {
+  async distributeTask(rolId: number = 2): Promise<void> {
     try {
       const activeEmployees = await this.employeeModel.findAll({
-        where: { active: true, admin: 'null', role_id: 2 },
+        where: { active: true, admin: 'null', role_id: rolId },
       });
       for (let i = 0; i < activeEmployees.length; i++) {
         const taskForReviwer = await this.mainWorkOrderModel.findAll({
@@ -135,10 +118,37 @@ export class MainWorkOrderService {
         for (let j = 0; j < taskForReviwer.length; j++) {
           if (j < this.threshold) {
             await this.assignTask(taskForReviwer[j].id, activeEmployees[i].id);
-            await this.updateReviewerWorkOrder(
+            await this.updateMainWorkOrder(
               taskForReviwer[j].id,
+              taskForReviwer[j].acc_id,
               activeEmployees[i].id,
             );
+            const fieldTables = await this.fieldTableModel.findAll({});
+            for (const fieldTable of fieldTables) {
+              // Get the ID of the associated field table
+              const tableField = await this.teamFieldModel.findOne({
+                where: { field_id: fieldTable.id },
+              });
+              // Create a new FieldData record
+              const fieldData = new FieldData({
+                work_order_id: taskForReviwer[j].id, // Set the work order ID
+                field_id: fieldTable.id, // Use the ID of the associated field table
+                // Set other properties as needed
+                // For example:
+                value: '', // You may need to set appropriate values here
+                status: '',
+                estimated_time: fieldTable.estimated_time,
+                start_time: new Date(),
+                err_type: '',
+                err_comment: '',
+                sequence: tableField.sequence,
+                page: tableField.page,
+                assigned_to: 0, // You may need to set an appropriate value for assigned_to
+              });
+
+              // Save the new FieldData record to the database
+              await fieldData.save();
+            }
           }
         }
       }
@@ -150,15 +160,11 @@ export class MainWorkOrderService {
   }
 
   // @Cron(CronExpression.EVERY_MINUTE, { name: 'distributeTask' })
-  distributeTaskByCron() {
+  async distributeTaskByCron() {
     this.logger.debug('Running distributeTask cron job...');
-    return this.distributeTask();
-  }
-
-  async updateReviwerWorkOrder(id: number): Promise<void> {
-    await this.mainWorkOrderModel.update(
-      { status: 'reviewed' },
-      { where: { id } },
-    );
+    const workflows = await this.teamRoleService.findAllByAccess('Read');
+    for (const workflow of workflows) {
+      await this.distributeTask(workflow.team_id);
+    }
   }
 }

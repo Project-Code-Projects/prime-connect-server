@@ -4,11 +4,14 @@ import {
   Column,
   Table,
   BelongsToMany,
+  HasMany,
+  BelongsTo,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { IFieldTable } from './field-table.interface';
 import { Team } from 'src/team/team.model';
 import { TeamField } from 'src/team-field/team_field.model';
+import { DistributeWorkOrder } from 'src/distribute-work-order/distribute-work-order.model';
 
 @Table({
   tableName: 'field_table',

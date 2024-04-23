@@ -11,6 +11,7 @@ import { DataTypes } from 'sequelize';
 import { Role } from '../role/role.model';
 import { EmployeeLogin } from '../employee_login/employee_login.model';
 import { EmployeeStats } from '../employee_stats/employee_stats.model';
+import MainWorkOrder from 'src/main-work-order/main-work-order.model';
 
 @Table({
   timestamps: false, // Disable timestamps
@@ -42,9 +43,9 @@ export class Employee extends Model<Employee> {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
-    validate:{
-      isEmail: true
-    }
+    validate: {
+      isEmail: true,
+    },
   })
   email: string;
 
@@ -86,4 +87,7 @@ export class Employee extends Model<Employee> {
 
   @HasMany(() => EmployeeStats)
   statusLogs: EmployeeStats[];
+
+  @HasMany(() => MainWorkOrder)
+  employee: MainWorkOrder[];
 }

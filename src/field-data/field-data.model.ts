@@ -1,6 +1,13 @@
-import { Sequelize, Model, Column, Table } from 'sequelize-typescript';
+import {
+  Sequelize,
+  Model,
+  Column,
+  Table,
+  ForeignKey,
+} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { IFieldData } from './field-data.interface';
+import MainWorkOrder from 'src/main-work-order/main-work-order.model';
 
 @Table({
   tableName: 'field_data',
@@ -10,6 +17,7 @@ import { IFieldData } from './field-data.interface';
 export class FieldData extends Model<FieldData> implements IFieldData {
   @Column({ primaryKey: true, autoIncrement: true, type: DataTypes.INTEGER })
   id: number;
+  @ForeignKey(() => MainWorkOrder)
   @Column
   work_order_id: number;
   @Column

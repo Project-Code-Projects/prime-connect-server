@@ -8,16 +8,21 @@ import { EmployeeRoleService } from 'src/employee-role/employee-role.service';
 import { MainWorkOrder } from 'src/main-work-order/main-work-order.model';
 import { mainWorkOrderProviders } from 'src/main-work-order/main-work-order.providers';
 import { MainWorkOrderService } from 'src/main-work-order/main-work-order.service';
+import { teamRoleProvider } from 'src/team_role/team_role.provider';
+import { TeamRoleService } from 'src/team_role/team_role.service';
+import { employeeProvider } from 'src/employee/employee.provider';
 
 @Module({
-  imports: [DatabaseModule, EmployeeRoleModule, MainWorkOrder],
+  imports: [DatabaseModule],
   controllers: [DistributeWorkOrderController],
   providers: [
     DistributeWorkOrderService,
+    TeamRoleService,
     EmployeeRoleService,
-    MainWorkOrderService,
     ...distributeWorkOrderProviders,
-    ...mainWorkOrderProviders,
+
+    teamRoleProvider,
+    employeeProvider,
   ],
 })
 export class DistributeWorkOrderModule {}
