@@ -8,6 +8,11 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { CustomerService } from 'src/customer/customer.service';
 import { TeamRoleService } from 'src/team_role/team_role.service';
 import { TeamRole } from 'src/team_role/team_role.model';
+import { FieldData } from 'src/field-data/field-data.model';
+import { FieldTable } from 'src/field-table/field-table.model';
+import { IFieldData } from 'src/field-data/field-data.interface';
+import { IFieldTable } from 'src/field-table/field-table.interface';
+import { TeamField } from 'src/team-field/team_field.model';
 
 @Injectable()
 export class MainWorkOrderService {
@@ -23,6 +28,12 @@ export class MainWorkOrderService {
     @Inject('ACCOUNT_LIST_REPOSITORY')
     private readonly accountListModel: typeof AccountList,
     private readonly teamRoleService: TeamRoleService,
+    @Inject('FIELD_DATA_REPOSITORY')
+    private readonly fieldDataModel: typeof FieldData,
+    @Inject('FIELD_TABLE_REPOSITORY')
+    private readonly fieldTableModel: typeof FieldTable,
+    @Inject('TEAM_FIELD_REPOSITORY')
+    private readonly teamFieldModel: typeof TeamField,
   ) {}
   async createMainWorkOrder(
     revWorkOrder: IMainWorkOrder,
@@ -80,6 +91,7 @@ export class MainWorkOrderService {
         },
         { where: { id: workOrderId } },
       );
+
       console.log(
         `work order updated for task ${workOrderId} with assigned_to ${assigned_to}`,
       );
@@ -111,6 +123,32 @@ export class MainWorkOrderService {
               taskForReviwer[j].acc_id,
               activeEmployees[i].id,
             );
+            const fieldTables = await this.fieldTableModel.findAll({});
+            for (const fieldTable of fieldTables) {
+              // Get the ID of the associated field table
+              const tableField = await this.teamFieldModel.findOne({
+                where: { field_id: fieldTable.id },
+              });
+              // Create a new FieldData record
+              const fieldData = new FieldData({
+                work_order_id: taskForReviwer[j].id, // Set the work order ID
+                field_id: fieldTable.id, // Use the ID of the associated field table
+                // Set other properties as needed
+                // For example:
+                value: '', // You may need to set appropriate values here
+                status: '',
+                estimated_time: fieldTable.estimated_time,
+                start_time: new Date(),
+                err_type: '',
+                err_comment: '',
+                sequence: tableField.sequence,
+                page: 0,
+                assigned_to: 0, // You may need to set an appropriate value for assigned_to
+              });
+
+              // Save the new FieldData record to the database
+              await fieldData.save();
+            }
           }
         }
       }

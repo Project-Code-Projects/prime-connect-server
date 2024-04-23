@@ -17,6 +17,12 @@ import { PdfModule } from 'src/pdf/pdf.module';
 import { MainWorkOrderService } from 'src/main-work-order/main-work-order.service';
 import { teamRoleProvider } from 'src/team_role/team_role.provider';
 import { TeamRoleService } from 'src/team_role/team_role.service';
+import { fieldDataProviders } from 'src/field-data/field-data.providers';
+import { FieldDataService } from 'src/field-data/field-data.service';
+import { fieldTableProviders } from 'src/field-table/field-table.providers';
+import { FieldTableService } from 'src/field-table/field-table.service';
+import { teamFieldProvider } from 'src/team-field/team_field.providers';
+import { TeamFieldService } from 'src/team-field/team_field.service';
 
 @Module({
   imports: [DatabaseModule, PdfDataModule, PdfModule, MainWorkOrderModule],
@@ -28,12 +34,18 @@ import { TeamRoleService } from 'src/team_role/team_role.service';
     PdfService,
     MainWorkOrderService,
     TeamRoleService,
+    FieldDataService,
+    FieldTableService,
+    TeamFieldService,
     ...customerProviders,
     ...pdfDataProviders,
     ...docuBucketProviders,
     ...pdfProviders,
     ...mainWorkOrderProviders,
     teamRoleProvider,
+    ...fieldDataProviders,
+    ...fieldTableProviders,
+    teamFieldProvider,
   ],
 })
 export class CustomerModule {}

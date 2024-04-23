@@ -8,4 +8,8 @@ export class FieldDataService {
   async findAllFieldData(): Promise<any> {
     return await FieldData.findAll();
   }
+
+  async createFieldData(fieldData: IFieldData): Promise<FieldData> {
+    return await FieldData.create(fieldData);
+  }
 }
