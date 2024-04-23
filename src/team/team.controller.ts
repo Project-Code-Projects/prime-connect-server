@@ -1,9 +1,9 @@
 import { Controller, Post, Get, Put, Delete, Body,Param,ParseIntPipe } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { TeamPdfService } from '../team-pdf/team_pdf.service';
-import { TeamFieldService } from 'src/team-field/team_field.service';
-import { PdfService } from 'src/pdf/pdf.service';
-import { FieldTableService } from 'src/field-table/field-table.service';
+import { TeamFieldService } from '../team-field/team_field.service';
+import { PdfService } from '../pdf/pdf.service';
+import { FieldTableService } from '../field-table/field-table.service';
 
 @Controller('/team')
 export class TeamController {
