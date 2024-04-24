@@ -9,6 +9,7 @@ export class EmployeeController {
 
   @Post()
   async createEmployee(@Body() createEmployeeDto: any) {
+    // console.log(createEmployeeDto);
     return this.employeeService.createEmployee(createEmployeeDto);
   }
 
@@ -33,10 +34,16 @@ export class EmployeeController {
     return { roleName: role?.name,teamName: team?.name, employee };
   }
 
+  @Get('/role/:id')
+  async findAllEmployeeByRoleId(@Param('id') role_id: number) {
+    const employee = await this.employeeService.findAllByRoleId(role_id);
+    return employee;
+  }
+
   @Put('/:id')
   async updateEmployeeInfo( @Param('id') id: string, @Body() updateData: Partial<any>, ): Promise<any> {
     const updatedData = await this.employeeService.updateEmployeeInfo(id, updateData);
-    console.log(updatedData);
+    // console.log(updatedData);
     return updatedData;
   }
 

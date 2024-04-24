@@ -16,6 +16,11 @@ export class DepartmentService {
     return this.departmentRepository.findAll<Department>();
   }
 
+  async findOne(id: number): Promise<any> {
+    const dept = this.departmentRepository.findOne<Department>({where:{id}});
+    return dept;
+  }
+
   async deleteDepartment(id: string): Promise<void> {
     await this.departmentRepository.destroy({ where: { id } });
   }

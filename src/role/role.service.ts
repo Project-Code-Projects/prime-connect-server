@@ -16,7 +16,7 @@ export class RoleService {
     return this.roleRepository.findAll<any>();
   }
 
-  async findOne(id): Promise<any> {
+  async findOne(id: number): Promise<any> {
     return this.roleRepository.findOne({where: {id}});
   }
 

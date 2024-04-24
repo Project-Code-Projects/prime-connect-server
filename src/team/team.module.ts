@@ -7,14 +7,16 @@ import { DatabaseModule } from '../database/database.module';
 import { JwtMiddleware } from '../auth/jwt.middleware';
 import { EmployeeLoginService } from '../employee_login/employee_login.service';
 import { employeeLoginProvider } from '../employee_login/employee_login.provider';
-import { TeamPdfService } from 'src/team-pdf/team_pdf.service';
-import { teamPdfProvider } from 'src/team-pdf/team_pdf.provider';
-import { TeamFieldService } from 'src/team-field/team_field.service';
-import { teamFieldProvider } from 'src/team-field/team_field.provider';
-import { PdfService } from 'src/pdf/pdf.service';
-import { pdfProviders } from 'src/pdf/pdf.providers';
-import { FieldTableService } from 'src/field-table/field-table.service';
-import { fieldTableProviders } from 'src/field-table/field-table.providers';
+import { TeamPdfService } from '../team-pdf/team_pdf.service';
+import { teamPdfProvider } from '../team-pdf/team_pdf.provider';
+import { TeamFieldService } from '../team-field/team_field.service';
+import { teamFieldProvider } from '../team-field/team_field.provider';
+import { PdfService } from '../pdf/pdf.service';
+import { pdfProviders } from '../pdf/pdf.providers';
+import { FieldTableService } from '../field-table/field-table.service';
+import { fieldTableProviders } from '../field-table/field-table.providers';
+import { TeamRoleService } from '../team_role/team_role.service';
+import { teamRoleProvider } from '../team_role/team_role.provider';
 
 @Module({
     imports: [DatabaseModule],
@@ -29,6 +31,8 @@ import { fieldTableProviders } from 'src/field-table/field-table.providers';
       PdfService,
       ...pdfProviders,
       FieldTableService,
+      TeamRoleService,
+      teamRoleProvider,
       ...fieldTableProviders
       // JwtMiddleware,
       // EmployeeLoginService,
