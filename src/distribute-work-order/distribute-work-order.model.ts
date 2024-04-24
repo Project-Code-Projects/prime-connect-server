@@ -32,7 +32,7 @@ export class DistributeWorkOrder
   mainWorkOrder!: MainWorkOrder;
 
   @Column(DataTypes.ARRAY(DataTypes.INTEGER))
-  field_id: number;
+  field_id: number[];
   @Column
   assigned_to: number | null;
 

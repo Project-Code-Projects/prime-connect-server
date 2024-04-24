@@ -23,23 +23,23 @@ export class FieldData extends Model<FieldData> implements IFieldData {
   @Column
   field_id: number;
   @Column
-  value: string;
+  value: string | null;
   @Column
-  status: string;
+  status: string | null;
   @Column
   estimated_time: number;
   @Column
-  start_time: Date;
+  start_time: Date | null;
   @Column
-  err_type: string;
+  err_type: string | null;
   @Column
-  err_comment: string;
+  err_comment: string | null;
   @Column
   sequence: number;
   @Column
   page: number;
   @Column
-  assigned_to: number;
+  assigned_to: number | null;
 }
 
 export default FieldData;

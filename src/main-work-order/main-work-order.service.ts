@@ -58,11 +58,15 @@ export class MainWorkOrderService {
   }
 
   //task assignment
-  async assignTask(workOrder_id: number, employee_id: number): Promise<void> {
+  async assignTask(
+    workOrder_id: number,
+    fieldData: number = null,
+    employee_id: number,
+  ): Promise<void> {
     try {
       await this.workFlowAssignLogModel.create({
         work_order_id: workOrder_id,
-        field_data_id: null,
+        field_data_id: fieldData,
         assigned_to: employee_id,
       });
       console.log(`Task ${workOrder_id} assigned to ${employee_id}`);
@@ -117,7 +121,11 @@ export class MainWorkOrderService {
 
         for (let j = 0; j < taskForReviwer.length; j++) {
           if (j < this.threshold) {
-            await this.assignTask(taskForReviwer[j].id, activeEmployees[i].id);
+            await this.assignTask(
+              taskForReviwer[j].id,
+              null,
+              activeEmployees[i].id,
+            );
             await this.updateMainWorkOrder(
               taskForReviwer[j].id,
               taskForReviwer[j].acc_id,
@@ -135,15 +143,15 @@ export class MainWorkOrderService {
                 field_id: fieldTable.id, // Use the ID of the associated field table
                 // Set other properties as needed
                 // For example:
-                value: '', // You may need to set appropriate values here
-                status: '',
+                value: null, // You may need to set appropriate values here
+                status: null,
                 estimated_time: fieldTable.estimated_time,
-                start_time: new Date(),
-                err_type: '',
-                err_comment: '',
+                start_time: null,
+                err_type: null,
+                err_comment: null,
                 sequence: tableField.sequence,
                 page: tableField.page,
-                assigned_to: 0, // You may need to set an appropriate value for assigned_to
+                assigned_to: null, // You may need to set an appropriate value for assigned_to
               });
 
               // Save the new FieldData record to the database

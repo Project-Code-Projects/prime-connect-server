@@ -11,6 +11,17 @@ import { MainWorkOrderService } from 'src/main-work-order/main-work-order.servic
 import { teamRoleProvider } from 'src/team_role/team_role.provider';
 import { TeamRoleService } from 'src/team_role/team_role.service';
 import { employeeProvider } from 'src/employee/employee.provider';
+import { fieldDataProviders } from 'src/field-data/field-data.providers';
+import { FieldDataService } from 'src/field-data/field-data.service';
+import { accountListProviders } from 'src/account-list/account-list.providers';
+import { EmployeeService } from 'src/employee/employee.service';
+import { AccountListService } from 'src/account-list/account-list.service';
+import { fieldTableProviders } from 'src/field-table/field-table.providers';
+import { FieldTableService } from 'src/field-table/field-table.service';
+import { teamFieldProvider } from 'src/team-field/team_field.providers';
+import { TeamFieldService } from 'src/team-field/team_field.service';
+import { workFlowAssignLogProviders } from 'src/workflow-assign-log/workflow-assign-log.providers';
+import { WorkFlowAssignLogService } from 'src/workflow-assign-log/workflow-assign-log.service';
 
 @Module({
   imports: [DatabaseModule],
@@ -19,10 +30,23 @@ import { employeeProvider } from 'src/employee/employee.provider';
     DistributeWorkOrderService,
     TeamRoleService,
     EmployeeRoleService,
+    FieldDataService,
+    EmployeeService,
+    AccountListService,
+    MainWorkOrderService,
+    FieldTableService,
+    TeamFieldService,
+    WorkFlowAssignLogService,
     ...distributeWorkOrderProviders,
-
     teamRoleProvider,
     employeeProvider,
+    ...fieldDataProviders,
+    employeeProvider,
+    ...accountListProviders,
+    ...mainWorkOrderProviders,
+    ...fieldTableProviders,
+    teamFieldProvider,
+    ...workFlowAssignLogProviders,
   ],
 })
 export class DistributeWorkOrderModule {}
