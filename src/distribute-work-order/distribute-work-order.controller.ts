@@ -21,4 +21,9 @@ export class DistributeWorkOrderController {
   async assignTask(): Promise<any> {
     return this.distributeWorkOrderService.distributeTask();
   }
+
+  @Get()
+  async findAllWorkOrder(): Promise<IDistributeWorkOrder[]> {
+    return this.distributeWorkOrderService.findAllWorkOrder();
+  }
 }

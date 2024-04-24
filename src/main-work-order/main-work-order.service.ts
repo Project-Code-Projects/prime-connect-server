@@ -108,7 +108,7 @@ export class MainWorkOrderService {
   async distributeTask(rolId: number = 2): Promise<void> {
     try {
       const activeEmployees = await this.employeeModel.findAll({
-        where: { active: true, admin: 'null', role_id: rolId },
+        where: { active: true, role_id: rolId },
       });
       for (let i = 0; i < activeEmployees.length; i++) {
         const taskForReviwer = await this.mainWorkOrderModel.findAll({
