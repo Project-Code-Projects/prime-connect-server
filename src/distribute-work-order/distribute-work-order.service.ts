@@ -62,9 +62,18 @@ export class DistributeWorkOrderService {
         where: { active: true, role_id: roleId },
       });
       console.log(activeEmployees.length);
+      const tasks = await this.fieldDataModel.findAll({
+        where: {
+          assigned_to: null,
+          value: null,
+        },
+      });
+
+      const threshold = Math.ceil(tasks.length / activeEmployees.length);
+      console.log(threshold);
 
       for (let i = 0; i < activeEmployees.length; i++) {
-        let fieldIds = [];
+        // let fieldIds = [];
         const tasks = await this.fieldDataModel.findAll({
           where: {
             assigned_to: null,
@@ -72,9 +81,6 @@ export class DistributeWorkOrderService {
           },
         });
         // console.log(tasks);
-
-        const threshold = Math.round(tasks.length / activeEmployees.length);
-        console.log(threshold);
 
         for (let j = 0; j < tasks.length; j++) {
           if (j < threshold) {
@@ -87,42 +93,41 @@ export class DistributeWorkOrderService {
               tasks[j].field_id,
               activeEmployees[i].id,
             );
-            console.log('working');
 
-            fieldIds.push(tasks[j].id);
+            // fieldIds.push(tasks[j].id);
 
-            const distributedTaskInfo =
-              await this.distributeWorkOrderModel.findAll({
-                where: {
-                  work_order_id: tasks[j].work_order_id,
-                  assigned_to: activeEmployees[i].id,
-                },
-              });
-            if (distributedTaskInfo.length === 0) {
-              await this.createDistributeWorkOrder({
-                work_order_id: tasks[j].work_order_id,
-                field_id: [tasks[j].id],
-                assigned_to: activeEmployees[i].id,
-                status: null,
-                estimated_time: tasks[j].estimated_time,
-              });
-            } else {
-              for (const task of distributedTaskInfo) {
-                await this.distributeWorkOrderModel.update(
-                  {
-                    estimated_time:
-                      task.estimated_time + tasks[j].estimated_time,
-                    field_id: fieldIds,
-                  },
-                  {
-                    where: {
-                      work_order_id: tasks[j].work_order_id,
-                      assigned_to: activeEmployees[i].id,
-                    },
-                  },
-                );
-              }
-            }
+            // const distributedTaskInfo =
+            //   await this.distributeWorkOrderModel.findAll({
+            //     where: {
+            //       work_order_id: tasks[j].work_order_id,
+            //       assigned_to: activeEmployees[i].id,
+            //     },
+            //   });
+            // if (distributedTaskInfo.length === 0) {
+            //   await this.createDistributeWorkOrder({
+            //     work_order_id: tasks[j].work_order_id,
+            //     field_id: [tasks[j].id],
+            //     assigned_to: activeEmployees[i].id,
+            //     status: null,
+            //     estimated_time: tasks[j].estimated_time,
+            //   });
+            // } else {
+            //   for (const task of distributedTaskInfo) {
+            //     await this.distributeWorkOrderModel.update(
+            //       {
+            //         estimated_time:
+            //           task.estimated_time + tasks[j].estimated_time,
+            //         field_id: fieldIds,
+            //       },
+            //       {
+            //         where: {
+            //           work_order_id: tasks[j].work_order_id,
+            //           assigned_to: activeEmployees[i].id,
+            //         },
+            //       },
+            //     );
+            //   }
+            // }
           }
         }
       }
