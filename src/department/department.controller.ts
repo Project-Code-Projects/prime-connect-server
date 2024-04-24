@@ -15,6 +15,11 @@ export class DepartmentController {
   async findAll() {
     return this.departmentService.findAll();
   }
+
+  @Get('/:id')
+  async findOne(@Param('id') id: number) {
+    return this.departmentService.findOne(id);
+  }
  
   @Delete('/:id')
   async deleteDepartment(@Param('id') id: string): Promise<void> {

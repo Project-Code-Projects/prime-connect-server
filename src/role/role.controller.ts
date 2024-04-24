@@ -3,6 +3,7 @@ import { RoleService } from './role.service';
 import { Employee } from '../employee/employee.model';
 import { EmployeeService } from '../employee/employee.service';
 import { TeamRoleService } from '../team_role/team_role.service';
+import { TeamRole } from '../team_role/team_role.model';
 
 @Controller('/role')
 export class RoleController {
@@ -10,9 +11,9 @@ export class RoleController {
 
   @Post()
   async create(@Body() createRoleDto: any) {
-    const { team_id,access,isAuthor,sequence } = createRoleDto;
-    const newRole = await this.roleService.createRole(createRoleDto);
-    const { id,name,description } = newRole;
+    const { name,description,team_id,access,isAuthor,sequence } = createRoleDto;
+    const newRole = await this.roleService.createRole({name,description});
+    const { id } = newRole;
     const teamRole = await this.teamRoleService.createTeamRole({ team_id, role_id: id, access, isAuthor, sequence });
     return { id,name,description,TeamRole: teamRole};
   }
@@ -22,13 +23,34 @@ export class RoleController {
     return this.roleService.findAllRole();
   }
 
+  @Get('/:id')
+  async findOneRole(@Param('id') id: number) {
+    return this.roleService.findOne(id);
+  }
+  
+  @Get('/workflow/:role_id')
+  async findWorkflow(@Param('role_id') role_id: number) {
+    return this.teamRoleService.findAllByRoleId(role_id);
+  }
+
+  @Get('/workflow/:role_id/:team_id')
+  async findOneWorkflow(@Param('role_id') role_id: number, @Param('team_id') team_id: number): Promise<TeamRole[]> {
+   return this.teamRoleService.findOneTeamRole(team_id,role_id);
+  }
+
   @Put('/:id')
   async updateRole( @Param('id') id: string, @Body() updateData: Partial<any>, ): Promise<void> {
     await this.roleService.updateRole(id, updateData);
+    // await this.teamRoleService.updateTeamRole(id,updateData);
+  }
+
+  @Delete('/:id')
+  async deleteRole(@Param('id') id: number): Promise<void> {
+    await this.roleService.deleteRole(id);
   }
 
   @Delete('/:id/:team_id')
-  async deleteRole(@Param('id') id: number, @Param('team_id') team_id: number): Promise<void> {
+  async deleteWorkflow(@Param('id') id: number, @Param('team_id') team_id: number): Promise<void> {
    await this.teamRoleService.deleteTeamRole(team_id,id);
   }
 }

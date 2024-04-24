@@ -4,14 +4,15 @@ import { TeamPdfService } from '../team-pdf/team_pdf.service';
 import { TeamFieldService } from '../team-field/team_field.service';
 import { PdfService } from '../pdf/pdf.service';
 import { FieldTableService } from '../field-table/field-table.service';
+import { TeamRoleService } from '../team_role/team_role.service';
 
 @Controller('/team')
 export class TeamController {
-  constructor(private teamService: TeamService, private teamPdfService: TeamPdfService, private teamFieldService: TeamFieldService, private pdfService: PdfService, private fieldTableService: FieldTableService) {}
+  constructor(private teamService: TeamService, private teamRoleService: TeamRoleService, private teamPdfService: TeamPdfService, private teamFieldService: TeamFieldService, private pdfService: PdfService, private fieldTableService: FieldTableService) {}
 
   @Post()
   async create(@Body() createTeamDto: any) {
-    const {name,description,dept_id,exist_pdf,new_pdf,exist_field,new_field} = createTeamDto;
+    const {name,description,dept_id,exist_pdf,new_pdf} = createTeamDto;
     const teamInfo = {name,description,dept_id};
     const team = await this.teamService.create(teamInfo);
 
@@ -33,24 +34,24 @@ export class TeamController {
       }
     }
 
-    if(exist_field){
-      const len = exist_field.length;
-      for(let i = 0; i < len; i++){
-        const { id,page,co_ordinate,sequence } = exist_field[i];
-        const teamField = {page,co_ordinate,sequence,team_id:team.id,field_id:id};
-        this.teamFieldService.createTeamField(teamField);
-      }
-    }
+    // if(exist_field){
+    //   const len = exist_field.length;
+    //   for(let i = 0; i < len; i++){
+    //     const { id,page,co_ordinate,sequence } = exist_field[i];
+    //     const teamField = {page,co_ordinate,sequence,team_id:team.id,field_id:id};
+    //     this.teamFieldService.createTeamField(teamField);
+    //   }
+    // }
 
-    if(new_field){
-      const len = new_field.length;
-      for(let i = 0; i < len; i++){
-        const {name,type,estimated_time,page,co_ordinate,sequence} = new_field[i];
-        const newField = await this.fieldTableService.addFieldTable({field_name:name,field_type:type,estimated_time});
-        const teamField = {page,co_ordinate,sequence,team_id:team.id,field_id:newField.id};
-        this.teamFieldService.createTeamField(teamField);
-      }
-    }
+    // if(new_field){
+    //   const len = new_field.length;
+    //   for(let i = 0; i < len; i++){
+    //     const {name,type,estimated_time,page,co_ordinate,sequence} = new_field[i];
+    //     const newField = await this.fieldTableService.addFieldTable({field_name:name,field_type:type,estimated_time});
+    //     const teamField = {page,co_ordinate,sequence,team_id:team.id,field_id:newField.id};
+    //     this.teamFieldService.createTeamField(teamField);
+    //   }
+    // }
 
     return team;
   }
@@ -67,12 +68,19 @@ export class TeamController {
     return roles;
   }
 
-  @Put(':id')
+  @Get('/workflow/:id')
+  async findAllWokflowByTeamId(@Param('id') id: number) {
+    const workflow = this.teamRoleService.findAllByTeamId(id);
+    // console.log(roles);
+    return workflow;
+  }
+
+  @Put('/:id')
   async updateTeam( @Param('id') id: string, @Body() updateData: Partial<any>, ): Promise<void> {
     await this.teamService.updateTeam(id, updateData);
   }
 
-  @Delete(':id')
+  @Delete('/:id')
   async deleteTeam(@Param('id') id: string): Promise<void> {
     await this.teamService.deleteTeam(id);
   }

@@ -21,12 +21,12 @@ export class EmployeeLoginService {
     return this.loginRepository.findOne<EmployeeLogin>( { where: {email}, include: [{model:Employee}] } );
   }
 
-  async updateEmployeeInfo(id: string, updateData: Partial<any>): Promise<void> {
-    await this.loginRepository.update(updateData, { where: { id } });
+  async updateEmployeeInfo(id: number, updateData: Partial<any>): Promise<void> {
+    await this.loginRepository.update(updateData, { where: { employee_id: id } });
   }
 
-  async deleteEmployee(id: string): Promise<void> {
-    await this.loginRepository.destroy({ where: { id } });
+  async deleteEmployee(id: number): Promise<void> {
+    await this.loginRepository.destroy({ where: { employee_id: id } });
   }
 
 

@@ -18,8 +18,8 @@ export class TeamRoleService {
   async findOneTeamRole(
     team_id: number,
     role_id: number,
-  ): Promise<TeamRole | null> {
-    return this.teamRoleRepository.findOne<TeamRole>({
+  ): Promise<TeamRole []> {
+    return this.teamRoleRepository.findAll<TeamRole>({
       where: { team_id, role_id },
     });
   }
@@ -38,6 +38,10 @@ export class TeamRoleService {
     await this.teamRoleRepository.destroy({ where: { team_id, role_id } });
   }
 
+  // async deleteTeamRoleByRoleId(role_id: number): Promise<void> {
+  //   await this.teamRoleRepository.destroy({ where: { role_id } });
+  // }
+
   async findAllByAccess(access: string): Promise<TeamRole[]> {
     const teamRoles = await this.teamRoleRepository.findAll({
       where: { access },
@@ -47,6 +51,13 @@ export class TeamRoleService {
   async findAllByTeamId(team_id: number): Promise<TeamRole[]> {
     const obj = await this.teamRoleRepository.findAll({
       where: { team_id },
+    });
+    return obj;
+  }
+
+  async findAllByRoleId(role_id: number): Promise<TeamRole[]> {
+    const obj = await this.teamRoleRepository.findAll({
+      where: { role_id },
     });
     return obj;
   }

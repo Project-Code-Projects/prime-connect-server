@@ -51,12 +51,12 @@ export class EmployeeLoginController {
   }
 
   @Put('/signin/:id')
-  async updateEmployeeInfo( @Param('id') id: string, @Body() updateData: Partial<any>, ): Promise<void> {
+  async updateEmployeeInfo( @Param('id') id: number, @Body() updateData: Partial<any> ): Promise<void> {
     await this.loginService.updateEmployeeInfo(id, updateData);
   }
 
   @Delete('/signin/:id')
-  async deleteEmployee(@Param('id') id: string): Promise<void> {
+  async deleteEmployee(@Param('id') id: number): Promise<void> {
     await this.loginService.deleteEmployee(id);
   }
 }

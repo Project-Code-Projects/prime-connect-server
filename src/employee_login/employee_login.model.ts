@@ -10,6 +10,7 @@ import { Employee } from '../employee/employee.model';
 
 export class EmployeeLogin extends Model<EmployeeLogin> {
     @Column({
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         unique: true,

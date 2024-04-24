@@ -11,7 +11,7 @@ import { DataTypes } from 'sequelize';
 import { Role } from '../role/role.model';
 import { EmployeeLogin } from '../employee_login/employee_login.model';
 import { EmployeeStats } from '../employee_stats/employee_stats.model';
-import MainWorkOrder from 'src/main-work-order/main-work-order.model';
+import MainWorkOrder from '../main-work-order/main-work-order.model';
 
 @Table({
   timestamps: false, // Disable timestamps
@@ -20,6 +20,7 @@ import MainWorkOrder from 'src/main-work-order/main-work-order.model';
 })
 export class Employee extends Model<Employee> {
   @Column({
+    type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
     unique: true,
