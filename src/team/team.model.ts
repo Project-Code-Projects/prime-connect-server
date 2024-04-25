@@ -12,9 +12,9 @@ import { Department } from '../department/department.model';
 import { Role } from '../role/role.model';
 import { TeamRole } from '../team_role/team_role.model';
 import { TeamPdf } from '../team-pdf/team_pdf.model';
-import Pdf from 'src/pdf/pdf.model';
-import FieldTable from 'src/field-table/field-table.model';
-import { TeamField } from 'src/team-field/team_field.model';
+import Pdf from '../pdf/pdf.model';
+import FieldTable from '../field-table/field-table.model';
+import { TeamField } from '../team-field/team_field.model';
 
 @Table({
   tableName: 'team',
