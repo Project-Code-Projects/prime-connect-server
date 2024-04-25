@@ -5,6 +5,7 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  Param,
 } from '@nestjs/common';
 import { DistributeWorkOrderService } from './distribute-work-order.service';
 import { IDistributeWorkOrder } from './distribute-work-order.interface';
@@ -30,5 +31,19 @@ export class DistributeWorkOrderController {
   @Post()
   async updateFieldData(): Promise<void> {
     return await this.distributeWorkOrderService.updateAllFieldData();
+  }
+
+  @Get('employee/:employeeId') // Define the route including the employee ID
+  async getTasksByEmployee(
+    @Param('employeeId') employeeId: number,
+  ): Promise<IDistributeWorkOrder[]> {
+    try {
+      return await this.distributeWorkOrderService.findDistributedTasksByEmployeeId(
+        employeeId,
+      );
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 }

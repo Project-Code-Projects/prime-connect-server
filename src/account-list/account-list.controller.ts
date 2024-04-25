@@ -12,4 +12,9 @@ import {
 @Controller('account-list')
 export class AccountListController {
   constructor() {}
+
+  @Get()
+  async findAllAccList(): Promise<AccountList[]> {
+    return AccountList.findAll();
+  }
 }
