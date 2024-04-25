@@ -16,8 +16,8 @@ import { workFlowAssignLogProviders } from 'src/workflow-assign-log/workflow-ass
 import { CustomerService } from 'src/customer/customer.service';
 import { CustomerModule } from 'src/customer/customer.module';
 import { customerProviders } from 'src/customer/customer.providers';
-import { TeamRoleService } from 'src/team_role/team_role.service';
-import { teamRoleProvider } from 'src/team_role/team_role.provider';
+import { TeamRoleService } from '../team_role_workflow/team_role_workflow.service';
+import { teamRoleProvider } from '../team_role_workflow/team_role_workflow.provider';
 import { fieldDataProviders } from 'src/field-data/field-data.providers';
 import { fieldTableProviders } from 'src/field-table/field-table.providers';
 import { FieldDataService } from 'src/field-data/field-data.service';

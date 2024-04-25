@@ -4,7 +4,7 @@ import { TeamPdfService } from '../team-pdf/team_pdf.service';
 import { TeamFieldService } from '../team-field/team_field.service';
 import { PdfService } from '../pdf/pdf.service';
 import { FieldTableService } from '../field-table/field-table.service';
-import { TeamRoleService } from '../team_role/team_role.service';
+import { TeamRoleService } from '../team_role_workflow/team_role_workflow.service';
 
 @Controller('/team')
 export class TeamController {

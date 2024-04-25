@@ -11,6 +11,7 @@ import { IPdf } from './pdf.interface';
 import { TeamPdf } from '../team-pdf/team_pdf.model';
 import { Team } from '../team/team.model';
 import { FormField } from '../form-field/form-field.model';
+import { TeamField } from '../team-field/team_field.model';
 
 @Table({
   tableName: 'pdf',
@@ -30,6 +31,9 @@ export class Pdf extends Model<Pdf> implements IPdf {
 
   @HasMany(() => FormField)
   formFields: FormField[];
+
+  @HasMany(() => TeamField)
+   teamFields: TeamField[];
 }
 
 export default Pdf;

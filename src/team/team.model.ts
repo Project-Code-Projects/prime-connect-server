@@ -10,7 +10,7 @@ import {
 import { DataTypes } from 'sequelize';
 import { Department } from '../department/department.model';
 import { Role } from '../role/role.model';
-import { TeamRole } from '../team_role/team_role.model';
+import { TeamRole } from '../team_role_workflow/team_role_workflow.model';
 import { TeamPdf } from '../team-pdf/team_pdf.model';
 import Pdf from '../pdf/pdf.model';
 import FieldTable from '../field-table/field-table.model';

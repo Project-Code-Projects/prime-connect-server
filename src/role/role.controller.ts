@@ -2,8 +2,8 @@ import { Controller, Post, Get, Put, Delete, Body,Param } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { Employee } from '../employee/employee.model';
 import { EmployeeService } from '../employee/employee.service';
-import { TeamRoleService } from '../team_role/team_role.service';
-import { TeamRole } from '../team_role/team_role.model';
+import { TeamRoleService } from '../team_role_workflow/team_role_workflow.service';
+import { TeamRole } from '../team_role_workflow/team_role_workflow.model';
 
 @Controller('/role')
 export class RoleController {

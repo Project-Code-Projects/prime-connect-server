@@ -4,6 +4,10 @@ import { FormController } from './form.controller';
 import { FormService } from './form.service';
 import { formProvider } from './form.provider';
 import { DatabaseModule } from '../database/database.module';
+import {FieldTableService } from '../field-table/field-table.service';
+import { FormFieldService } from '../form-field/form-field.service';
+import { fieldTableProviders } from '../field-table/field-table.providers';
+import { formFieldProvider } from '../form-field/form-field.provider';
 import { JwtMiddleware } from '../auth/jwt.middleware';
 import { EmployeeLoginService } from '../employee_login/employee_login.service';
 import { employeeLoginProvider } from '../employee_login/employee_login.provider';
@@ -15,6 +19,10 @@ import { employeeLoginProvider } from '../employee_login/employee_login.provider
     providers: [
       FormService,
       formProvider,
+      FieldTableService,
+      FormFieldService,
+      formFieldProvider,
+      ...fieldTableProviders,
       // JwtMiddleware,
       // EmployeeLoginService,
       // employeeLoginProvider

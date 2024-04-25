@@ -5,7 +5,7 @@ import { Role } from '../role/role.model';
 import { Employee } from '../employee/employee.model';
 import { EmployeeLogin } from '../employee_login/employee_login.model';
 import { EmployeeStats } from '../employee_stats/employee_stats.model';
-import { TeamRole } from '../team_role/team_role.model';
+import { TeamRole } from '../team_role_workflow/team_role_workflow.model';
 import { Customer } from '../customer/customer.model';
 import { MainWorkOrder } from '../main-work-order/main-work-order.model';
 import { WorkFlowAssignLog } from '../workflow-assign-log/workflow-assign-log.model';

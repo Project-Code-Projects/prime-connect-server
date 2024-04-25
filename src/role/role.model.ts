@@ -2,7 +2,7 @@ import { Column, Model, Table, ForeignKey, BelongsTo, HasOne, HasMany , BelongsT
 import { DataTypes } from 'sequelize';
 import { Team } from '../team/team.model';
 import { Employee } from '../employee/employee.model';
-import { TeamRole } from '../team_role/team_role.model';
+import { TeamRole } from '../team_role_workflow/team_role_workflow.model';
 import { Form } from '../form/form.model';
 
 @Table ({

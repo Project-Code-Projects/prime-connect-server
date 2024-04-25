@@ -1,7 +1,8 @@
-import { Column, Model, ForeignKey, Table } from 'sequelize-typescript';
+import { Column, Model, ForeignKey, Table,BelongsTo } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { Team } from '../team/team.model';
 import { FieldTable } from '../field-table/field-table.model';
+import { Pdf } from '../pdf/pdf.model';
 
 @Table({
   timestamps: false,
@@ -33,6 +34,7 @@ export class TeamField extends Model<TeamField> {
   @Column({
     type: DataTypes.INTEGER,
     allowNull: false,
+    unique: true
   })
   sequence: number;
 
@@ -51,4 +53,14 @@ export class TeamField extends Model<TeamField> {
     unique: false,
   })
   field_id: number;
+
+  
+  @ForeignKey(() => Pdf)
+  @Column({
+    allowNull: false,
+  })
+  pdf_id: number;
+
+  @BelongsTo(() => Pdf)
+  pdf: Pdf;
 }

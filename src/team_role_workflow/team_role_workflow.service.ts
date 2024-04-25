@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { TeamRole } from './team_role.model';
+import { TeamRole } from './team_role_workflow.model';
 
 @Injectable()
 export class TeamRoleService {

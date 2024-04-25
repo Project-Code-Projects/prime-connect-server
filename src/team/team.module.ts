@@ -15,8 +15,8 @@ import { PdfService } from '../pdf/pdf.service';
 import { pdfProviders } from '../pdf/pdf.providers';
 import { FieldTableService } from '../field-table/field-table.service';
 import { fieldTableProviders } from '../field-table/field-table.providers';
-import { TeamRoleService } from '../team_role/team_role.service';
-import { teamRoleProvider } from '../team_role/team_role.provider';
+import { TeamRoleService } from '../team_role_workflow/team_role_workflow.service';
+import { teamRoleProvider } from '../team_role_workflow/team_role_workflow.provider';
 
 @Module({
     imports: [DatabaseModule],

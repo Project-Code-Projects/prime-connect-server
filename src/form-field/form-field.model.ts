@@ -35,6 +35,7 @@ export class FormField extends Model<FormField> {
       @Column({
         type: DataTypes.INTEGER,
         allowNull: false,
+        unique: true
       })
       sequence: number;
 
