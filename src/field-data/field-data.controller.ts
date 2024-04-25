@@ -6,6 +6,7 @@ import {
   UploadedFiles,
   UseInterceptors,
   Bind,
+  Param,
 } from '@nestjs/common';
 import { PdfDataController } from 'src/pdf-data/pdf-data.controller';
 import { IFieldData } from './field-data.interface';
@@ -26,5 +27,15 @@ export class FieldDataController {
   ): Promise<void> {
     const { id, value } = updateFieldDataDto;
     return await this.fieldDataService.updateFieldDataByFieldId(id, value);
+  }
+
+  @Get('fields/:id') // Define the route including the employee ID
+  async getTasksByEmployee(@Param('id') id: number): Promise<IFieldData> {
+    try {
+      return await this.fieldDataService.getFieldDataById(id);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   }
 }
