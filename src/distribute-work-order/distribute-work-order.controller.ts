@@ -26,4 +26,9 @@ export class DistributeWorkOrderController {
   async findAllWorkOrder(): Promise<IDistributeWorkOrder[]> {
     return this.distributeWorkOrderService.findAllWorkOrder();
   }
+
+  @Post()
+  async updateFieldData(): Promise<void> {
+    return await this.distributeWorkOrderService.updateAllFieldData();
+  }
 }

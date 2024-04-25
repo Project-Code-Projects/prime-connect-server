@@ -13,6 +13,8 @@ import { WorkFlowAssignLog } from '../workflow-assign-log/workflow-assign-log.mo
 import { Employee } from '../employee/employee.model';
 import { Customer } from 'src/customer/customer.model';
 import { DistributeWorkOrder } from 'src/distribute-work-order/distribute-work-order.model';
+import FieldTable from 'src/field-table/field-table.model';
+import FieldData from 'src/field-data/field-data.model';
 
 @Table({
   tableName: 'main_work_orders',
@@ -58,6 +60,8 @@ export class MainWorkOrder
   // workflowAssignLogs!: WorkFlowAssignLog[];
   // @BelongsTo(() => Employee, 'assigned_to')
   // assignedEmployee!: Employee;
+  @HasMany(() => FieldData)
+  fieldTables: FieldTable[];
 }
 
 export default MainWorkOrder;
