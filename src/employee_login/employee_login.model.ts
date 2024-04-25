@@ -34,6 +34,7 @@ export class EmployeeLogin extends Model<EmployeeLogin> {
     @ForeignKey(() => Employee)
     @Column({
         type: DataTypes.INTEGER,
+        unique: true,
         allowNull: false
     })
     employee_id: number;

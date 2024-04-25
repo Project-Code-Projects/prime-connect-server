@@ -8,6 +8,10 @@ import {
     BelongsToMany,
   } from 'sequelize-typescript';
   import { DataTypes } from 'sequelize';
+import { Team } from '../team/team.model';
+import { Role } from '../role/role.model';
+import { FormField } from '../form-field/form-field.model';
+import FieldTable from '../field-table/field-table.model';
   
   @Table({
     tableName: 'form',
@@ -31,23 +35,32 @@ import {
     })
     name: string;
   
+    @ForeignKey(() => Team)
     @Column({
-      type: DataTypes.INTEGER,
       allowNull: false,
     })
     team_id: number;
+  
+    @BelongsTo(() => Team)
+    team: Team;
 
+    @ForeignKey(() => Role)
     @Column({
-      type: DataTypes.INTEGER,
       allowNull: false,
     })
     role_id: number;
   
-    @Column({
-        type: DataTypes.ARRAY(DataTypes.INTEGER),
-        allowNull: true,
-     })
-    field_id: number[];
+    @BelongsTo(() => Role)
+    role: Role;
+
+    @BelongsToMany(() => FieldTable, () => FormField)
+    fields: Array<FieldTable & { FormField: FormField }>;
+  
+    // @Column({
+    //     type: DataTypes.ARRAY(DataTypes.INTEGER),
+    //     allowNull: true,
+    //  })
+    // field_id: number[];
   
     // @ForeignKey(() => Department)
     // @Column({

@@ -3,5 +3,5 @@ export interface IForm {
     name: string;
     team_id: number;
     role_id: number;
-    field_id: number[];
+    // field_id: number[];
 }

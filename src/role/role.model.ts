@@ -1,8 +1,9 @@
-import { Column, Model, Table, ForeignKey, BelongsTo, HasMany , BelongsToMany} from 'sequelize-typescript';
+import { Column, Model, Table, ForeignKey, BelongsTo, HasOne, HasMany , BelongsToMany} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { Team } from '../team/team.model';
 import { Employee } from '../employee/employee.model';
 import { TeamRole } from '../team_role/team_role.model';
+import { Form } from '../form/form.model';
 
 @Table ({
     timestamps: false, // Disable timestamps
@@ -43,6 +44,9 @@ export class Role extends Model<Role> {
 
     @BelongsToMany(() => Team, () => TeamRole)
     teams: Array<Team & {TeamRole: TeamRole}>;
+
+    @HasOne(() => Form)
+    form: Form;
   
     @HasMany(() => Employee)
     employees: Employee[];

@@ -9,16 +9,18 @@ import { TeamRole } from '../team_role/team_role.model';
 import { Customer } from '../customer/customer.model';
 import { MainWorkOrder } from '../main-work-order/main-work-order.model';
 import { WorkFlowAssignLog } from '../workflow-assign-log/workflow-assign-log.model';
-import PdfData from 'src/pdf-data/pdf-data.model';
-import EmployeeRole from 'src/employee-role/employee-role.model';
-import PdfList, { DocuBucket } from 'src/docu-bucket/docu-bucket.model';
-import Pdf from 'src/pdf/pdf.model';
-import { DistributeWorkOrder } from 'src/distribute-work-order/distribute-work-order.model';
-import FieldData from 'src/field-data/field-data.model';
-import FieldTable from 'src/field-table/field-table.model';
-import { TeamField } from 'src/team-field/team_field.model';
-import { TeamPdf } from 'src/team-pdf/team_pdf.model';
-import { AccountList } from 'src/account-list/account-list.model';
+import PdfData from '../pdf-data/pdf-data.model';
+import EmployeeRole from '../employee-role/employee-role.model';
+import PdfList, { DocuBucket } from '../docu-bucket/docu-bucket.model';
+import Pdf from '../pdf/pdf.model';
+import { DistributeWorkOrder } from '../distribute-work-order/distribute-work-order.model';
+import FieldData from '../field-data/field-data.model';
+import FieldTable from '../field-table/field-table.model';
+import { TeamField } from '../team-field/team_field.model';
+import { TeamPdf } from '../team-pdf/team_pdf.model';
+import { AccountList } from '../account-list/account-list.model';
+import { Form } from '../form/form.model';
+import { FormField } from '../form-field/form-field.model';
 
 export const databaseProviders = [
   {
@@ -62,7 +64,8 @@ export const databaseProviders = [
         DistributeWorkOrder,
         FieldData,
         FieldTable,
-
+        Form,
+        FormField,
         DocuBucket,
         TeamField,
         TeamPdf,

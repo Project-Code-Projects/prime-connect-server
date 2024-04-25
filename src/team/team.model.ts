@@ -15,6 +15,7 @@ import { TeamPdf } from '../team-pdf/team_pdf.model';
 import Pdf from '../pdf/pdf.model';
 import FieldTable from '../field-table/field-table.model';
 import { TeamField } from '../team-field/team_field.model';
+import { Form } from '../form/form.model';
 
 @Table({
   tableName: 'team',
@@ -66,4 +67,7 @@ export class Team extends Model<Team> {
 
   @BelongsToMany(() => FieldTable, () => TeamField)
   fields: Array<FieldTable & { TeamField: TeamField }>;
+
+  @HasMany(() => Form)
+  forms: Form[];
 }

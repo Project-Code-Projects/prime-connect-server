@@ -12,7 +12,7 @@ export class TeamController {
 
   @Post()
   async create(@Body() createTeamDto: any) {
-    const {name,description,dept_id,exist_pdf,new_pdf} = createTeamDto;
+    const {name,description,dept_id,exist_pdf,new_pdf, exist_field, new_field} = createTeamDto;
     const teamInfo = {name,description,dept_id};
     const team = await this.teamService.create(teamInfo);
 
@@ -34,24 +34,24 @@ export class TeamController {
       }
     }
 
-    // if(exist_field){
-    //   const len = exist_field.length;
-    //   for(let i = 0; i < len; i++){
-    //     const { id,page,co_ordinate,sequence } = exist_field[i];
-    //     const teamField = {page,co_ordinate,sequence,team_id:team.id,field_id:id};
-    //     this.teamFieldService.createTeamField(teamField);
-    //   }
-    // }
+    if(exist_field){
+      const len = exist_field.length;
+      for(let i = 0; i < len; i++){
+        const { id,page,co_ordinate,sequence } = exist_field[i];
+        const teamField = {page,co_ordinate,sequence,team_id:team.id,field_id:id};
+        this.teamFieldService.createTeamField(teamField);
+      }
+    }
 
-    // if(new_field){
-    //   const len = new_field.length;
-    //   for(let i = 0; i < len; i++){
-    //     const {name,type,estimated_time,page,co_ordinate,sequence} = new_field[i];
-    //     const newField = await this.fieldTableService.addFieldTable({field_name:name,field_type:type,estimated_time});
-    //     const teamField = {page,co_ordinate,sequence,team_id:team.id,field_id:newField.id};
-    //     this.teamFieldService.createTeamField(teamField);
-    //   }
-    // }
+    if(new_field){
+      const len = new_field.length;
+      for(let i = 0; i < len; i++){
+        const {name,type,estimated_time,page,co_ordinate,sequence} = new_field[i];
+        const newField = await this.fieldTableService.addFieldTable({field_name:name,field_type:type,estimated_time});
+        const teamField = {page,co_ordinate,sequence,team_id:team.id,field_id:newField.id};
+        this.teamFieldService.createTeamField(teamField);
+      }
+    }
 
     return team;
   }
