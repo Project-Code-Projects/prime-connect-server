@@ -8,6 +8,7 @@ import FieldData from 'src/field-data/field-data.model';
 import { FieldDataService } from 'src/field-data/field-data.service';
 import { Employee } from 'src/employee/employee.model';
 import { AccountList } from 'src/account-list/account-list.model';
+import { IFieldData } from 'src/field-data/field-data.interface';
 
 @Injectable()
 export class DistributeWorkOrderService {
@@ -41,6 +42,7 @@ export class DistributeWorkOrderService {
     workOrder_id: number,
     fieldData: number = null,
     employee_id: number,
+    tasks: IFieldData,
   ): Promise<void> {
     try {
       await this.workFlowAssignLogModel.create({
@@ -49,6 +51,47 @@ export class DistributeWorkOrderService {
         assigned_to: employee_id,
       });
       console.log(`Task ${workOrder_id} assigned to ${employee_id}`);
+      const workOrder = await this.distributeWorkOrderModel.findOne({
+        where: { work_order_id: workOrder_id, assigned_to: employee_id },
+      });
+      if (!workOrder) {
+        await this.createDistributeWorkOrder({
+          work_order_id: tasks.work_order_id,
+          field_id: [tasks.field_id],
+          assigned_to: employee_id,
+          status: null,
+          estimated_time: tasks.estimated_time,
+        });
+      }
+      if (workOrder) {
+        const field: number[] = workOrder.field_id;
+        console.log(field);
+
+        const estimated_time = workOrder.estimated_time;
+        const distributedTaskInfo = await this.distributeWorkOrderModel.findAll(
+          {
+            where: {
+              work_order_id: workOrder_id,
+              assigned_to: employee_id,
+            },
+          },
+        );
+        if (!field.includes(tasks.field_id)) {
+          field.push(tasks.field_id);
+        }
+        await this.distributeWorkOrderModel.update(
+          {
+            field_id: field,
+            estimated_time: tasks.estimated_time + estimated_time,
+          },
+          {
+            where: {
+              work_order_id: distributedTaskInfo[0].work_order_id,
+              assigned_to: employee_id,
+            },
+          },
+        );
+      }
     } catch (error) {
       console.log(
         `Error assigning task ${workOrder_id} to ${employee_id}:`,
@@ -62,9 +105,18 @@ export class DistributeWorkOrderService {
         where: { active: true, role_id: roleId },
       });
       console.log(activeEmployees.length);
+      const tasks = await this.fieldDataModel.findAll({
+        where: {
+          assigned_to: null,
+          value: null,
+        },
+      });
+
+      const threshold = Math.ceil(tasks.length / activeEmployees.length);
+      // console.log(threshold);
 
       for (let i = 0; i < activeEmployees.length; i++) {
-        let fieldIds = [];
+        // let fieldIds = [];
         const tasks = await this.fieldDataModel.findAll({
           where: {
             assigned_to: null,
@@ -72,9 +124,6 @@ export class DistributeWorkOrderService {
           },
         });
         // console.log(tasks);
-
-        const threshold = Math.round(tasks.length / activeEmployees.length);
-        console.log(threshold);
 
         for (let j = 0; j < tasks.length; j++) {
           if (j < threshold) {
@@ -86,43 +135,43 @@ export class DistributeWorkOrderService {
               tasks[j].work_order_id,
               tasks[j].field_id,
               activeEmployees[i].id,
+              tasks[j],
             );
-            console.log('working');
 
-            fieldIds.push(tasks[j].id);
+            // fieldIds.push(tasks[j].id);
 
-            const distributedTaskInfo =
-              await this.distributeWorkOrderModel.findAll({
-                where: {
-                  work_order_id: tasks[j].work_order_id,
-                  assigned_to: activeEmployees[i].id,
-                },
-              });
-            if (distributedTaskInfo.length === 0) {
-              await this.createDistributeWorkOrder({
-                work_order_id: tasks[j].work_order_id,
-                field_id: [tasks[j].id],
-                assigned_to: activeEmployees[i].id,
-                status: null,
-                estimated_time: tasks[j].estimated_time,
-              });
-            } else {
-              for (const task of distributedTaskInfo) {
-                await this.distributeWorkOrderModel.update(
-                  {
-                    estimated_time:
-                      task.estimated_time + tasks[j].estimated_time,
-                    field_id: fieldIds,
-                  },
-                  {
-                    where: {
-                      work_order_id: tasks[j].work_order_id,
-                      assigned_to: activeEmployees[i].id,
-                    },
-                  },
-                );
-              }
-            }
+            // const distributedTaskInfo =
+            //   await this.distributeWorkOrderModel.findAll({
+            //     where: {
+            //       work_order_id: tasks[j].work_order_id,
+            //       assigned_to: activeEmployees[i].id,
+            //     },
+            //   });
+            // if (distributedTaskInfo.length === 0) {
+            //   await this.createDistributeWorkOrder({
+            //     work_order_id: tasks[j].work_order_id,
+            //     field_id: [tasks[j].id],
+            //     assigned_to: activeEmployees[i].id,
+            //     status: null,
+            //     estimated_time: tasks[j].estimated_time,
+            //   });
+            // } else {
+            //   for (const task of distributedTaskInfo) {
+            //     await this.distributeWorkOrderModel.update(
+            //       {
+            //         estimated_time:
+            //           task.estimated_time + tasks[j].estimated_time,
+            //         field_id: fieldIds,
+            //       },
+            //       {
+            //         where: {
+            //           work_order_id: tasks[j].work_order_id,
+            //           assigned_to: activeEmployees[i].id,
+            //         },
+            //       },
+            //     );
+            //   }
+            // }
           }
         }
       }
@@ -130,6 +179,15 @@ export class DistributeWorkOrderService {
       console.log('Tasks distributed successfully for maker.');
     } catch (error) {
       console.error('Error distributing tasks:', error);
+    }
+  }
+  async updateAllFieldData(): Promise<void> {
+    const fieldData = await this.fieldDataModel.findAll({});
+    for (const data of fieldData) {
+      await this.fieldDataModel.update(
+        { assigned_to: null },
+        { where: { id: data.id } },
+      );
     }
   }
 }
