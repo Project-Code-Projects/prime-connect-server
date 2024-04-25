@@ -50,8 +50,8 @@ export class DistributeWorkOrderService {
         field_data_id: tasks.id,
         assigned_to: employee_id,
       });
-      // console.log(`Task ${workOrder_id} assigned to ${employee_id}`);
-      console.log(tasks.id);
+      console.log(`Task ${workOrder_id} assigned to ${employee_id}`);
+      // console.log(tasks.id);
 
       const workOrder = await this.distributeWorkOrderModel.findOne({
         where: { work_order_id: workOrder_id, assigned_to: employee_id },
@@ -79,7 +79,7 @@ export class DistributeWorkOrderService {
         );
         if (!field.includes(tasks.id)) {
           field.push(tasks.id);
-          console.log(field);
+          // console.log(field);
         }
         await this.distributeWorkOrderModel.update(
           {
@@ -131,7 +131,10 @@ export class DistributeWorkOrderService {
         for (let j = 0; j < tasks.length; j++) {
           if (j < threshold) {
             await this.fieldDataModel.update(
-              { assigned_to: activeEmployees[i].id },
+              {
+                assigned_to: activeEmployees[i].id,
+                estimated_time: Date.now(),
+              },
               { where: { id: tasks[j].id } },
             );
             await this.assignTask(
