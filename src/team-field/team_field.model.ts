@@ -20,7 +20,6 @@ export class TeamField extends Model<TeamField> {
 
   @Column({
     type: DataTypes.INTEGER,
-
     allowNull: false,
   })
   page: number;

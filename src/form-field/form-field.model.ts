@@ -1,7 +1,8 @@
-import { Column, Model, ForeignKey, Table } from 'sequelize-typescript';
+import { Column, Model, ForeignKey, BelongsTo, Table } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { Form } from '../form/form.model';
 import { FieldTable } from '../field-table/field-table.model';
+import { Pdf } from '../pdf/pdf.model';
 
 @Table({
     tableName: 'form_field',
@@ -19,6 +20,24 @@ export class FormField extends Model<FormField> {
     })
     id: number;
 
+    @Column({
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      })
+      page: number;
+    
+      @Column({
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
+        allowNull: false,
+      })
+      co_ordinate: number[];
+    
+      @Column({
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      })
+      sequence: number;
+
     @ForeignKey(() => Form)
     @Column({
       type: DataTypes.INTEGER,
@@ -32,4 +51,13 @@ export class FormField extends Model<FormField> {
       allowNull: false
     })
     field_id: number;
+
+    @ForeignKey(() => Pdf)
+    @Column({
+      allowNull: false,
+    })
+    pdf_id: number;
+  
+    @BelongsTo(() => Pdf)
+    pdf: Pdf;
 }
