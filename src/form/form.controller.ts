@@ -16,7 +16,7 @@ export class FormController {
 
         
     if(new_field){
-        const len = new_field.length;
+      const len = new_field.length;
         for(let i = 0; i < len; i++){
           const { name,type,estimated_time,page,co_ordinate,sequence } = new_field[i];
           const newField = await this.fieldTableService.addFieldTable({field_name:name,field_type:type,estimated_time});
