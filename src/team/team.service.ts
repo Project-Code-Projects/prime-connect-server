@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Team } from './team.model';
 import { Role } from '../role/role.model';
+import { Pdf } from '../pdf/pdf.model';
 // import { Employee } from '../employee/employee.model';
 
 @Injectable()
@@ -16,6 +17,17 @@ export class TeamService {
 
   async findAllTeam(): Promise<any[]> {
     return this.teamRepository.findAll<any>();
+  }
+
+  async getPdfByTeamId(teamId: number): Promise<Pdf[]> {
+    const team = await this.teamRepository.findByPk(teamId, {
+      include: [{
+        model: Pdf,
+        attributes: ['id', 'pdf_name'],
+        through: { attributes: [] }, // define join table attributes
+      }],
+    });
+    return team ? team.pdfs : [];
   }
 
   async findOne(id: number): Promise<Team | null> {

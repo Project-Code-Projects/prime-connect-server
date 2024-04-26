@@ -21,23 +21,23 @@ export class FormField extends Model<FormField> {
     id: number;
 
     @Column({
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
       })
-      page: number;
+      page: string;
     
       @Column({
-        type: DataTypes.ARRAY(DataTypes.INTEGER),
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
       })
-      co_ordinate: number[];
+      co_ordinate: string[];
     
       @Column({
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         unique: true
       })
-      sequence: number;
+      sequence: string;
 
     @ForeignKey(() => Form)
     @Column({
@@ -55,9 +55,10 @@ export class FormField extends Model<FormField> {
 
     @ForeignKey(() => Pdf)
     @Column({
+      type: DataTypes.STRING,
       allowNull: false,
     })
-    pdf_id: number;
+    pdf_id: string;
   
     @BelongsTo(() => Pdf)
     pdf: Pdf;

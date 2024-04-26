@@ -1,7 +1,5 @@
 import { Injectable,Inject } from '@nestjs/common';
 import { FormField } from './form-field.model';
-import { IFormField } from './form-field.interface';
-import { Form } from '../form/form.model';
 
 @Injectable()
 
@@ -10,9 +8,13 @@ export class FormFieldService {
         @Inject('FORM_FIELD_REPOSITORY') private formFieldRepository: typeof FormField,
     ) {}
 
-    async createFormField(createFormFieldDto: IFormField ): Promise<FormField> {
-        const formField = await this.formFieldRepository.create<FormField>(createFormFieldDto as any);
-        return formField;
+    async createFormField(createFormFieldDto: any ): Promise<any> {
+        // const formField = await this.formFieldRepository.create<any>(createFormFieldDto);
+        // return formField;
+
+        console.log("formField");
+        return await this.formFieldRepository.create(createFormFieldDto);
+    
     }
 
     async findAllFormField(): Promise<FormField[]> {

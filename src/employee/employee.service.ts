@@ -29,7 +29,7 @@ export class EmployeeService {
   }
 
   async findAllEmployeeByTeamId(id: number): Promise<any[]> {
-    const employees = await this.employeeRepository.findAll<any>({ where: {team_id: id, active:true },attributes: ['id', 'name','email','admin','role_id'], });
+    const employees = await this.employeeRepository.findAll<any>({ where: {team_id: id, active:true },attributes: ['id', 'name','email','admin','role_id','team_id'] });
     // console.log(employees.map((employee) => employee));
     return employees;
   }

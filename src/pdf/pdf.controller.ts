@@ -7,10 +7,10 @@ import {
   UseInterceptors,
   Bind,
 } from '@nestjs/common';
-import { PdfDataController } from 'src/pdf-data/pdf-data.controller';
+import { PdfDataController } from '../pdf-data/pdf-data.controller';
 import { IPdf } from './pdf.interface';
 import { PdfService } from './pdf.service';
-@Controller('pdf')
+@Controller('/pdf')
 export class PdfController {
   constructor(private readonly pdfService: PdfService) {}
 
