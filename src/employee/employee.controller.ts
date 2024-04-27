@@ -19,6 +19,14 @@ export class EmployeeController {
   }
 
   @Get('/team_id/:id')
+  async findAllActiveEmployeeByTeamId(@Param('id') team_id: number) {
+    const team = await this.teamService.findOne(team_id);
+    const roles = team?.roles;
+    const employees = await this.employeeService.findAllActiveEmployeeByTeamId(team_id);
+    return { roles, employees };
+  }
+
+  @Get('/team/:id')
   async findAllEmployeeByTeamId(@Param('id') team_id: number) {
     const team = await this.teamService.findOne(team_id);
     const roles = team?.roles;

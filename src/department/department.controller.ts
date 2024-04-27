@@ -20,6 +20,11 @@ export class DepartmentController {
   async findOne(@Param('id') id: number) {
     return this.departmentService.findOne(id);
   }
+
+  @Get('/:id/employee')
+  async finEmployeeByDeptId(@Param('id') id: number) {
+    return this.departmentService.findEmployeeByDeptId(id);
+  }
  
   @Delete('/:id')
   async deleteDepartment(@Param('id') id: string): Promise<void> {

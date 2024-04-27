@@ -61,6 +61,11 @@ export class TeamController {
     return this.teamService.findAllTeam();
   }
 
+  @Get('/:id')
+  async findAllTeamByDeptId(@Param('id') id: number) {
+    return this.teamService.findAllTeamByDeptId(id);
+  }
+
   
   @Get('/:id/pdfs')
   async getPdfByTeamId(@Param('id') id: number) {

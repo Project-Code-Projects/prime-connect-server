@@ -35,7 +35,7 @@ export class FormField extends Model<FormField> {
       @Column({
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        // unique: true
       })
       sequence: string;
 
@@ -53,13 +53,13 @@ export class FormField extends Model<FormField> {
     })
     field_id: number;
 
-    @ForeignKey(() => Pdf)
+    // @ForeignKey(() => Pdf)
     @Column({
       type: DataTypes.STRING,
       allowNull: false,
     })
     pdf_id: string;
   
-    @BelongsTo(() => Pdf)
-    pdf: Pdf;
+    // @BelongsTo(() => Pdf)
+    // pdf: Pdf;
 }
