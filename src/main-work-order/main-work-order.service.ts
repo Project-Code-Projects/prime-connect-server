@@ -13,6 +13,8 @@ import { FieldTable } from 'src/field-table/field-table.model';
 import { IFieldData } from 'src/field-data/field-data.interface';
 import { IFieldTable } from 'src/field-table/field-table.interface';
 import { TeamField } from 'src/team-field/team_field.model';
+import { Form } from 'src/form/form.model';
+import { FormField } from 'src/form-field/form-field.model';
 
 @Injectable()
 export class MainWorkOrderService {
@@ -34,6 +36,12 @@ export class MainWorkOrderService {
     private readonly fieldTableModel: typeof FieldTable,
     @Inject('TEAM_FIELD_REPOSITORY')
     private readonly teamFieldModel: typeof TeamField,
+    @Inject('TEAM_ROLE_REPOSITORY')
+    private readonly teamRoleModel: typeof TeamRole,
+    @Inject('FORM_REPOSITORY')
+    private readonly formModel: typeof Form,
+    @Inject('FORM_FIELD_REPOSITORY')
+    private readonly formFieldModel: typeof FormField,
   ) {}
   async createMainWorkOrder(
     revWorkOrder: IMainWorkOrder,
@@ -105,10 +113,10 @@ export class MainWorkOrderService {
     }
   }
 
-  async distributeTask(rolId: number = 2): Promise<void> {
+  async distributeTask(teamId: number = 2, rolId: number = 2): Promise<void> {
     try {
       const activeEmployees = await this.employeeModel.findAll({
-        where: { active: true, role_id: rolId },
+        where: { active: true, role_id: rolId, team_id: teamId },
       });
       for (let i = 0; i < activeEmployees.length; i++) {
         const taskForReviwer = await this.mainWorkOrderModel.findAll({
@@ -131,26 +139,37 @@ export class MainWorkOrderService {
               taskForReviwer[j].acc_id,
               activeEmployees[i].id,
             );
-            const fieldTables = await this.fieldTableModel.findAll({});
-            for (const fieldTable of fieldTables) {
+            const teamRole = await this.teamRoleModel.findOne({
+              where: { team_id: teamId, access: 'Write' },
+            });
+            const form = await this.formModel.findOne({
+              where: { id: teamRole.id },
+            });
+            const fieldIds = await this.formFieldModel.findAll({
+              where: { form_id: form.id },
+            });
+            for (const fieldId of fieldIds) {
               // Get the ID of the associated field table
-              const tableField = await this.teamFieldModel.findOne({
-                where: { field_id: fieldTable.id },
+              // const tableField = await this.teamFieldModel.findOne({
+              //   where: { field_id: fieldId.id },
+              // });
+              const estimatedTime = await this.fieldTableModel.findOne({
+                where: { id: fieldId.field_id },
               });
               // Create a new FieldData record
               const fieldData = new FieldData({
                 work_order_id: taskForReviwer[j].id, // Set the work order ID
-                field_id: fieldTable.id, // Use the ID of the associated field table
+                field_id: fieldId.id, // Use the ID of the associated field table
                 // Set other properties as needed
                 // For example:
                 value: null, // You may need to set appropriate values here
                 status: null,
-                estimated_time: fieldTable.estimated_time,
-                start_time: null,
+                estimated_time: estimatedTime.estimated_time,
+                assigned_time: null,
                 err_type: null,
                 err_comment: null,
-                sequence: tableField.sequence,
-                page: tableField.page,
+                sequence: parseInt(fieldId.sequence),
+                page: parseInt(fieldId.page),
                 assigned_to: null, // You may need to set an appropriate value for assigned_to
               });
 

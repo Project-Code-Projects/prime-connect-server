@@ -5,7 +5,7 @@ export interface IFieldData {
   value: string | null;
   status: string | null;
   estimated_time: number;
-  start_time: Date | null;
+  assigned_time: Date | null;
   err_type: string | null;
   err_comment: string | null;
   sequence: number;

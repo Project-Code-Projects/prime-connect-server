@@ -26,6 +26,10 @@ import { FieldDataModule } from 'src/field-data/field-data.module';
 import { FieldTableModule } from 'src/field-table/field-table.module';
 import { teamFieldProvider } from 'src/team-field/team_field.providers';
 import { TeamFieldService } from 'src/team-field/team_field.service';
+import { formProvider } from 'src/form/form.provider';
+import { FormService } from 'src/form/form.service';
+import { formFieldProvider } from 'src/form-field/form-field.provider';
+import { FormFieldService } from 'src/form-field/form-field.service';
 
 @Module({
   imports: [
@@ -45,6 +49,8 @@ import { TeamFieldService } from 'src/team-field/team_field.service';
     FieldDataService,
     FieldTableService,
     TeamFieldService,
+    FormService,
+    FormFieldService,
 
     ...employeeProviders,
     ...workFlowAssignLogProviders,
@@ -53,6 +59,8 @@ import { TeamFieldService } from 'src/team-field/team_field.service';
     ...fieldDataProviders,
     ...fieldTableProviders,
     teamFieldProvider,
+    formProvider,
+    formFieldProvider,
   ],
 })
 export class MainWorkOrderModule {}
