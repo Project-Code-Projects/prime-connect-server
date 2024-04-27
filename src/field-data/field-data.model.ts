@@ -40,6 +40,9 @@ export class FieldData extends Model<FieldData> implements IFieldData {
   page: number;
   @Column
   assigned_to: number | null;
+
+  @Column
+  time_interval: number | null;
 }
 
 export default FieldData;

@@ -11,4 +11,5 @@ export interface IFieldData {
   sequence: number;
   page: number;
   assigned_to: number | null;
+  time_interval: number | null;
 }
