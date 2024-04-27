@@ -142,9 +142,12 @@ export class MainWorkOrderService {
             const teamRole = await this.teamRoleModel.findOne({
               where: { team_id: teamId, access: 'Write' },
             });
+
             const form = await this.formModel.findOne({
-              where: { id: teamRole.id },
+              where: { team_id: teamId, role_id: teamRole.id },
             });
+            console.log(form.id);
+
             const fieldIds = await this.formFieldModel.findAll({
               where: { form_id: form.id },
             });
