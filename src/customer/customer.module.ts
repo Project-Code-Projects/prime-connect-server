@@ -23,6 +23,10 @@ import { fieldTableProviders } from 'src/field-table/field-table.providers';
 import { FieldTableService } from 'src/field-table/field-table.service';
 import { teamFieldProvider } from 'src/team-field/team_field.providers';
 import { TeamFieldService } from 'src/team-field/team_field.service';
+import { formProvider } from 'src/form/form.provider';
+import { formFieldProvider } from 'src/form-field/form-field.provider';
+import { FormFieldService } from 'src/form-field/form-field.service';
+import { FormService } from 'src/form/form.service';
 
 @Module({
   imports: [DatabaseModule, PdfDataModule, PdfModule, MainWorkOrderModule],
@@ -37,6 +41,8 @@ import { TeamFieldService } from 'src/team-field/team_field.service';
     FieldDataService,
     FieldTableService,
     TeamFieldService,
+    FormService,
+    FormFieldService,
     ...customerProviders,
     ...pdfDataProviders,
     ...docuBucketProviders,
@@ -46,6 +52,8 @@ import { TeamFieldService } from 'src/team-field/team_field.service';
     ...fieldDataProviders,
     ...fieldTableProviders,
     teamFieldProvider,
+    formProvider,
+    formFieldProvider,
   ],
 })
 export class CustomerModule {}
