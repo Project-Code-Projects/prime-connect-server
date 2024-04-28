@@ -146,7 +146,7 @@ export class MainWorkOrderService {
                 value: null, // You may need to set appropriate values here
                 status: null,
                 estimated_time: fieldTable.estimated_time,
-                start_time: null,
+                assigned_time: null,
                 err_type: null,
                 err_comment: null,
                 sequence: tableField.sequence,

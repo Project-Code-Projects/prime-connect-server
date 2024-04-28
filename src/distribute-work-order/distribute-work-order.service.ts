@@ -197,11 +197,11 @@ export class DistributeWorkOrderService {
     }
   }
   async findDistributedTasksByEmployeeId(
-    employeeId: number,
+    employeeId: number, work_order_id: number
   ): Promise<IDistributeWorkOrder[]> {
     try {
       return await this.distributeWorkOrderModel.findAll({
-        where: { assigned_to: employeeId },
+        where: { assigned_to: employeeId, work_order_id: work_order_id },
       });
     } catch (error) {
       console.log(error);
