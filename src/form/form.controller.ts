@@ -36,5 +36,19 @@ export class FormController {
       console.log(sequence,location);
       return await this.formFieldService.createFormField(createFormFieldDto);
     }
+
+    @Get('/field/:id')
+
+    async getformField(@Param('id') id: number): Promise<any> {
+      const formField = await this.formFieldService.findOne(id);
+      return formField;
+    }
+
+    @Get('/field/:form_id/:field_id')
+
+    async getformFieldByFormIdFieldId(@Param('form_id') form_id: number, @Param('field_id') field_id: number, @Param('id') id: number): Promise<any> {
+      const formField = await this.formFieldService.findByFormIdFieldId(form_id, field_id);
+      return formField;
+    }
 }
 
