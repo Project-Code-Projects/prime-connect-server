@@ -22,6 +22,11 @@ import { teamFieldProvider } from 'src/team-field/team_field.providers';
 import { TeamFieldService } from 'src/team-field/team_field.service';
 import { workFlowAssignLogProviders } from 'src/workflow-assign-log/workflow-assign-log.providers';
 import { WorkFlowAssignLogService } from 'src/workflow-assign-log/workflow-assign-log.service';
+import { formProvider } from 'src/form/form.provider';
+import { FormService } from 'src/form/form.service';
+import { formFieldProvider } from 'src/form-field/form-field.provider';
+import { FormFieldService } from 'src/form-field/form-field.service';
+
 
 @Module({
   imports: [DatabaseModule],
@@ -37,6 +42,8 @@ import { WorkFlowAssignLogService } from 'src/workflow-assign-log/workflow-assig
     FieldTableService,
     TeamFieldService,
     WorkFlowAssignLogService,
+    FormService,
+    FormFieldService,
     ...distributeWorkOrderProviders,
     teamRoleProvider,
     employeeProvider,
@@ -47,6 +54,8 @@ import { WorkFlowAssignLogService } from 'src/workflow-assign-log/workflow-assig
     ...fieldTableProviders,
     teamFieldProvider,
     ...workFlowAssignLogProviders,
+    formProvider,
+    formFieldProvider,
   ],
 })
 export class DistributeWorkOrderModule {}

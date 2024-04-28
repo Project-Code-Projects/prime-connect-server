@@ -6,6 +6,7 @@ import {
   UploadedFiles,
   UseInterceptors,
   Bind,
+  Param,
 } from '@nestjs/common';
 import { PdfDataController } from '../pdf-data/pdf-data.controller';
 import { IFieldTable } from './field-table.interface';
@@ -22,4 +23,10 @@ export class FieldTableController {
   async findAllFieldTable(): Promise<any> {
     return await this.fieldTableService.findAllFieldTable();
   }
+
+  @Get('/:id')	
+  async findFieldById(@Param('id') id: number): Promise<any> {
+    return await this.fieldTableService.findFieldById(id);
+  }
+
 }

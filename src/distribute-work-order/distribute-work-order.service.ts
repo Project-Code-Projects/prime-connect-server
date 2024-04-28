@@ -102,12 +102,12 @@ export class DistributeWorkOrderService {
     }
   }
 
-  async distributeTask(roleId: number = 3): Promise<void> {
+  async distributeTask(teamId: number = 2, roleId: number = 3): Promise<void> {
     try {
       const activeEmployees = await this.employeeModel.findAll({
-        where: { active: true, role_id: roleId },
+        where: { active: true, role_id: roleId, team_id: teamId },
       });
-      console.log(activeEmployees.length);
+      // console.log(activeEmployees.length);
       const tasks = await this.fieldDataModel.findAll({
         where: {
           assigned_to: null,
@@ -133,7 +133,7 @@ export class DistributeWorkOrderService {
             await this.fieldDataModel.update(
               {
                 assigned_to: activeEmployees[i].id,
-                estimated_time: Date.now(),
+                assigned_time: new Date(),
               },
               { where: { id: tasks[j].id } },
             );
@@ -197,11 +197,11 @@ export class DistributeWorkOrderService {
     }
   }
   async findDistributedTasksByEmployeeId(
-    employeeId: number,
+    employeeId: number, work_order_id: number
   ): Promise<IDistributeWorkOrder[]> {
     try {
       return await this.distributeWorkOrderModel.findAll({
-        where: { assigned_to: employeeId },
+        where: { assigned_to: employeeId, work_order_id: work_order_id },
       });
     } catch (error) {
       console.log(error);
