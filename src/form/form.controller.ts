@@ -28,5 +28,13 @@ export class FormController {
       }
     return newForm;
     }
+
+    @Post('/field')
+    async createFormField(@Body() createFormFieldDto: any) {
+      const { sequence, location } = createFormFieldDto;
+      console.log("DTO : ",createFormFieldDto);
+      console.log(sequence,location);
+      return await this.formFieldService.createFormField(createFormFieldDto);
+    }
 }
 

@@ -12,8 +12,8 @@ export class FormFieldService {
         // const formField = await this.formFieldRepository.create<any>(createFormFieldDto);
         // return formField;
 
-        console.log("formField");
-        return await this.formFieldRepository.create(createFormFieldDto);
+        console.log("formField",createFormFieldDto);
+        return await this.formFieldRepository.bulkCreate(createFormFieldDto);
     
     }
 
