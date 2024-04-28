@@ -19,6 +19,11 @@ export class TeamService {
     return this.teamRepository.findAll<any>();
   }
 
+
+  async findAllTeamByDeptId(dept_id: number): Promise<any[]> {
+    return this.teamRepository.findAll<any>({ where: { dept_id } });
+  }
+
   async getPdfByTeamId(teamId: number): Promise<Pdf[]> {
     const team = await this.teamRepository.findByPk(teamId, {
       include: [{

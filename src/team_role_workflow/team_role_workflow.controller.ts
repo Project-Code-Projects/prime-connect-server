@@ -25,9 +25,14 @@ export class TeamRoleController {
           return this.teamRoleService.updateTeamRole(team_id, role_id, updateWorkflowDto);
       }
 
-      @Delete(':team_id/:role_id')
+      @Delete('/:team_id/:role_id')
       async delete(@Param('team_id') team_id: number, @Param('role_id') role_id: number) {
           return this.teamRoleService.deleteTeamRole(team_id, role_id);
+      }
+
+      @Delete('/:id')
+      async deleteWorkflow(@Param('id') id: number) {
+          return this.teamRoleService.deleteWorkflow(id);
       }
 
       @Get('/team/:team_id')

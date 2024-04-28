@@ -29,8 +29,8 @@ export class Pdf extends Model<Pdf> implements IPdf {
   @BelongsToMany(() => Team, () => TeamPdf)
   teams: Array<Team & { TeamPdf: TeamPdf }>;
 
-  @HasMany(() => FormField)
-  formFields: FormField[];
+  // @HasMany(() => FormField)
+  // formFields: FormField[];
 
   @HasMany(() => TeamField)
    teamFields: TeamField[];
