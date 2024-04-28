@@ -1,6 +1,7 @@
 // update-field-data.dto.ts
 
 export class UpdateFieldDataDto {
-  id?: number;
+  
   value: string;
+  order_id: number; field_id: number; 
 }
