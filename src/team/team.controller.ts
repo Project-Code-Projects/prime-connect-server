@@ -19,7 +19,7 @@ export class TeamController {
     if(exist_pdf){
       const len = exist_pdf.length;
       for(let i = 0; i < len; i++){
-        const teamPdf = {team_id:team.id,pdf_id:exist_pdf[i]};
+        const teamPdf = {team_id:team.id,pdf_id:exist_pdf[i].pdf_id};
         this.teamPdfService.createTeamPdf(teamPdf);
       }
     }
@@ -27,8 +27,8 @@ export class TeamController {
     if(new_pdf){
       const len = new_pdf.length;
       for(let i = 0; i < len; i++){
-        const {name,type} = new_pdf[i];
-        const newPdf = await this.pdfService.addPdf({pdf_name:name,pdf_type:type});
+        const {pdf_name,pdf_type} = new_pdf[i];
+        const newPdf = await this.pdfService.addPdf({pdf_name,pdf_type});
         const teamPdf = {team_id:team.id,pdf_id:newPdf.id};
         this.teamPdfService.createTeamPdf(teamPdf);
       }
