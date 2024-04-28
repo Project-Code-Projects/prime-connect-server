@@ -61,6 +61,19 @@ export class TeamController {
     return this.teamService.findAllTeam();
   }
 
+  @Get('/:id')
+  async findAllTeamByDeptId(@Param('id') id: number) {
+    return this.teamService.findAllTeamByDeptId(id);
+  }
+
+  
+  @Get('/:id/pdfs')
+  async getPdfByTeamId(@Param('id') id: number) {
+    console.log(id);
+    const pdfs = await this.teamService.getPdfByTeamId(id);
+    return  pdfs ;
+  }
+
   @Get('/role/:id')
   async findAllRoleByTeamId(@Param('id') id: number) {
     const roles = this.teamService.findOne(id);

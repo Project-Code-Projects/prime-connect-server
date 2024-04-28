@@ -6,7 +6,7 @@ import { Pdf } from './pdf.model';
 export class PdfService {
   constructor() {}
   async addPdf(pdf: IPdf): Promise<any> {
-    return await Pdf.create(pdf);
+    return await Pdf.create(pdf as any);
   }
   async findAllPdfName(): Promise<any> {
     try {

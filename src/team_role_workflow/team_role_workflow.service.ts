@@ -34,8 +34,22 @@ export class TeamRoleService {
     });
   }
 
+  async updateAccessTeamRole(
+    team_id: number
+  ): Promise<void> {
+    await this.teamRoleRepository.update({ isAuthor: false }, {
+      where: { team_id, isAuthor: true },
+    });
+  }
+
   async deleteTeamRole(team_id: number, role_id: number): Promise<void> {
     await this.teamRoleRepository.destroy({ where: { team_id, role_id } });
+    
+  }
+
+  async deleteWorkflow(id: number): Promise<any> {
+    await this.teamRoleRepository.destroy({ where: { id } });
+    return {message: 'deleted'}
   }
 
   // async deleteTeamRoleByRoleId(role_id: number): Promise<void> {

@@ -6,6 +6,7 @@ import FieldTable from './field-table.model';
 export class FieldTableService {
   constructor() {}
   async addFieldTable(fieldTable: IFieldTable): Promise<any> {
+    console.log("field");
     return await FieldTable.create(fieldTable);
   }
 

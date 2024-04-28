@@ -12,6 +12,9 @@ export class RoleController {
   @Post()
   async create(@Body() createRoleDto: any) {
     const { name,description,team_id,access,isAuthor,sequence } = createRoleDto;
+    if(isAuthor) {
+      await this.teamRoleService.updateAccessTeamRole(team_id);
+    }
     const newRole = await this.roleService.createRole({name,description});
     const { id } = newRole;
     const teamRole = await this.teamRoleService.createTeamRole({ team_id, role_id: id, access, isAuthor, sequence });
