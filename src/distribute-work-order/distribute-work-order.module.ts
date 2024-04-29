@@ -26,6 +26,8 @@ import { formProvider } from 'src/form/form.provider';
 import { FormService } from 'src/form/form.service';
 import { formFieldProvider } from 'src/form-field/form-field.provider';
 import { FormFieldService } from 'src/form-field/form-field.service';
+import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
+import { docuBucketProviders } from 'src/docu-bucket/docu-bucket.providers';
 
 
 @Module({
@@ -44,6 +46,8 @@ import { FormFieldService } from 'src/form-field/form-field.service';
     WorkFlowAssignLogService,
     FormService,
     FormFieldService,
+    DocubucketService,
+    ...docuBucketProviders,
     ...distributeWorkOrderProviders,
     teamRoleProvider,
     employeeProvider,

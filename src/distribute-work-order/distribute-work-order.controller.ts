@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Put,
 } from '@nestjs/common';
 import { DistributeWorkOrderService } from './distribute-work-order.service';
 import { IDistributeWorkOrder } from './distribute-work-order.interface';
@@ -44,6 +45,39 @@ export class DistributeWorkOrderController {
       return await this.distributeWorkOrderService.findDistributedTasksByEmployeeId(
         employeeId, orderId
       );
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  @Put('approve')
+  async approveWorkOrder(@Body() requestBody: { work_order_id: number, assigned_to: number }): Promise<any> {
+    try {
+      const { work_order_id, assigned_to } = requestBody;
+      return await this.distributeWorkOrderService.approveWorkOrder(work_order_id, assigned_to);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  @Get('check/:work_order_id')
+  async CheckStatus(@Param('work_order_id') work_order_id: number ): Promise<any> {
+    try {
+      
+      return await this.distributeWorkOrderService.checkApproved(work_order_id);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+
+  @Get('fields/:work_order_id')
+  async getFields(@Param('work_order_id') work_order_id: number ): Promise<any> {
+    try {
+      
+      return await this.distributeWorkOrderService.getFields(work_order_id);
     } catch (error) {
       console.log(error);
       throw error;

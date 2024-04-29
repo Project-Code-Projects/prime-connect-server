@@ -5,11 +5,12 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  Param,
 } from '@nestjs/common';
 import { MainWorkOrderService } from './main-work-order.service';
 import { IMainWorkOrder } from './main-work-order.interface';
 
-@Controller('main-work-order')
+@Controller('/main-work-order')
 export class MainWorkOrderController {
   constructor(private readonly mainWorkOrderService: MainWorkOrderService) {}
   @Post('update-status/reviewer')
@@ -49,5 +50,15 @@ export class MainWorkOrderController {
   @Post('assign-task')
   async assignTask(): Promise<any> {
     return this.mainWorkOrderService.distributeTaskByCron();
+  }
+
+  @Get('/view/:order_id')
+  async getCustomerDetails(@Param('order_id') orderId: number): Promise<any> {
+    try {
+      return await this.mainWorkOrderService.workOrderCustomerDetails(orderId);
+    } catch (error) {
+      console.error('Error in getCustomerDetails:', error);
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

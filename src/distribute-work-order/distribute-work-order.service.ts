@@ -208,4 +208,57 @@ export class DistributeWorkOrderService {
       throw error;
     }
   }
+
+  async approveWorkOrder(work_order_id: number, assigned_to: number): Promise<any> {
+    try {
+      // Approve the work order
+      const approved = await this.distributeWorkOrderModel.update(
+        { status: 'approved' },
+        { where: { work_order_id: work_order_id, assigned_to: assigned_to } }
+      );
+  
+      // Check if the work order is approved
+      const checkApproved = await this.checkApproved(work_order_id);
+  
+      if (checkApproved) {
+        const allApproved = checkApproved.every(workOrder => workOrder.status === 'approved');
+        console.log(allApproved);
+      } else {
+        console.log('Work order not found or status not available.');
+      }
+  
+      return approved; // Return the result of the update operation
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  
+  async checkApproved(work_order_id: number): Promise<any> {
+    try {
+      // Find the work order by ID and get its status
+      return await this.distributeWorkOrderModel.findAll({
+        where: { work_order_id: work_order_id },
+        attributes: ['status'],
+        raw: true // Ensure raw data is returned
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getFields(work_order_id: number): Promise<any> {
+    try {
+      return await this.distributeWorkOrderModel.findAll({
+        where: { work_order_id: work_order_id },
+        attributes: ['field_id'],
+        raw: true // Ensure raw data is returned
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
 }

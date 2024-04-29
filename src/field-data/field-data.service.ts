@@ -29,4 +29,6 @@ export class FieldDataService {
   async findAllFieldByWorkOrderid(order_id: number, assigned_to: number): Promise<any> {
     return await FieldData.findAll({where: {work_order_id: order_id, assigned_to: assigned_to}});
   }
+
+ 
 }
