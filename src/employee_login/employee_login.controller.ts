@@ -31,7 +31,7 @@ export class EmployeeLoginController {
     const admin =  user.employee.dataValues.admin;
     const active =  user.employee.dataValues.active;
 
-    if(admin!=='SA') return { message: 'This user is not an admin' };
+    // if(admin!=='SA') return { message: 'This user is not an admin' };
     if(!active) return { message: 'You are not active at this moment' };
 
     // Compare passwords
@@ -42,7 +42,7 @@ export class EmployeeLoginController {
 
     // Signin successful
     const token = this.jwtService.sign({ id: user.id, email: user.email });
-    return { message: `Signin successful as ${admin}`, token:'bearer ' + token };
+    return { message: `Signin successful as ${admin}`, token:'bearer ' + token, admin, id: user.employee.dataValues.id };
   }
 
   @Get('/signin')

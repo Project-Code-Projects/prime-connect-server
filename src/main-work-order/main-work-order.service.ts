@@ -177,7 +177,7 @@ export class MainWorkOrderService {
                 err_type: null,
                 err_comment: null,
                 sequence: parseInt(fieldId.sequence),
-                page: parseInt(fieldId.page),
+                // page: parseInt(fieldId.page),
                 assigned_to: null, // You may need to set an appropriate value for assigned_to
               });
 

@@ -12,9 +12,24 @@ export class FormFieldService {
         // const formField = await this.formFieldRepository.create<any>(createFormFieldDto);
         // return formField;
 
-        console.log("formField");
-        return await this.formFieldRepository.create(createFormFieldDto);
+        console.log("formField",createFormFieldDto);
+        return await this.formFieldRepository.bulkCreate(createFormFieldDto);
     
+    }
+
+    async findOne(id: number): Promise<FormField | null> {
+        const formField = await this.formFieldRepository.findOne<FormField>({where: { id }});
+        return formField;
+    }
+
+    async findByFormIdFieldId(form_id: number, field_id: number): Promise<FormField | null> {
+        const formField = await this.formFieldRepository.findOne<FormField>({where: { form_id, field_id }});
+        return formField;
+    }
+
+    async findByFieldId(field_id: number): Promise<FormField | null> {
+        const formField = await this.formFieldRepository.findOne<FormField>({where: { field_id }});
+        return formField;
     }
 
     async findAllFormField(): Promise<FormField[]> {
