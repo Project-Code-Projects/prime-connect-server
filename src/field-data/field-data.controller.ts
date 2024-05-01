@@ -45,9 +45,8 @@ export class FieldDataController {
   @Get('fields/:order_id/:assigned_to') // Define the route including the employee ID
   async getTasksByOrder(@Param('order_id') order_id: number, @Param('assigned_to') assigned_to: number): Promise<IFieldData> {
     try {
-      const data = await this.fieldDataService.findAllFieldByWorkOrderid(order_id,assigned_to);
-      const fields = data.map((field) => field.field_id);
-      return await this.fieldTableService.findAllFieldById(fields);
+      return await this.fieldDataService.findAllFieldByWorkOrderid(order_id,assigned_to);
+
     } catch (error) {
       console.log(error);
       throw error;

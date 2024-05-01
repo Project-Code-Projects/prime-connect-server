@@ -11,6 +11,8 @@ import { TeamService } from '../team/team.service';
 import { teamProvider } from '../team/team.provider';
 import { RoleService } from '../role/role.service';
 import { roleProvider } from '../role/role.provider';
+import { TeamRoleService } from 'src/team_role_workflow/team_role_workflow.service';
+import { teamRoleProvider } from 'src/team_role_workflow/team_role_workflow.provider';
 
 @Module({
     imports: [DatabaseModule],
@@ -22,6 +24,8 @@ import { roleProvider } from '../role/role.provider';
       teamProvider,
       RoleService,
       roleProvider,
+      TeamRoleService,
+      teamRoleProvider,
       // JwtMiddleware,
       // EmployeeLoginService,
       // employeeLoginProvider

@@ -9,10 +9,11 @@ import { FieldDataService } from 'src/field-data/field-data.service';
 import { Employee } from 'src/employee/employee.model';
 import { AccountList } from 'src/account-list/account-list.model';
 import { IFieldData } from 'src/field-data/field-data.interface';
+import { EmployeeService } from 'src/employee/employee.service';
 
 @Injectable()
 export class DistributeWorkOrderService {
-  constructor() {}
+  constructor(private readonly employeeService: EmployeeService) {}
   @Inject('DISTRIBUTE_WORKORDER_REPOSITORY')
   private readonly distributeWorkOrderModel: typeof DistributeWorkOrder;
 
@@ -29,6 +30,8 @@ export class DistributeWorkOrderService {
 
   @Inject('WORKFLOW_ASSIGN_LOG_REPOSITORY')
   private readonly workFlowAssignLogModel: typeof WorkFlowAssignLog;
+
+
 
   async findAllWorkOrder(): Promise<DistributeWorkOrder[]> {
     return await this.distributeWorkOrderModel.findAll();
@@ -212,6 +215,11 @@ export class DistributeWorkOrderService {
   async approveWorkOrder(work_order_id: number, assigned_to: number): Promise<any> {
     try {
       // Approve the work order
+      let load_list = [];
+      let temp;
+      
+      const workOrderValues = await this.sumOfFields(work_order_id);
+
       const approved = await this.distributeWorkOrderModel.update(
         { status: 'approved' },
         { where: { work_order_id: work_order_id, assigned_to: assigned_to } }
@@ -219,15 +227,30 @@ export class DistributeWorkOrderService {
   
       // Check if the work order is approved
       const checkApproved = await this.checkApproved(work_order_id);
-  
+      console.log('idk', checkApproved);
       if (checkApproved) {
         const allApproved = checkApproved.every(workOrder => workOrder.status === 'approved');
-        console.log(allApproved);
+        if(allApproved){
+          // const teamId = await this.employeeService.EmployeeTeamId(7);
+          console.log('all aproved');
+          temp =  await this.employeeService.EmployeeTeamId(assigned_to);
+         
+         for(let i = 0; i< temp.length; i++){
+          console.log(temp[i]);
+          const load = await this.getEmployeeWorkLoad(temp[i]);
+          load_list[i] = load.length;
+        }
+      }
       } else {
         console.log('Work order not found or status not available.');
       }
-  
-      return approved; // Return the result of the update operation
+      
+      
+      console.log('least work',temp[load_list.indexOf(Math.min(...load_list))] );
+      console.log('temp', temp);
+      console.log('wk', workOrderValues);
+      await this.createNewAuthorOrder(work_order_id, workOrderValues.field_id, temp[load_list.indexOf(Math.min(...load_list))], workOrderValues.estimated_time);
+      return temp; // Return the result of the update operation
     } catch (error) {
       console.error(error);
       throw error;
@@ -259,6 +282,47 @@ export class DistributeWorkOrderService {
       console.error(error);
       throw error;
     }
+  }
+
+  async getEmployeeWorkLoad(assigned_to: number): Promise<any> {
+    return await this.distributeWorkOrderModel.findAll({
+      where: { assigned_to: assigned_to },
+    
+    });
+  }
+
+  async sumOfFields(work_order_id: number): Promise<any> {  
+
+
+    const fieldValueArray = [];
+    let sumOfTiem = 0;
+    const fieldsValue = await this.distributeWorkOrderModel.findAll({
+      where: { work_order_id: work_order_id },
+      attributes: ['field_id', 'estimated_time'],
+      raw: true // Ensure raw data is returned
+    });
+    fieldsValue.forEach((field) => {
+      field.field_id.forEach((id) => {
+        fieldValueArray.push(id);
+      });
+      sumOfTiem += field.estimated_time;
+      // field.field_id.concat(fieldValueArray);
+    
+    });
+    
+    return { field_id: fieldValueArray, estimated_time: sumOfTiem };
+  }
+
+
+  async createNewAuthorOrder( work_order_id: number, field_id: number[], assigned_to: number, estimated_time: number){
+
+    await this.distributeWorkOrderModel.create({
+      work_order_id: work_order_id,
+      field_id: field_id,
+      assigned_to: assigned_to,
+      estimated_time: estimated_time,
+      status: null
+    })
   }
 
 }

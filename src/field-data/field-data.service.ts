@@ -1,10 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { IFieldData } from './field-data.interface';
 import { FieldData } from './field-data.model';
+import { FieldTableService } from 'src/field-table/field-table.service';
 
 @Injectable()
 export class FieldDataService {
-  constructor() {}
+  constructor( private fieldTableService: FieldTableService) {}
   @Inject('FIELD_DATA_REPOSITORY')
   private readonly fieldDataModel: typeof FieldData;
   async findAllFieldData(): Promise<any> {
@@ -22,13 +23,18 @@ export class FieldDataService {
     await FieldData.update({ value: value}, { where: { work_order_id: order_id, field_id: field_id } });
   }
 
+  async findOneFieldData(id: number): Promise<FieldData> {
+    return await FieldData.findOne({ where: { id } , attributes: ['field_id']});
+  }
   async getFieldDataById(id: number): Promise<FieldData> {
     return await FieldData.findOne({ where: { id } });
   }
 
   async findAllFieldByWorkOrderid(order_id: number, assigned_to: number): Promise<any> {
-    return await FieldData.findAll({where: {work_order_id: order_id, assigned_to: assigned_to}});
+   const data = await FieldData.findAll({where: {work_order_id: order_id, assigned_to: assigned_to}});
+   const fields = data.map((field) => field.field_id);
+  //  console.log(fields);
+   return await this.fieldTableService.findAllFieldById(fields);
   }
 
- 
 }

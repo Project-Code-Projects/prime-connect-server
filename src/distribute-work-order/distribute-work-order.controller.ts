@@ -1,3 +1,4 @@
+import { EmployeeStatsModule } from './../employee_stats/employee_stats.module';
 import {
   Controller,
   Get,
@@ -83,4 +84,26 @@ export class DistributeWorkOrderController {
       throw error;
     }
   }
+
+
+  @Get('sum/:work_order_id')
+  async sumOfFields(@Param('work_order_id') work_order_id: number ): Promise<any> {
+    try {
+      
+      return await this.distributeWorkOrderService.sumOfFields(work_order_id);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+
+  @Post('assign/author')
+  async assignAuthor(@Body() requestBody: { work_order_id: number, field_id: number[], assigned_to: number, estimated_time: number}): Promise<any> {
+    return await this.distributeWorkOrderService.createNewAuthorOrder(requestBody.work_order_id, requestBody.field_id, requestBody.assigned_to, requestBody.estimated_time);
+  }
+
 }
+
+  
+
