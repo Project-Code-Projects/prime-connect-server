@@ -16,13 +16,14 @@ export class FormController {
     if(fields){
       const len = fields.length;
         for(let i = 0; i < len; i++){
-          const { name,type,estimatedTime,page,coordinateX,coordinateY,sequence,pdfId } = fields[i];
-          const field = {field_name:name,field_type:type,estimated_time:estimatedTime};
+          const { field_name,field_type,estimated_time,location,sequence } = fields[i];
+          const field = {field_name,field_type,estimated_time};
           const newField = await this.fieldTableService.addFieldTable(field);
           if(newField){
-            const formField = {page,co_ordinate: [coordinateX,coordinateY],sequence,form_id: newForm.id,field_id: newField.id,pdf_id: pdfId};
-            console.log("formField: ",formField);
-            await this.formFieldService.createFormField(formField);
+            const formField = { location,sequence,form_id: newForm.id,field_id: newField.id };
+            // console.log("formField: ",formField);
+           const newFormField = await this.formFieldService.createFormField(formField);
+           console.log("newFormField: ",newFormField);
           }
         }
       }
