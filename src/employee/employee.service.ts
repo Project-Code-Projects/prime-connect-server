@@ -40,9 +40,13 @@ export class EmployeeService {
     return employees;
   }
 
-  async updateEmployeeInfo(id: string, updateData: Partial<any>): Promise<any> {
+  async updateEmployeeInfo(email:string, updateData: Partial<any>): Promise<any> {
+    await this.employeeRepository.update(updateData, { where: { email } });
+    return this.employeeRepository.findOne({ where: { email } });
+  }
+  async updateEmployee(id:number, updateData: Partial<any>): Promise<any> {
     await this.employeeRepository.update(updateData, { where: { id } });
-    return this.employeeRepository.findByPk(id);
+    return this.employeeRepository.findOne({ where: { id } });
   }
 
   async deleteEmployee(id: string): Promise<void> {
