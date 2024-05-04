@@ -13,7 +13,7 @@ export class FormFieldService {
         // return formField;
 
         console.log("formField",createFormFieldDto);
-        return await this.formFieldRepository.bulkCreate(createFormFieldDto);
+        return await this.formFieldRepository.bulkCreate([createFormFieldDto]);
     
     }
 
