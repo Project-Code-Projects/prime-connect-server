@@ -1,7 +1,8 @@
+import { databaseProviders } from './../database/database.providers';
 import { Injectable, Inject } from '@nestjs/common';
 import { IDocuBucket } from './docu-bucket.interface';
 import { DocuBucket } from './docu-bucket.model';
-import { DocubucketModule } from './docu-bucket.module';
+
 
 @Injectable()
 export class DocubucketService {
@@ -15,5 +16,20 @@ export class DocubucketService {
   }
   async findAllDocs(): Promise<any> {
     return await this.docBucketModel.findAll();
+  }
+
+  async getImages(acc_id: number, customer_id: number, pdf_id: number): Promise<any> {
+    try {
+      return await this.docBucketModel.findOne({where: {acc_id: acc_id, customer_id: customer_id, pdf_id: pdf_id}, attributes: ['pdf_values'], raw: true});
+      
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+  async getImg(customer_id: number, acc_id: number, pdf_id: number, page: number){
+    const images = await this.docBucketModel.findOne({where: {acc_id: acc_id, customer_id: customer_id, pdf_id: pdf_id}, attributes: ['pdf_values'], raw: true});
+    return images.pdf_values[page - 1];
   }
 }

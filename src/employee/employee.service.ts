@@ -1,11 +1,15 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Employee } from './employee.model';
+import { TeamRoleService } from 'src/team_role_workflow/team_role_workflow.service';
+
 
 @Injectable()
 export class EmployeeService {
   constructor(
     @Inject('EMPLOYEE_REPOSITORY')
-    private employeeRepository: typeof Employee
+    private employeeRepository: typeof Employee,
+    private teamRoleService: TeamRoleService,
+ 
   ) {}
 
   async createEmployee(createEmployeeDto: any): Promise<Employee> {
@@ -52,4 +56,17 @@ export class EmployeeService {
   async deleteEmployee(id: string): Promise<void> {
     await this.employeeRepository.destroy({ where: { id } });
   }
+
+  async EmployeeTeamId(id: number): Promise<any> {
+    console.log('hit')
+    const prev_employee = await this.employeeRepository.findOne({ where: { id: id }, attributes: ['team_id', 'role_id'], raw: true });
+    const sequence = await this.teamRoleService.getSequence(prev_employee.team_id, prev_employee.role_id)
+
+    const employee = await this.employeeRepository.findAll({ where: { team_id: sequence.team_id, role_id: sequence.role_id }});
+    const employee_list = [];
+    employee.forEach((employee) => {
+      employee_list.push(employee.id)
+    })
+    return employee_list;
+    }
 }

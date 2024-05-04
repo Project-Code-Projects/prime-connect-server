@@ -44,5 +44,10 @@ export class TeamRoleController {
       async findAllByRoleId(@Param('role_id') role_id: number): Promise<TeamRole[]> {
           return this.teamRoleService.findAllByRoleId(role_id);
       }
+
+      @Get('sequence/:team_id/:role_id')
+      async sequence(@Param('team_id') team_id: number, @Param('role_id') role_id: number): Promise<any> {
+        return await this.teamRoleService.getSequence(team_id, role_id);
+      }
 }
 

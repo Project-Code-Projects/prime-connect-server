@@ -30,6 +30,9 @@ import { formProvider } from 'src/form/form.provider';
 import { FormService } from 'src/form/form.service';
 import { formFieldProvider } from 'src/form-field/form-field.provider';
 import { FormFieldService } from 'src/form-field/form-field.service';
+import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
+import { docuBucketProviders } from 'src/docu-bucket/docu-bucket.providers';
+import { DocubucketModule } from 'src/docu-bucket/docu-bucket.module';
 
 @Module({
   imports: [
@@ -38,6 +41,7 @@ import { FormFieldService } from 'src/form-field/form-field.service';
     WorkFlowAssignLogModule,
     FieldDataModule,
     FieldTableModule,
+    // DocubucketModule,
   ],
   controllers: [MainWorkOrderController],
   providers: [
@@ -51,6 +55,7 @@ import { FormFieldService } from 'src/form-field/form-field.service';
     TeamFieldService,
     FormService,
     FormFieldService,
+    DocubucketService,
 
     ...employeeProviders,
     ...workFlowAssignLogProviders,
@@ -58,6 +63,7 @@ import { FormFieldService } from 'src/form-field/form-field.service';
     teamRoleProvider,
     ...fieldDataProviders,
     ...fieldTableProviders,
+    ...docuBucketProviders,
     teamFieldProvider,
     formProvider,
     formFieldProvider,

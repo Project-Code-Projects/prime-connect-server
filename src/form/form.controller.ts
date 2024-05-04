@@ -2,11 +2,12 @@ import { Controller, Post, Get, Put, Delete, Body,Param,ParseIntPipe } from '@ne
 import { FormService } from './form.service';
 import { FieldTableService } from '../field-table/field-table.service';
 import { FormFieldService } from '../form-field/form-field.service';
+import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { IForm } from './form.interface';
 
 @Controller('/form')
 export class FormController {
-    constructor(private readonly formService: FormService, private readonly fieldTableService: FieldTableService, private formFieldService: FormFieldService) {}
+    constructor(private readonly formService: FormService, private readonly docuApi: DocubucketService, private readonly fieldTableService: FieldTableService, private formFieldService: FormFieldService) {}
 
     @Post()
     async create(@Body() createFormDto: any) {
@@ -38,12 +39,34 @@ export class FormController {
       return await this.formFieldService.createFormField(createFormFieldDto);
     }
 
-    @Get('/field/:id')
+    @Get('/field/:id/:customer_id/:acc_id')
 
-    async getformField(@Param('id') id: number): Promise<any> {
-      const formField = await this.formFieldService.findOne(id);
-      return formField;
+    async getformField(@Param('id') id: number, @Param('customer_id') customer_id: number, @Param('acc_id') acc_id: number): Promise<any> {
+      console.log("fieldId: "+id+" customerId: "+customer_id+" accId: "+acc_id);
+      const formFieldLocation = await this.formFieldService.getLocationByFieldId(id);
+      const images = [];
+      console.log(formFieldLocation);
+      if(formFieldLocation){
+        const location = formFieldLocation.location;
+        for( let loc of location) {
+          if(loc){
+            const pdf_id = loc.pdf_id; 
+            for( let pos of loc.position){
+             const image = await this.docuApi.getImages(acc_id,customer_id,pdf_id);
+             // console.log(image);
+             if(image){
+              images.push(image.pdf_values[pos.page - 1]);
+             }
+            }
+          }
+        }
+      }
+      return {id: id,images: images};
+      
     }
+
+
+
 
     @Get('/field/:form_id/:field_id')
 

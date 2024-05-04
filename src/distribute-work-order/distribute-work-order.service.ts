@@ -9,10 +9,14 @@ import { FieldDataService } from 'src/field-data/field-data.service';
 import { Employee } from 'src/employee/employee.model';
 import { AccountList } from 'src/account-list/account-list.model';
 import { IFieldData } from 'src/field-data/field-data.interface';
+import { EmployeeService } from 'src/employee/employee.service';
+import { FieldTableService } from 'src/field-table/field-table.service';
+import {FieldTable} from "../field-table/field-table.model";
+
 
 @Injectable()
 export class DistributeWorkOrderService {
-  constructor() {}
+  constructor(private readonly employeeService: EmployeeService) {}
   @Inject('DISTRIBUTE_WORKORDER_REPOSITORY')
   private readonly distributeWorkOrderModel: typeof DistributeWorkOrder;
 
@@ -29,6 +33,13 @@ export class DistributeWorkOrderService {
 
   @Inject('WORKFLOW_ASSIGN_LOG_REPOSITORY')
   private readonly workFlowAssignLogModel: typeof WorkFlowAssignLog;
+
+  
+  @Inject('FIELD_DATA_REPOSITORY')
+  private readonly fieldTableModel: typeof FieldTable;
+  private readonly fieldTableService: FieldTableService;
+
+
 
   async findAllWorkOrder(): Promise<DistributeWorkOrder[]> {
     return await this.distributeWorkOrderModel.findAll();
@@ -208,4 +219,151 @@ export class DistributeWorkOrderService {
       throw error;
     }
   }
+
+  async approveWorkOrder(work_order_id: number, assigned_to: number): Promise<any> {
+    try {
+      // Approve the work order
+      let load_list = [];
+      let temp;
+      
+      const workOrderValues = await this.sumOfFields(work_order_id);
+
+      const approved = await this.distributeWorkOrderModel.update(
+        { status: 'approved' },
+        { where: { work_order_id: work_order_id, assigned_to: assigned_to } }
+      );
+  
+      // Check if the work order is approved
+      const checkApproved = await this.checkApproved(work_order_id);
+      console.log('idk', checkApproved);
+      if (checkApproved) {
+        const allApproved = checkApproved.every(workOrder => workOrder.status === 'approved');
+        if(allApproved){
+          // const teamId = await this.employeeService.EmployeeTeamId(7);
+          console.log('all aproved');
+          temp =  await this.employeeService.EmployeeTeamId(assigned_to);
+         
+         for(let i = 0; i< temp.length; i++){
+          console.log(temp[i]);
+          const load = await this.getEmployeeWorkLoad(temp[i]);
+          load_list[i] = load.length;
+        }
+      }
+      } else {
+        console.log('Work order not found or status not available.');
+      }
+      
+      
+      console.log('least work',temp[load_list.indexOf(Math.min(...load_list))] );
+      console.log('temp', temp);
+      console.log('wk', workOrderValues);
+      await this.createNewAuthorOrder(work_order_id, workOrderValues.field_id, temp[load_list.indexOf(Math.min(...load_list))], workOrderValues.estimated_time);
+      return temp; // Return the result of the update operation
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+  
+  async checkApproved(work_order_id: number): Promise<any> {
+    try {
+      // Find the work order by ID and get its status
+      return await this.distributeWorkOrderModel.findAll({
+        where: { work_order_id: work_order_id },
+        attributes: ['status'],
+        raw: true // Ensure raw data is returned
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getFields(work_order_id: number): Promise<any> {
+    try {
+      return await this.distributeWorkOrderModel.findAll({
+        where: { work_order_id: work_order_id },
+        attributes: ['field_id'],
+        raw: true // Ensure raw data is returned
+      });
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  }
+
+  async getEmployeeWorkLoad(assigned_to: number): Promise<any> {
+    return await this.distributeWorkOrderModel.findAll({
+      where: { assigned_to: assigned_to },
+    
+    });
+  }
+
+  async sumOfFields(work_order_id: number): Promise<any> {  
+
+
+    const fieldValueArray = [];
+    let sumOfTiem = 0;
+    const fieldsValue = await this.distributeWorkOrderModel.findAll({
+      where: { work_order_id: work_order_id },
+      attributes: ['field_id', 'estimated_time'],
+      raw: true // Ensure raw data is returned
+    });
+    fieldsValue.forEach((field) => {
+      field.field_id.forEach((id) => {
+        fieldValueArray.push(id);
+      });
+      sumOfTiem += field.estimated_time;
+      // field.field_id.concat(fieldValueArray);
+    
+    });
+    
+    return { field_id: fieldValueArray, estimated_time: sumOfTiem };
+  }
+
+
+  async createNewAuthorOrder( work_order_id: number, field_id: number[], assigned_to: number, estimated_time: number){
+
+    await this.distributeWorkOrderModel.create({
+      work_order_id: work_order_id,
+      field_id: field_id,
+      assigned_to: assigned_to,
+      estimated_time: estimated_time,
+      status: null
+    })
+  }
+
+  async fieldsForReadWrite(work_order_id: number, assigned_to: number): Promise<any> {
+    const field_ref =  await  this.distributeWorkOrderModel.findAll({
+      where: { work_order_id: work_order_id, assigned_to: assigned_to }, attributes: ['field_id'], raw: true
+    });
+    const fields =  field_ref[0].field_id;
+    // const field_value_id = await this.fieldDataService.fieldIdAndValuesAuthorized(fields);
+    const field_id_value =  await FieldData.findAll({
+      where: { id :fields},attributes: ['value', 'field_id'], raw: true
+    })
+    const field_id_array = []
+    for(let i = 0; i< field_id_value.length; i++){
+      // console.log( field_id_value[i].field_id)
+      field_id_array[i] = field_id_value[i].field_id;
+    }
+    // console.log(field_id_array) 
+    // const field_value = await this.fieldTableService.fieldNameForAuthorizer(field_id_array);
+    const field_value = await FieldTable.findAll({
+      where: { id :field_id_array}, attributes: ['field_name', 'id'], raw: true
+    })
+    console.log(field_value)
+    console.log('gg', field_id_value)
+
+    for(let i = 0; i< field_value.length; i++){
+
+        field_value[i]['value'] = field_id_value.find(info => info.field_id === field_value[i].id).value
+    }
+    
+    console.log(field_ref[0].field_id)
+    console.log(field_value)
+    return {fields: field_ref[0].field_id, fieldValue: field_value };
+  }
+
 }
+// fieldDataModel

@@ -36,4 +36,13 @@ export class FormFieldService {
         const formFields = await this.formFieldRepository.findAll<FormField>();
         return formFields;
     }
+
+    async getLocationByFormId(id: number): Promise<any> {
+        return await FormField.findAll({where: {form_id: id}, attributes: ['location'], raw: true});
+
+    }
+    async getLocationByFieldId(id: number): Promise<any> {
+        return await FormField.findOne({where: {form_id: id}, attributes: ['location'], raw: true});
+
+    }
 }

@@ -15,6 +15,9 @@ import { IFieldTable } from 'src/field-table/field-table.interface';
 import { TeamField } from 'src/team-field/team_field.model';
 import { Form } from 'src/form/form.model';
 import { FormField } from 'src/form-field/form-field.model';
+import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
+
+
 
 @Injectable()
 export class MainWorkOrderService {
@@ -42,6 +45,8 @@ export class MainWorkOrderService {
     private readonly formModel: typeof Form,
     @Inject('FORM_FIELD_REPOSITORY')
     private readonly formFieldModel: typeof FormField,
+    private readonly docuBucketService: DocubucketService
+ 
   ) {}
   async createMainWorkOrder(
     revWorkOrder: IMainWorkOrder,
@@ -195,6 +200,16 @@ export class MainWorkOrderService {
     const workflows = await this.teamRoleService.findAllByAccess('Read');
     for (const workflow of workflows) {
       await this.distributeTask(workflow.team_id);
+    }
+  }
+
+  async workOrderCustomerDetails(workOrderId: number) {
+    try {
+      return await this.mainWorkOrderModel.findOne({ where: { id: workOrderId }, attributes: ['acc_id', 'customer_id'], raw: true });
+      
+    } catch (error) {
+      console.error('Error fetching customer details:', error);
+      throw error; // Propagate the error
     }
   }
 }

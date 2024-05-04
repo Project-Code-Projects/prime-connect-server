@@ -11,6 +11,8 @@ import { formFieldProvider } from '../form-field/form-field.provider';
 import { JwtMiddleware } from '../auth/jwt.middleware';
 import { EmployeeLoginService } from '../employee_login/employee_login.service';
 import { employeeLoginProvider } from '../employee_login/employee_login.provider';
+import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
+import { docuBucketProviders } from 'src/docu-bucket/docu-bucket.providers';
 
 
 @Module({
@@ -22,7 +24,9 @@ import { employeeLoginProvider } from '../employee_login/employee_login.provider
       FieldTableService,
       FormFieldService,
       formFieldProvider,
+      DocubucketService,
       ...fieldTableProviders,
+      ...docuBucketProviders,
       // JwtMiddleware,
       // EmployeeLoginService,
       // employeeLoginProvider

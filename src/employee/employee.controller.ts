@@ -3,7 +3,7 @@ import { EmployeeService } from './employee.service';
 import { TeamService } from '../team/team.service';
 import { RoleService } from '../role/role.service';
 
-@Controller('/employee')
+@Controller('employee')
 export class EmployeeController {
   constructor(private roleService: RoleService,private readonly employeeService: EmployeeService, private readonly teamService: TeamService) {}
 
@@ -67,4 +67,11 @@ export class EmployeeController {
   async deleteEmployee(@Param('id') id: string): Promise<void> {
     await this.employeeService.deleteEmployee(id);
   }
+
+  @Get('team/role/:id')
+  async employeeTeamId(@Param('id') id: number): Promise<any> {
+    return await this.employeeService.EmployeeTeamId(id);
+  }
+
+
 }

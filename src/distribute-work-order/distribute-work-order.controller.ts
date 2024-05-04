@@ -1,3 +1,4 @@
+import { EmployeeStatsModule } from './../employee_stats/employee_stats.module';
 import {
   Controller,
   Get,
@@ -6,6 +7,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Put,
 } from '@nestjs/common';
 import { DistributeWorkOrderService } from './distribute-work-order.service';
 import { IDistributeWorkOrder } from './distribute-work-order.interface';
@@ -49,4 +51,67 @@ export class DistributeWorkOrderController {
       throw error;
     }
   }
+
+  @Put('approve')
+  async approveWorkOrder(@Body() requestBody: { work_order_id: number, assigned_to: number }): Promise<any> {
+    try {
+      const { work_order_id, assigned_to } = requestBody;
+      return await this.distributeWorkOrderService.approveWorkOrder(work_order_id, assigned_to);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  @Get('check/:work_order_id')
+  async CheckStatus(@Param('work_order_id') work_order_id: number ): Promise<any> {
+    try {
+      
+      return await this.distributeWorkOrderService.checkApproved(work_order_id);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+
+  @Get('fields/:work_order_id')
+  async getFields(@Param('work_order_id') work_order_id: number ): Promise<any> {
+    try {
+      
+      return await this.distributeWorkOrderService.getFields(work_order_id);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+
+  @Get('sum/:work_order_id')
+  async sumOfFields(@Param('work_order_id') work_order_id: number ): Promise<any> {
+    try {
+      
+      return await this.distributeWorkOrderService.sumOfFields(work_order_id);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
+
+  @Post('assign/author')
+  async assignAuthor(@Body() requestBody: { work_order_id: number, field_id: number[], assigned_to: number, estimated_time: number}): Promise<any> {
+    return await this.distributeWorkOrderService.createNewAuthorOrder(requestBody.work_order_id, requestBody.field_id, requestBody.assigned_to, requestBody.estimated_time);
+  }
+
+  @Get('author/:work_order_id/:assigned_to')
+
+  async fieldsForReadWrite(@Param('work_order_id') work_order_id: number, @Param('assigned_to') assigned_to: number): Promise<any> {
+    const field_ref = await this.distributeWorkOrderService.fieldsForReadWrite(work_order_id, assigned_to);
+
+    return field_ref
+  }
+
 }
+
+  
+
