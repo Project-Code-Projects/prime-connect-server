@@ -52,6 +52,16 @@ export class FieldDataController {
       throw error;
     }
   }
+  @Get('/field_values/:order_id')
+  async getFieldValues(@Param('order_id') order_id: number): Promise<any> {
+    try {
+      // console.log("order id controller : ",order_id);
+      return await this.fieldDataService.getFieldValues(order_id);
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 
 
 }

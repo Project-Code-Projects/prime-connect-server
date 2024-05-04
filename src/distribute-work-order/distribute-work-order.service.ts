@@ -10,6 +10,9 @@ import { Employee } from 'src/employee/employee.model';
 import { AccountList } from 'src/account-list/account-list.model';
 import { IFieldData } from 'src/field-data/field-data.interface';
 import { EmployeeService } from 'src/employee/employee.service';
+import { FieldTableService } from 'src/field-table/field-table.service';
+import {FieldTable} from "../field-table/field-table.model";
+
 
 @Injectable()
 export class DistributeWorkOrderService {
@@ -30,6 +33,11 @@ export class DistributeWorkOrderService {
 
   @Inject('WORKFLOW_ASSIGN_LOG_REPOSITORY')
   private readonly workFlowAssignLogModel: typeof WorkFlowAssignLog;
+
+  
+  @Inject('FIELD_DATA_REPOSITORY')
+  private readonly fieldTableModel: typeof FieldTable;
+  private readonly fieldTableService: FieldTableService;
 
 
 
@@ -325,4 +333,37 @@ export class DistributeWorkOrderService {
     })
   }
 
+  async fieldsForReadWrite(work_order_id: number, assigned_to: number): Promise<any> {
+    const field_ref =  await  this.distributeWorkOrderModel.findAll({
+      where: { work_order_id: work_order_id, assigned_to: assigned_to }, attributes: ['field_id'], raw: true
+    });
+    const fields =  field_ref[0].field_id;
+    // const field_value_id = await this.fieldDataService.fieldIdAndValuesAuthorized(fields);
+    const field_id_value =  await FieldData.findAll({
+      where: { id :fields},attributes: ['value', 'field_id'], raw: true
+    })
+    const field_id_array = []
+    for(let i = 0; i< field_id_value.length; i++){
+      // console.log( field_id_value[i].field_id)
+      field_id_array[i] = field_id_value[i].field_id;
+    }
+    // console.log(field_id_array) 
+    // const field_value = await this.fieldTableService.fieldNameForAuthorizer(field_id_array);
+    const field_value = await FieldTable.findAll({
+      where: { id :field_id_array}, attributes: ['field_name', 'id'], raw: true
+    })
+    console.log(field_value)
+    console.log('gg', field_id_value)
+
+    for(let i = 0; i< field_value.length; i++){
+
+        field_value[i]['value'] = field_id_value.find(info => info.field_id === field_value[i].id).value
+    }
+    
+    console.log(field_ref[0].field_id)
+    console.log(field_value)
+    return {fields: field_ref[0].field_id, fieldValue: field_value };
+  }
+
 }
+// fieldDataModel

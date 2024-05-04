@@ -25,5 +25,8 @@ export class FieldTableService {
   async findFieldById(id: number): Promise<any> {
     return await FieldTable.findByPk(id);
   }
+  async fieldNameForAuthorizer(id: number[]): Promise<any> { 
+    return await FieldTable.findAll({ where : {id: id}, attributes: ['field_name']});
+  }
   
 }

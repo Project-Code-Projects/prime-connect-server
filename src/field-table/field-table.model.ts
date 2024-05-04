@@ -38,6 +38,7 @@ export class FieldTable extends Model<FieldTable> implements IFieldTable {
 
   @BelongsToMany(() => Form, () => FormField)
   forms: Array<Form & {FormField: FormField}>;
+  field_id: number;
 }
 
 export default FieldTable;

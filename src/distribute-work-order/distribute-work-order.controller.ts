@@ -103,6 +103,14 @@ export class DistributeWorkOrderController {
     return await this.distributeWorkOrderService.createNewAuthorOrder(requestBody.work_order_id, requestBody.field_id, requestBody.assigned_to, requestBody.estimated_time);
   }
 
+  @Get('author/:work_order_id/:assigned_to')
+
+  async fieldsForReadWrite(@Param('work_order_id') work_order_id: number, @Param('assigned_to') assigned_to: number): Promise<any> {
+    const field_ref = await this.distributeWorkOrderService.fieldsForReadWrite(work_order_id, assigned_to);
+
+    return field_ref
+  }
+
 }
 
   
