@@ -21,6 +21,7 @@ import { EmployeeStatsModule } from './employee_stats/employee_stats.module';
 import { AccountListModule } from './account-list/account-list.module';
 import { FormModule } from './form/form.module';
 import { TeamRoleModule } from './team_role_workflow/team_role_workflow.module';
+import { WorkflowModule } from './workflow/workflow.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { TeamRoleModule } from './team_role_workflow/team_role_workflow.module';
     EmployeeStatsModule,
     AccountListModule,
     FormModule,
+    WorkflowModule,
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],

@@ -4,6 +4,7 @@ import { Team } from '../team/team.model';
 import { Employee } from '../employee/employee.model';
 import { TeamRole } from '../team_role_workflow/team_role_workflow.model';
 import { Form } from '../form/form.model';
+import {Workflow } from '../workflow/workflow.model';
 
 @Table ({
     timestamps: false, // Disable timestamps
@@ -32,16 +33,6 @@ export class Role extends Model<Role> {
     })
     description: string;
 
-
-    // @ForeignKey(() => Team)
-    // @Column({
-    //     allowNull: false
-    // })
-    // team_id: number;
-  
-    // @BelongsTo(() => Team)
-    // team: Team;
-
     @BelongsToMany(() => Team, () => TeamRole)
     teams: Array<Team & {TeamRole: TeamRole}>;
 
@@ -50,4 +41,6 @@ export class Role extends Model<Role> {
   
     @HasMany(() => Employee)
     employees: Employee[];
+    @HasMany(() => Workflow)
+    workflows: Workflow[];
 }   
