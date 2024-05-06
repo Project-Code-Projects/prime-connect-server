@@ -64,6 +64,31 @@ export class FieldDataService {
     })
 
   }
+
+
+  // async postErrorFields(fields: number[], comments: any[]): Promise<any> {
+  //   const updatedFields = [];
+    
+  //   for (let i = 0; i < fields.length; i++) {
+  //     const fieldId = fields[i];
+  //     const comment = comments[i] || ''; // To avoid out-of-bound access in case comments array is shorter
+    
+  //     const updatedField = await this.fieldDataModel.update(
+       
+  //       {
+  //         err_type: "Error",
+  //         err_comment: comment
+  //       }
+  //      ,{ where: { id: fieldId }});
+      
+  //     updatedFields.push(updatedField);
+  //   }
+    
+  //   return updatedFields;
+  // }
   
 
-}
+  }
+  
+
+

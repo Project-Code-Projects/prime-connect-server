@@ -63,5 +63,10 @@ export class FieldDataController {
     }
   }
 
+  // @Put('post-error-fields') // Define the route for this method
+  // async postErrorFields(@Body() requestBody: { fields: any[], comments: any[] }): Promise<any> {
+  //   const { fields, comments } = requestBody;
+  //   return this.fieldDataService.postErrorFields(fields, comments);
+  // }
 
 }

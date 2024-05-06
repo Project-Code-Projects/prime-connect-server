@@ -12,6 +12,7 @@ import { IFieldData } from 'src/field-data/field-data.interface';
 import { EmployeeService } from 'src/employee/employee.service';
 import { FieldTableService } from 'src/field-table/field-table.service';
 import {FieldTable} from "../field-table/field-table.model";
+import sequelize from 'sequelize';
 
 
 @Injectable()
@@ -337,7 +338,21 @@ export class DistributeWorkOrderService {
     const field_ref =  await  this.distributeWorkOrderModel.findAll({
       where: { work_order_id: work_order_id, assigned_to: assigned_to }, attributes: ['field_id'], raw: true
     });
+    
     const fields =  field_ref[0].field_id;
+    const fieldsArray = []
+
+    fields.forEach(async (id) => {
+      // fieldsArray.push(id);
+      let field4field = await this.fieldForField(id);
+      
+      fieldsArray.push({
+        [field4field[0].field_id] : id  })
+      
+    });
+    console.log('fields', fieldsArray)
+    
+    
     // const field_value_id = await this.fieldDataService.fieldIdAndValuesAuthorized(fields);
     const field_id_value =  await FieldData.findAll({
       where: { id :fields},attributes: ['value', 'field_id'], raw: true
@@ -362,8 +377,70 @@ export class DistributeWorkOrderService {
     
     console.log(field_ref[0].field_id)
     console.log(field_value)
-    return {fields: field_ref[0].field_id, fieldValue: field_value };
+    console.log('field_ref[0].field_id', fieldsArray)
+    return {fields: fieldsArray, fieldValue: field_value };
   }
+
+
+  async fieldForField(fields: number): Promise<any> {
+    return await FieldData.findAll({
+       where: { id: fields }, attributes: ['field_id'], raw: true
+    
+    });
+  }
+
+
+  async postErrorFields(fields: number[], comments: any[], fields_assign: number[], work_order_id: number, assigned_to: number): Promise<any> {
+    // const updatedFields = [];
+    if(fields.length>0){
+      const temp =  await this.employeeService.AuthorTeamId(assigned_to);
+      const load_list = [];
+  
+      for(let i = 0; i< temp.length; i++){
+        console.log(temp[i]);
+        const load = await this.getEmployeeWorkLoad(temp[i]);
+        load_list[i] = load.length;
+      }
+      const least_work_load = temp[load_list.indexOf(Math.min(...load_list))];
+
+
+      for (let i = 0; i < fields.length; i++) {
+
+        let field_assigned_to = await this.fieldDataModel.findOne({where: {id: fields[i]}, attributes: ['assigned_to'], raw: true});
+        let employee_with_error = field_assigned_to.assigned_to;
+        const fieldId = fields[i];
+        const comment = comments[i] || ''; // To avoid out-of-bound access in case comments array is shorter
+        console.log('employee error',typeof employee_with_error);
+        try {
+          const updatedField = await this.fieldDataModel.update(
+              {   
+                  err_type: 'Error',
+                  prev_assigned: sequelize.fn('array_append', sequelize.col('prev_assigned'), employee_with_error),
+                  err_comment: comment,
+                  assigned_to: least_work_load 
+              },
+              { where: { id: fieldId }}
+          );
+          console.log('Update successful:', updatedField);
+      } catch (error) {
+          console.error('Error updating field:', error);
+      }
+      
+      await this.createNewAuthorOrder(work_order_id, fields_assign, temp[load_list.indexOf(Math.min(...load_list))], 8);
+    
+      }
+    }else{
+      await this.distributeWorkOrderModel.update(
+        { status: 'Done' },
+        { where: { work_order_id: work_order_id, assigned_to: assigned_to } }
+      );
+  
+    }
+   
+  }
+
+
+
 
 }
 // fieldDataModel

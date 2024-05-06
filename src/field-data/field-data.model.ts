@@ -4,6 +4,7 @@ import {
   Column,
   Table,
   ForeignKey,
+  DataType,
 } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { IFieldData } from './field-data.interface';
@@ -15,6 +16,9 @@ import MainWorkOrder from 'src/main-work-order/main-work-order.model';
   freezeTableName: true,
 })
 export class FieldData extends Model<FieldData> implements IFieldData {
+  static bulkUpdate(updateData: { where: { id: any; }; data: { err_type: string; err_comment: any; }; }[]) {
+    throw new Error('Method not implemented.');
+  }
 
   @Column({ primaryKey: true, autoIncrement: true, type: DataTypes.INTEGER })
   id: number;
@@ -43,6 +47,8 @@ export class FieldData extends Model<FieldData> implements IFieldData {
   assigned_to: number | null;
   @Column
   time_interval: number | null;
+  @Column(DataType.ARRAY(DataType.INTEGER))
+  prev_assigned: number[] | [];
 }
 
 export default FieldData;

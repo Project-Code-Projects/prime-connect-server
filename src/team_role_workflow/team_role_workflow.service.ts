@@ -85,4 +85,13 @@ export class TeamRoleService {
     return check_next_sequence; 
     // return sequence;
 }
+async getPrevSequence(team_id: number, role_id: number): Promise<any> {
+  const sequence = await this.teamRoleRepository.findOne({ where: { team_id, role_id }, attributes: ['sequence'], raw: true });
+  const check_next_sequence = await this.teamRoleRepository.findOne({ where: { team_id, sequence: sequence.sequence - 1 }, attributes: ['sequence', 'role_id'	, 'team_id'	], raw: true });
+  if(check_next_sequence){
+    console.log('hit')
+  }
+  return check_next_sequence; 
+  // return sequence;
+}
 }

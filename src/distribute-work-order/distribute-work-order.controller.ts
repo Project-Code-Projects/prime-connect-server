@@ -111,6 +111,12 @@ export class DistributeWorkOrderController {
     return field_ref
   }
 
+  @Put('post-error-fields') // Define the route for this method
+  async postErrorFields(@Body() requestBody: { fields: any[], comments: any[] , fields_assigned: number[], work_order_id: number, assigned_to: number}): Promise<any> {
+    const { fields, comments, fields_assigned, work_order_id , assigned_to} = requestBody;
+    return this.distributeWorkOrderService.postErrorFields(fields, comments, fields_assigned, work_order_id, assigned_to);
+  }
+
 }
 
   

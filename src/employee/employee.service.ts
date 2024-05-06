@@ -56,13 +56,32 @@ export class EmployeeService {
   async EmployeeTeamId(id: number): Promise<any> {
     console.log('hit')
     const prev_employee = await this.employeeRepository.findOne({ where: { id: id }, attributes: ['team_id', 'role_id'], raw: true });
+    
     const sequence = await this.teamRoleService.getSequence(prev_employee.team_id, prev_employee.role_id)
-
+    console.log('sequence', sequence)
     const employee = await this.employeeRepository.findAll({ where: { team_id: sequence.team_id, role_id: sequence.role_id }});
+    console.log('employee', employee)
     const employee_list = [];
     employee.forEach((employee) => {
       employee_list.push(employee.id)
     })
+    console.log('employee_list',employee_list)
     return employee_list;
     }
+
+    async AuthorTeamId(id: number): Promise<any> {
+  
+      const prev_employee = await this.employeeRepository.findOne({ where: { id: id }, attributes: ['team_id', 'role_id'], raw: true });
+  
+      const sequence = await this.teamRoleService.getPrevSequence(prev_employee.team_id, prev_employee.role_id)
+  
+      const employee = await this.employeeRepository.findAll({ where: { team_id: sequence.team_id, role_id: sequence.role_id }});
+    
+      const employee_list = [];
+      employee.forEach((employee) => {
+        employee_list.push(employee.id)
+      })
+    
+      return employee_list;
+      }
 }
