@@ -48,6 +48,16 @@ export class EmployeeStats extends Model<EmployeeStats> {
     })
     team_id: number;
 
+    @Column({
+        allowNull: false,
+    })
+    main_order_id: number;
+
+    @Column({
+        allowNull: false,
+    })
+    distribute_order_id: number;
+
     @ForeignKey(() => Employee)
     @Column({
         allowNull: false

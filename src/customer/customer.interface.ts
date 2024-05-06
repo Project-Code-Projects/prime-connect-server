@@ -6,4 +6,6 @@ export interface ICustomer {
   email: string;
   tin_no: string;
   birth_certificate_no: number;
+  team_id?: number;
+  account_type?: string;
 }

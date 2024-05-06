@@ -22,6 +22,7 @@ import { AccountList } from '../account-list/account-list.model';
 import { Form } from '../form/form.model';
 import { FormField } from '../form-field/form-field.model';
 import {Workflow } from '../workflow/workflow.model';
+import { Primary } from '../primary_data/primary.model';
 
 export const databaseProviders = [
   {
@@ -70,7 +71,8 @@ export const databaseProviders = [
         DocuBucket,
         TeamField,
         TeamPdf,
-        Workflow
+        Workflow,
+        Primary
       ]);
       await sequelize.sync();
       return sequelize;

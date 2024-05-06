@@ -3,7 +3,7 @@
 import { Sequelize, Model, Column, Table, HasMany } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { ICustomer } from './customer.interface';
-import { AccountList } from 'src/account-list/account-list.model'; // Import the AccountList model
+import { AccountList } from '../account-list/account-list.model'; // Import the AccountList model
 
 @Table({
   tableName: 'customers',
