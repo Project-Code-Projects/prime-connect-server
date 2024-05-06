@@ -1,24 +1,28 @@
 import { Sequelize, Model, Column, Table, HasMany } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 
+interface IPdf {
+  id: number;
+  pdf_values: string[] ;
+}
 
 @Table({
     tableName: 'primary_data',
     timestamps: false,
     freezeTableName: true,
   })
-  export class Primary extends Model<Primary> {
+  export  class Primary extends Model<Primary> {
     @Column({ primaryKey: true, autoIncrement: true })
     id: number;
   
     @Column({ type: DataTypes.STRING })
     name: string;
   
-    @Column({  type: DataTypes.INTEGER })
-    nid: number;
+    @Column({  type: DataTypes.STRING })
+    nid: string;
   
-    @Column({ type: DataTypes.INTEGER })
-    phone: number;
+    @Column({ type: DataTypes.STRING })
+    phone: string;
   
     @Column({ type: DataTypes.STRING })
     address: string;
@@ -42,10 +46,10 @@ import { DataTypes } from 'sequelize';
     team_id: number;
 
     @Column({ type: 'JSONB'})
-    pdf: Array<{ [key: number]: string }>;
+    pdf: IPdf[];
   
-    @Column({ type: DataTypes.INTEGER })
-    birth_certi: number;
+    @Column({ type: DataTypes.STRING})
+    birth_certi: string;
   
     // Define the one-to-many relationship with AccountList
     // @HasMany(() => AccountList)

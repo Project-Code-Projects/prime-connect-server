@@ -22,7 +22,8 @@ import { AccountList } from '../account-list/account-list.model';
 import { Form } from '../form/form.model';
 import { FormField } from '../form-field/form-field.model';
 import {Workflow } from '../workflow/workflow.model';
-import { Primary } from '../primary_data/primary.model';
+import { Primary } from '../Primary_data/primary.model';
+// import Primary from "../primary_data/primary.model"
 
 export const databaseProviders = [
   {

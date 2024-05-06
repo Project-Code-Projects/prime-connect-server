@@ -9,7 +9,7 @@ export class PrimaryService {
   ) {}
 
   async createPrimary(createPrimaryDto: any): Promise<any> {
-    return await this.primaryRepository.bulkCreate<Primary>([createPrimaryDto]);
+    return await this.primaryRepository.create<Primary>(createPrimaryDto);
   }
 
   async findAllPrimary(): Promise<Primary[]> {
@@ -18,6 +18,10 @@ export class PrimaryService {
 
   async findOnePrimary(id: number): Promise<any> {
     return await this.primaryRepository.findOne<Primary>({ where: { id } });
+  }
+
+  async getWorkDetails(acc_id: number, team_id: number, customer_id: number){
+    return await this.primaryRepository.findOne<any>({ where: { acc_id, team_id, customer_id } });
   }
 
   async updatePrimary(id: number, updatePrimaryDto: any): Promise<any> {

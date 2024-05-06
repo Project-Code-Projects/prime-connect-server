@@ -157,6 +157,8 @@ export class CustomerController {
       this.pdfDataService.postPdf(pdfData);
     }
 
+    
+
     const primaryData = {
       name: customer.name,
       nid: customer.nid_no,
