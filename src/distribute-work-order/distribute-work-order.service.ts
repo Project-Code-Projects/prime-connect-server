@@ -1,3 +1,5 @@
+import { EmployeeStats } from './../employee_stats/employee_stats.model';
+import { EmployeeStatsService } from './../employee-stats/employee-stats.service';
 import { MainWorkOrder } from './../main-work-order/main-work-order.model';
 import { Injectable, Inject } from '@nestjs/common';
 import { IDistributeWorkOrder } from './distribute-work-order.interface';
@@ -15,6 +17,8 @@ import {FieldTable} from "../field-table/field-table.model";
 import sequelize from 'sequelize';
 
 
+
+
 @Injectable()
 export class DistributeWorkOrderService {
   constructor(private readonly employeeService: EmployeeService) {}
@@ -26,6 +30,7 @@ export class DistributeWorkOrderService {
   private readonly fieldDataService: FieldDataService;
   @Inject('EMPLOYEE_REPOSITORY')
   private readonly employeeModel: typeof Employee;
+ 
   @Inject('ACCOUNT_LIST_REPOSITORY')
   private readonly accountListModel: typeof AccountList;
   @Inject('MAIN_WORK_ORDER_REPOSITORY')
@@ -40,6 +45,9 @@ export class DistributeWorkOrderService {
   private readonly fieldTableModel: typeof FieldTable;
   private readonly fieldTableService: FieldTableService;
 
+  @Inject('EMPLOYEE_STATS_REPOSITORY')
+  private readonly employeeStatsModel: typeof EmployeeStats;
+  
 
 
   async findAllWorkOrder(): Promise<DistributeWorkOrder[]> {
@@ -439,6 +447,65 @@ export class DistributeWorkOrderService {
    
   }
 
+  async postEmployeeStats(work_order_id: number, time_interval: number, error_count: number, employee_id: number) {
+    const prev_employee = await Employee.findOne({ where: { id: employee_id }, attributes: ['team_id', 'role_id'], raw: true });
+    const time = await this.distributeWorkOrderModel.findOne({ where: { work_order_id: work_order_id, assigned_to: employee_id }, attributes: ['estimated_time', 'createdAt'], raw: true });
+    
+    const target_time = time.estimated_time;
+    const time_allotted_ms = Date.now() - new Date(time.createdAt).getTime(); // Calculate the time difference in milliseconds
+    const time_allotted = Math.floor(time_allotted_ms / (1000 * 60)); // Convert milliseconds to minutes
+    console.log(target_time, time_allotted);
+    await EmployeeStats.create({ 
+        work_order_id, 
+        target_time, 
+        time_interval, 
+        time_allotted: time_allotted, // Convert time_allotted to string
+        error_count: error_count, // Convert error_count to string
+        employee_id, 
+        team_id: prev_employee.team_id, 
+        role_id: prev_employee.role_id
+    });
+}
+
+
+async incrementErrorCount(list: number[]) {
+  for (const field_id of list) {
+    const field_values = await FieldData.findOne({ where: { id: field_id }, attributes: ['work_order_id', 'prev_assigned'], raw: true });
+    const work_order_id = field_values.work_order_id;
+    const employee_id = field_values.prev_assigned[0];
+
+    // Find the existing EmployeeStats record for the given work_order_id and employee_id
+    const employeeStats = await EmployeeStats.findOne({ where: { work_order_id, employee_id } });
+
+    // If a record exists, increment the error_count
+    if (employeeStats) {
+      await employeeStats.increment('error_count');
+    }
+  }
+}
+
+
+async postEmployeeStatsforReadWrite(work_order_id: number, time_interval: number, error_count: number, employee_id: number, list: number[]) {
+  const prev_employee = await Employee.findOne({ where: { id: employee_id }, attributes: ['team_id', 'role_id'], raw: true });
+  const time = await this.distributeWorkOrderModel.findOne({ where: { work_order_id: work_order_id, assigned_to: employee_id }, attributes: ['estimated_time', 'createdAt'], raw: true });
+  
+  const target_time = time.estimated_time;
+  const time_allotted_ms = Date.now() - new Date(time.createdAt).getTime(); // Calculate the time difference in milliseconds
+  const time_allotted = Math.floor(time_allotted_ms / (1000 * 60)); // Convert milliseconds to minutes
+  console.log(target_time, time_allotted);
+  await EmployeeStats.create({ 
+      work_order_id, 
+      target_time, 
+      time_interval, 
+      time_allotted: time_allotted, // Convert time_allotted to string
+      error_count: error_count, // Convert error_count to string
+      employee_id, 
+      team_id: prev_employee.team_id, 
+      role_id: prev_employee.role_id
+  });
+
+  await this.incrementErrorCount(list);
+}
 
 
 

@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Employee } from './employee.model';
 import { TeamRoleService } from 'src/team_role_workflow/team_role_workflow.service';
-
+import { EmployeeStats } from 'src/employee_stats/employee_stats.model';
 
 @Injectable()
 export class EmployeeService {
@@ -9,7 +9,9 @@ export class EmployeeService {
     @Inject('EMPLOYEE_REPOSITORY')
     private employeeRepository: typeof Employee,
     private teamRoleService: TeamRoleService,
- 
+
+    @Inject('EMPLOYEE_STATS_REPOSITORY')
+    private employeeStatsRepository: typeof EmployeeStats
   ) {}
 
   async createEmployee(createEmployeeDto: any): Promise<Employee> {
@@ -84,4 +86,14 @@ export class EmployeeService {
     
       return employee_list;
       }
+
+      async postEmployeeStats(work_order_id: number,  time_interval: number, error_count: number, employee_id: number) {
+        const prev_employee = await this.employeeRepository.findOne({ where: { id: employee_id }, attributes: ['team_id', 'role_id'], raw: true });
+        const target_time = time_interval * 60 * 1000;
+        const time_allotted = target_time - error_count * 60 * 1000;
+        
+        // await EmployeeStats.create({ work_order_id, target_time, time_interval, time_allotted, error_count, employee_id, team_id: prev_employee.team_id, role_id: prev_employee.role_id });
+        // return employee_team_role_id;
+      }
+
 }

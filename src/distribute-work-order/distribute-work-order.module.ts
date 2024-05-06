@@ -28,6 +28,8 @@ import { formFieldProvider } from 'src/form-field/form-field.provider';
 import { FormFieldService } from 'src/form-field/form-field.service';
 import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { docuBucketProviders } from 'src/docu-bucket/docu-bucket.providers';
+import { EmployeeStatsService } from 'src/employee_stats/employee_stats.service';
+import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
 
 
 
@@ -48,6 +50,8 @@ import { docuBucketProviders } from 'src/docu-bucket/docu-bucket.providers';
     FormService,
     FormFieldService,
     DocubucketService,
+    EmployeeStatsService,
+    employeeStatsProvider,
     ...fieldTableProviders,
     ...docuBucketProviders,
     ...distributeWorkOrderProviders,

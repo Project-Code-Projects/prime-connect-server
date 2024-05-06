@@ -17,21 +17,17 @@ export class EmployeeStats extends Model<EmployeeStats> {
     })
     id: number;
 
-    @Column({
-        type: DataTypes.DATE,
-        allowNull: false,
-    })
-    total_estimated_time: Date;
+    @Column
+    work_order_id: number;
 
-    @Column({
-        type: DataTypes.DATE,
-    })
-    toal_required_time: Date;
+    @Column
+    target_time: number;
 
-    @Column({
-        type: DataTypes.DATE
-    })
-    time_allotted: Date;
+    @Column
+    time_interval: number;
+
+    @Column
+    time_allotted: number;
 
     @Column({
         allowNull: true,

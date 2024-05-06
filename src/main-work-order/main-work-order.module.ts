@@ -33,6 +33,8 @@ import { FormFieldService } from 'src/form-field/form-field.service';
 import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { docuBucketProviders } from 'src/docu-bucket/docu-bucket.providers';
 import { DocubucketModule } from 'src/docu-bucket/docu-bucket.module';
+import { EmployeeStatsService } from 'src/employee-stats/employee-stats.service';
+import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
 
 @Module({
   imports: [
@@ -56,7 +58,8 @@ import { DocubucketModule } from 'src/docu-bucket/docu-bucket.module';
     FormService,
     FormFieldService,
     DocubucketService,
-
+    EmployeeStatsService,
+    employeeStatsProvider,
     ...employeeProviders,
     ...workFlowAssignLogProviders,
     ...mainWorkOrderProviders,

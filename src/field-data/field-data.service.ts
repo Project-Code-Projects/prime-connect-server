@@ -20,8 +20,8 @@ export class FieldDataService {
     await FieldData.update({ assigned_to: employeeId }, { where: { id } });
   }
 
-  async updateFieldDataByFieldId(value: string, order_id: number, field_id: number): Promise<void> {
-    await FieldData.update({ value: value}, { where: { work_order_id: order_id, field_id: field_id } });
+  async updateFieldDataByFieldId(value: string, order_id: number, field_id: number, time: number): Promise<void> {
+    await FieldData.update({ value: value}, { where: { work_order_id: order_id, field_id: field_id, time_interval: time } });
   }
 
   async findOneFieldData(id: number): Promise<FieldData> {

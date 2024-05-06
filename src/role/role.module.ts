@@ -11,6 +11,8 @@ import { EmployeeService } from '../employee/employee.service';
 import { employeeProvider } from '../employee/employee.provider';
 import { TeamRoleService } from '../team_role_workflow/team_role_workflow.service';
 import { teamRoleProvider } from '../team_role_workflow/team_role_workflow.provider';
+import { EmployeeStatsService } from 'src/employee-stats/employee-stats.service';
+import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
 
 @Module({
     imports: [DatabaseModule],
@@ -24,7 +26,9 @@ import { teamRoleProvider } from '../team_role_workflow/team_role_workflow.provi
       // EmployeeLoginService,
       // employeeLoginProvider,
       EmployeeService,
-      employeeProvider
+      employeeProvider,
+      EmployeeStatsService,
+      employeeStatsProvider,
     ],
   })
 

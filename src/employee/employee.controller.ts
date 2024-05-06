@@ -65,5 +65,10 @@ export class EmployeeController {
     return await this.employeeService.EmployeeTeamId(id);
   }
 
+  @Post('employee_stats')
+  async postEmployeeStats(@Body() employeeStats: any): Promise<any> {
+    const { work_order_id, time_interval, error_count, employee_id } = employeeStats;
+    return await this.employeeService.postEmployeeStats(work_order_id, time_interval, error_count, employee_id);
+  }
 
 }

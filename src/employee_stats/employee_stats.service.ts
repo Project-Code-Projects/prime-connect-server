@@ -5,8 +5,14 @@ import { EmployeeStats } from './employee_stats.model';
 export class EmployeeStatsService {
   constructor(
     @Inject('EMPLOYEE_STATS_REPOSITORY')
-    private employeeStatsRepository: typeof EmployeeStats,
+    private employeeStatsRepository: typeof EmployeeStats
   ) {}
+
+
+
+ 
+
+
 
 
 }  

@@ -117,6 +117,13 @@ export class DistributeWorkOrderController {
     return this.distributeWorkOrderService.postErrorFields(fields, comments, fields_assigned, work_order_id, assigned_to);
   }
 
+
+  @Post('employee_stats')
+  async postEmployeeStats(@Body() employeeStats: any): Promise<any> {
+    const { work_order_id, time_interval, error_count, employee_id } = employeeStats;
+    return await this.distributeWorkOrderService.postEmployeeStats(work_order_id, time_interval, error_count, employee_id);
+  }
+
 }
 
   
