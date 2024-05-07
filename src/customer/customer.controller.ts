@@ -46,15 +46,15 @@ export class CustomerController {
       customer.nid_no,
     );
     let nextAccId = 0;
-    const { team_id,account_type } = customer;
+    const { team_id, account_type } = customer;
     const maxId = await this.customerService.findMaxAccId();
     nextAccId = maxId + 1;
 
-    const allPdfNames = await this.pdfService.findAllPdfName(); // Get all PDF names from the database
+    const allPdfNames = await this.pdfService.findAllPdfName();
     const matchedPdfIds = files.map((file) => {
-      const pdfName = file.originalname.split('.')[0]; // Extract PDF name from the filename
-      const pdf = allPdfNames.find((pdf) => pdf.pdf_name === pdfName); // Find the corresponding PDF in the database
-      return pdf ? pdf.id : null; // Return PDF ID or null if not found
+      const pdfName = file.originalname.split('.')[0];
+      const pdf = allPdfNames.find((pdf) => pdf.pdf_name === pdfName);
+      return pdf ? pdf.id : null;
     });
 
     if (existingCustomer) {
@@ -89,7 +89,7 @@ export class CustomerController {
               acc_id: nextAccId,
               customer_id: existingCustomer.id,
               pdf_id: pdfId,
-              pdf_values: pdfValue, // Add PDF value to the array
+              pdf_values: pdfValue,
             });
           }
         }),
@@ -133,7 +133,7 @@ export class CustomerController {
             acc_id: nextAccId,
             customer_id: createdCustomer.id,
             pdf_id: pdfId,
-            pdf_values: pdfValue, // Add PDF value to the array
+            pdf_values: pdfValue,
           });
         }
       }),
@@ -157,8 +157,6 @@ export class CustomerController {
       this.pdfDataService.postPdf(pdfData);
     }
 
-    
-
     const primaryData = {
       name: customer.name,
       nid: customer.nid_no,
@@ -175,7 +173,7 @@ export class CustomerController {
     };
 
     this.primaryService.createPrimary(primaryData);
-    
+
     return createdCustomer;
   }
 
