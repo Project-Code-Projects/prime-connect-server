@@ -83,7 +83,7 @@ export class EmployeeService {
       employee.forEach((employee) => {
         employee_list.push(employee.id)
       })
-    
+    console.log('employee list',employee_list)
       return employee_list;
       }
 
