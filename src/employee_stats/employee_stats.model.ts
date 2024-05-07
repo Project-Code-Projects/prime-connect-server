@@ -28,6 +28,9 @@ export class EmployeeStats extends Model<EmployeeStats> {
     @Column({ type: DataTypes.INTEGER })
     time_allotted: Date;
     
+    @Column({ type: DataTypes.INTEGER })
+    date: Date;
+    
     @Column({
         allowNull: true,
     })

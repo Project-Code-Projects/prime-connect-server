@@ -29,7 +29,6 @@ import { WorkflowModule } from './workflow/workflow.module';
     FieldDataModule,
     CustomerModule,
     EmployeeModule,
-    EmployeeStatsModule,
     WorkFlowAssignLogModule,
     TeamRoleModule,
     MainWorkOrderModule,
