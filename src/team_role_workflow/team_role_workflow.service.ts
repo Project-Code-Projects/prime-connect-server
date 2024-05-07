@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { TeamRole } from './team_role_workflow.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class TeamRoleService {
@@ -8,7 +9,12 @@ export class TeamRoleService {
   ) {}
 
   async createTeamRole(createTeamRoleDto: any): Promise<TeamRole> {
-    return this.teamRoleRepository.create<TeamRole>(createTeamRoleDto);
+    const { sequence } = createTeamRoleDto;
+    await this.teamRoleRepository.increment(
+      { sequence: 1 },
+      { where: { sequence: { [Op.gte]: sequence } } }
+    );
+    return await this.teamRoleRepository.create<TeamRole>(createTeamRoleDto);
   }
 
   async findAllTeamRole(): Promise<TeamRole[]> {
