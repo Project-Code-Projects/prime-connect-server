@@ -16,6 +16,7 @@ import Pdf from '../pdf/pdf.model';
 import FieldTable from '../field-table/field-table.model';
 import { TeamField } from '../team-field/team_field.model';
 import { Form } from '../form/form.model';
+import { Workflow } from '../workflow/workflow.model';
 
 @Table({
   tableName: 'team',
@@ -44,11 +45,6 @@ export class Team extends Model<Team> {
   })
   description: string;
 
-  //   @Column({
-  //     type: DataTypes.ARRAY(DataTypes.STRING),
-  //     allowNull: true,
-  //   })
-  //   required_pdf: string[];
 
   @ForeignKey(() => Department)
   @Column({
@@ -70,4 +66,7 @@ export class Team extends Model<Team> {
 
   @HasMany(() => Form)
   forms: Form[];
+
+  @HasMany(() => Workflow)
+  workflows: Workflow[];
 }

@@ -37,6 +37,19 @@ export class DistributeWorkOrderController {
     return await this.distributeWorkOrderService.updateAllFieldData();
   }
 
+  @Get('employee/:id') // Define the route including the employee ID
+
+  async getTasksByEmployeeId(@Param('id') id: number): Promise<any> {
+    try {
+      return await this.distributeWorkOrderService.findDistributedWorksByEmployeeId(
+        id
+      );
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }  // Define the parameter to be passed in the route
+
   @Get('employee/:employeeId/:orderId') // Define the route including the employee ID
   async getTasksByEmployee(
     @Param('employeeId') employeeId: number,

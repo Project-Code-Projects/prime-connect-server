@@ -69,6 +69,12 @@ export class Employee extends Model<Employee> {
   })
   admin: string;
   @Column({
+    type: DataTypes.STRING,
+    allowNull: true,
+  })
+  profile_pic: string;
+
+  @Column({
     type: DataTypes.INTEGER,
     allowNull: false,
   })

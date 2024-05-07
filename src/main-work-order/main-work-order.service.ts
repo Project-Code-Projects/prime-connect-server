@@ -48,6 +48,11 @@ export class MainWorkOrderService {
     private readonly docuBucketService: DocubucketService
  
   ) {}
+
+  async getWorkOrderByEmployeeId(id: number): Promise<any> {
+    return this.mainWorkOrderModel.findAll({ where: { assigned_to: id } });
+  }
+
   async createMainWorkOrder(
     revWorkOrder: IMainWorkOrder,
   ): Promise<MainWorkOrder> {

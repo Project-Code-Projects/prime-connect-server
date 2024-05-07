@@ -53,6 +53,10 @@ export class DistributeWorkOrderService {
   async findAllWorkOrder(): Promise<DistributeWorkOrder[]> {
     return await this.distributeWorkOrderModel.findAll();
   }
+
+  async findDistributedWorksByEmployeeId(id: number){
+    return await this.distributeWorkOrderModel.findAll({ where: { assigned_to: id } });
+  }
   async createDistributeWorkOrder(
     distributeWorkOrder: IDistributeWorkOrder,
   ): Promise<DistributeWorkOrder> {

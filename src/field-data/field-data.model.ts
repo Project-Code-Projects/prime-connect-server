@@ -35,7 +35,7 @@ export class FieldData extends Model<FieldData> implements IFieldData {
   estimated_time: number;
   @Column
   assigned_time: Date | null;
-  @Column
+  @Column({ type: DataTypes.STRING })
   err_type: string | null;
   @Column
   err_comment: string | null;

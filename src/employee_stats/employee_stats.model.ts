@@ -16,40 +16,38 @@ export class EmployeeStats extends Model<EmployeeStats> {
         allowNull: false,
     })
     id: number;
-
-    @Column
+    @Column({ type: DataTypes.INTEGER })
     work_order_id: number;
 
-    @Column
+    @Column({ type: DataTypes.INTEGER })
     target_time: number;
 
-    @Column
+    @Column({ type: DataTypes.INTEGER })
     time_interval: number;
 
-    @Column
-    time_allotted: number;
-
+    @Column({ type: DataTypes.INTEGER })
+    time_allotted: Date;
+    
+    @Column({ type: DataTypes.INTEGER })
+    date: Date;
+    
     @Column({
         allowNull: true,
     })
     error_count: number;
-        
     @Column({
         allowNull: false,
     })
     role_id: number;
-
     @Column({
         allowNull: false,
     })
     team_id: number;
-
     @ForeignKey(() => Employee)
     @Column({
         allowNull: false
     })
     employee_id: number;
-  
     @BelongsTo(() => Employee)
     employee: Employee;
 }

@@ -11,21 +11,24 @@ import {
 import { CustomerService } from './customer.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ICustomer } from './customer.interface';
-import { convertPDFBufferToImagesAndUpload } from 'src/pdf-data/pdf.middleware';
+import { convertPDFBufferToImagesAndUpload } from '../pdf-data/pdf.middleware';
 import { PdfDataService } from 'src/pdf-data/pdf-data.service';
 import { IPdfData } from 'src/pdf-data/pdf-data.interface';
 import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { PdfService } from 'src/pdf/pdf.service';
 import { MainWorkOrderService } from 'src/main-work-order/main-work-order.service';
+import { PrimaryService } from '../Primary_data/primary.service';
 import * as Multer from 'multer';
 @Controller('customer')
 export class CustomerController {
+  pdfs: { id: number; pdf_values: string[] }[] = [];
   constructor(
     private readonly customerService: CustomerService,
     private readonly pdfDataService: PdfDataService,
     private readonly docubucketService: DocubucketService,
     private readonly pdfService: PdfService,
     private readonly mainWorkOrderService: MainWorkOrderService,
+    private readonly primaryService: PrimaryService,
   ) {}
 
   @Get()
@@ -43,6 +46,7 @@ export class CustomerController {
       customer.nid_no,
     );
     let nextAccId = 0;
+    const { team_id,account_type } = customer;
     const maxId = await this.customerService.findMaxAccId();
     nextAccId = maxId + 1;
 
@@ -123,6 +127,7 @@ export class CustomerController {
             files[index].buffer,
           );
           console.log(pdfValue);
+          this.pdfs.push({ id: pdfId, pdf_values: pdfValue });
 
           await this.docubucketService.postPdf({
             acc_id: nextAccId,
@@ -151,6 +156,26 @@ export class CustomerController {
       }
       this.pdfDataService.postPdf(pdfData);
     }
+
+    
+
+    const primaryData = {
+      name: customer.name,
+      nid: customer.nid_no,
+      phone: customer.phone,
+      address: customer.address,
+      email: customer.email,
+      tin: customer.tin_no,
+      acc_type: account_type,
+      acc_id: nextAccId,
+      customer_id: createdCustomer.id,
+      team_id: team_id,
+      pdf: this.pdfs,
+      birth_certi: customer.birth_certificate_no,
+    };
+
+    this.primaryService.createPrimary(primaryData);
+    
     return createdCustomer;
   }
 
