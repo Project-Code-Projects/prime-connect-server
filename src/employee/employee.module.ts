@@ -13,7 +13,7 @@ import { RoleService } from '../role/role.service';
 import { roleProvider } from '../role/role.provider';
 import { TeamRoleService } from 'src/team_role_workflow/team_role_workflow.service';
 import { teamRoleProvider } from 'src/team_role_workflow/team_role_workflow.provider';
-import { EmployeeStatsService } from 'src/employee-stats/employee-stats.service';
+import { EmployeeStatsService } from 'src/employee_stats/employee_stats.service';
 import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
 import { DistributeWorkOrderService } from 'src/distribute-work-order/distribute-work-order.service';
 import { distributeWorkOrderProviders } from 'src/distribute-work-order/distribute-work-order.providers';

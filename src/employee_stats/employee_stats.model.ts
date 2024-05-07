@@ -26,7 +26,7 @@ export class EmployeeStats extends Model<EmployeeStats> {
     time_interval: number;
 
     @Column({ type: DataTypes.INTEGER })
-    time_allotted: Date;
+    time_allotted: number;
     
     @Column({ type: DataTypes.INTEGER })
     date: Date;

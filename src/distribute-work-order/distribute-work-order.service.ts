@@ -1,5 +1,5 @@
 import { EmployeeStats } from './../employee_stats/employee_stats.model';
-import { EmployeeStatsService } from './../employee-stats/employee-stats.service';
+import { EmployeeStatsService } from './../employee_stats/employee_stats.service';
 import { MainWorkOrder } from './../main-work-order/main-work-order.model';
 import { Injectable, Inject } from '@nestjs/common';
 import { IDistributeWorkOrder } from './distribute-work-order.interface';
