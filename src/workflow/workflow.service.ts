@@ -41,8 +41,9 @@ export class WorkflowService {
   }
 
   async deleteWorkflow(id: number): Promise<any> {
+    const workflow = await this.workflowRepository.findOne({ where: { id } });
     await this.workflowRepository.destroy({ where: { id } });
-    return { message: 'deleted' };
+    return workflow;
   }
 
   async findAllByAccess(access: string): Promise<Workflow[]> {

@@ -66,7 +66,7 @@ export class EmployeeService {
     console.log('hit')
     const prev_employee = await this.employeeRepository.findOne({ where: { id: id }, attributes: ['team_id', 'role_id'], raw: true });
     
-    const sequence = await this.workflowService.getSequence(prev_employee.team_id, prev_employee.role_id)
+    const sequence = await this.workflowService.getSequence(Number(prev_employee.team_id), Number(prev_employee.role_id))
     console.log('sequence', sequence)
     const employee = await this.employeeRepository.findAll({ where: { team_id: sequence.team_id, role_id: sequence.role_id }});
     console.log('employee', employee)
@@ -82,7 +82,7 @@ export class EmployeeService {
   
       const prev_employee = await this.employeeRepository.findOne({ where: { id: id }, attributes: ['team_id', 'role_id'], raw: true });
   
-      const sequence = await this.workflowService.getPrevSequence(prev_employee.team_id, prev_employee.role_id)
+      const sequence = await this.workflowService.getPrevSequence(Number(prev_employee.team_id), Number(prev_employee.role_id))
   
       const employee = await this.employeeRepository.findAll({ where: { team_id: sequence.team_id, role_id: sequence.role_id }});
     

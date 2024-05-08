@@ -35,25 +35,25 @@ export class Employee extends Model<Employee> {
   name: string;
 
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   })
-  age: number;
+  age: string;
 
   @Column({
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
-    validate: {
-      isEmail: true,
-    },
+    // unique: true
+    // validate: {
+    //   isEmail: true,
+    // },
   })
   email: string;
 
   @Column({
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
+    // unique: true,
   })
   phone: string;
 
@@ -75,16 +75,17 @@ export class Employee extends Model<Employee> {
   profile_pic: string;
 
   @Column({
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   })
-  team_id: number;
+  team_id: string;
 
   @ForeignKey(() => Role)
   @Column({
+    type: DataTypes.STRING,
     allowNull: false,
   })
-  role_id: number;
+  role_id: string;
 
   @BelongsTo(() => Role)
   role: Role;

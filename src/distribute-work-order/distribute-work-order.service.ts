@@ -506,8 +506,8 @@ export class DistributeWorkOrderService {
       time_allotted: time_allotted, // Convert time_allotted to string
       error_count: error_count, // Convert error_count to string
       employee_id,
-      team_id: prev_employee.team_id,
-      role_id: prev_employee.role_id,
+      team_id: Number(prev_employee.team_id),
+      role_id: Number(prev_employee.role_id),
     });
   }
 
@@ -562,8 +562,8 @@ export class DistributeWorkOrderService {
       time_allotted: time_allotted, // Convert time_allotted to string
       error_count: error_count, // Convert error_count to string
       employee_id,
-      team_id: prev_employee.team_id,
-      role_id: prev_employee.role_id,
+      team_id: Number(prev_employee.team_id),
+      role_id: Number(prev_employee.role_id),
     });
 
     await this.incrementErrorCount(list);

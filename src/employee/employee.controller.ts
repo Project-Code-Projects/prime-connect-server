@@ -10,6 +10,9 @@ export class EmployeeController {
   @Post()
   async createEmployee(@Body() createEmployeeDto: any) {
     // console.log(createEmployeeDto);
+    const  { name,age,email,phone,admin,team_id,role_id,active,profile_pic} = createEmployeeDto;
+    const employee = { name,age,email,phone,active,admin,profile_pic,team_id,role_id} ;
+    console.log(employee);
     return this.employeeService.createEmployee(createEmployeeDto);
   }
 
@@ -39,7 +42,7 @@ export class EmployeeController {
     const employee = await this.employeeService.findOne(id);
     const role = await this.roleService.findOne(employee.role_id);
     const team = await this.teamService.findOne(employee.team_id);
-    const department = team.department;
+    const department = team.department.name;
     if(department) return { roleName: role?.name,teamName: team?.name, employee,department };
   }
 

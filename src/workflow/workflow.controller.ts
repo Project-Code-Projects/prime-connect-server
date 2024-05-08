@@ -1,14 +1,18 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { WorkflowService } from './workflow.service';
 import { Workflow } from './workflow.model';
+import { RoleService } from '../role/role.service';
 
 @Controller('/workflow')
 export class WorkflowController {
-  constructor(private workflowService: WorkflowService) {}
+  constructor(private workflowService: WorkflowService, private roleService: RoleService) {}
 
   @Post()
   async create(@Body() createWorkflowDto: any) {
-    return this.workflowService.createWorkflow(createWorkflowDto);
+    const { sequence,team_id, role_id, access, isAuthor } = createWorkflowDto;
+    const role = await this.roleService.findOne(role_id);
+    const workflow = this.workflowService.createWorkflow(createWorkflowDto);
+    return { name: (await role).name, description: (await role).description, access: (await workflow).access, isAuthor: (await workflow).isAuthor, sequence: (await workflow).sequence, id: (await workflow).id};
   }
 
   @Get()
