@@ -9,11 +9,6 @@ export class TeamRoleService {
   ) {}
 
   async createTeamRole(createTeamRoleDto: any): Promise<TeamRole> {
-    const { sequence } = createTeamRoleDto;
-    await this.teamRoleRepository.increment(
-      { sequence: 1 },
-      { where: { sequence: { [Op.gte]: sequence } } }
-    );
     return await this.teamRoleRepository.create<TeamRole>(createTeamRoleDto);
   }
 
@@ -40,13 +35,6 @@ export class TeamRoleService {
     });
   }
 
-  async updateAccessTeamRole(
-    team_id: number
-  ): Promise<void> {
-    await this.teamRoleRepository.update({ isAuthor: false }, {
-      where: { team_id, isAuthor: true },
-    });
-  }
 
   async deleteTeamRole(team_id: number, role_id: number): Promise<void> {
     await this.teamRoleRepository.destroy({ where: { team_id, role_id } });
@@ -62,12 +50,12 @@ export class TeamRoleService {
   //   await this.teamRoleRepository.destroy({ where: { role_id } });
   // }
 
-  async findAllByAccess(access: string): Promise<TeamRole[]> {
-    const teamRoles = await this.teamRoleRepository.findAll({
-      where: { access },
-    });
-    return teamRoles;
-  }
+  // async findAllByAccess(access: string): Promise<TeamRole[]> {
+  //   const teamRoles = await this.teamRoleRepository.findAll({
+  //     where: { access },
+  //   });
+  //   return teamRoles;
+  // }
   async findAllByTeamId(team_id: number): Promise<TeamRole[]> {
     const obj = await this.teamRoleRepository.findAll({
       where: { team_id },
@@ -82,22 +70,22 @@ export class TeamRoleService {
     return obj;
   }
 
-  async getSequence(team_id: number, role_id: number): Promise<any> {
-    const sequence = await this.teamRoleRepository.findOne({ where: { team_id, role_id }, attributes: ['sequence'], raw: true });
-    const check_next_sequence = await this.teamRoleRepository.findOne({ where: { team_id, sequence: sequence.sequence + 1 }, attributes: ['sequence', 'role_id'	, 'team_id'	], raw: true });
-    if(check_next_sequence){
-      console.log('hit')
-    }
-    return check_next_sequence; 
-    // return sequence;
-}
-async getPrevSequence(team_id: number, role_id: number): Promise<any> {
-  const sequence = await this.teamRoleRepository.findOne({ where: { team_id, role_id }, attributes: ['sequence'], raw: true });
-  const check_next_sequence = await this.teamRoleRepository.findOne({ where: { team_id, sequence: sequence.sequence - 1 }, attributes: ['sequence', 'role_id'	, 'team_id'	], raw: true });
-  if(check_next_sequence){
-    console.log('hit')
-  }
-  return check_next_sequence; 
-  // return sequence;
-}
+//   async getSequence(team_id: number, role_id: number): Promise<any> {
+//     const sequence = await this.teamRoleRepository.findOne({ where: { team_id, role_id }, attributes: ['sequence'], raw: true });
+//     const check_next_sequence = await this.teamRoleRepository.findOne({ where: { team_id, sequence: sequence.sequence + 1 }, attributes: ['sequence', 'role_id'	, 'team_id'	], raw: true });
+//     if(check_next_sequence){
+//       console.log('hit')
+//     }
+//     return check_next_sequence; 
+//     // return sequence;
+// }
+
+// async getPrevSequence(team_id: number, role_id: number): Promise<any> {
+//   const sequence = await this.teamRoleRepository.findOne({ where: { team_id, role_id }, attributes: ['sequence'], raw: true });
+//   const check_next_sequence = await this.teamRoleRepository.findOne({ where: { team_id, sequence: sequence.sequence - 1 }, attributes: ['sequence', 'role_id'	, 'team_id'	], raw: true });
+//   if(check_next_sequence){
+//     console.log('hit')
+//   }
+//   return check_next_sequence; 
+// }
 }

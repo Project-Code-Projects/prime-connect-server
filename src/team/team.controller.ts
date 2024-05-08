@@ -8,7 +8,7 @@ import { TeamRoleService } from '../team_role_workflow/team_role_workflow.servic
 
 @Controller('/team')
 export class TeamController {
-  constructor(private teamService: TeamService, private teamRoleService: TeamRoleService, private teamPdfService: TeamPdfService, private teamFieldService: TeamFieldService, private pdfService: PdfService, private fieldTableService: FieldTableService) {}
+  constructor( private teamService: TeamService, private teamRoleService: TeamRoleService, private teamPdfService: TeamPdfService, private teamFieldService: TeamFieldService, private pdfService: PdfService, private fieldTableService: FieldTableService) {}
 
   @Post()
   async create(@Body() createTeamDto: any) {
@@ -76,14 +76,14 @@ export class TeamController {
 
   @Get('/role/:id')
   async findAllRoleByTeamId(@Param('id') id: number) {
-    const roles = this.teamService.findOne(id);
+    const data = await this.teamService.findOne(id);
     // console.log(roles);
-    return roles;
+    return data;
   }
 
   @Get('/workflow/:id')
   async findAllWokflowByTeamId(@Param('id') id: number) {
-    const workflow = this.teamRoleService.findAllByTeamId(id);
+    const workflow = await this.teamRoleService.findAllByTeamId(id);
     // console.log(roles);
     return workflow;
   }

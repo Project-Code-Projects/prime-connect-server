@@ -17,6 +17,8 @@ import { EmployeeStatsService } from 'src/employee_stats/employee_stats.service'
 import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
 import { DistributeWorkOrderService } from 'src/distribute-work-order/distribute-work-order.service';
 import { distributeWorkOrderProviders } from 'src/distribute-work-order/distribute-work-order.providers';
+import { WorkflowService } from '../workflow/workflow.service';
+import { workflowProvider } from '../workflow/workflow.provider';
 
 @Module({
     imports: [DatabaseModule],
@@ -32,6 +34,8 @@ import { distributeWorkOrderProviders } from 'src/distribute-work-order/distribu
       teamRoleProvider,
       EmployeeStatsService,
       employeeStatsProvider,
+      WorkflowService,
+      workflowProvider,
 
       // DistributeWorkOrderService,
       // ...distributeWorkOrderProviders,

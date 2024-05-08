@@ -13,6 +13,8 @@ import { TeamRoleService } from '../team_role_workflow/team_role_workflow.servic
 import { teamRoleProvider } from '../team_role_workflow/team_role_workflow.provider';
 import { EmployeeStatsService } from 'src/employee_stats/employee_stats.service';
 import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
+import { WorkflowService } from '../workflow/workflow.service';
+import { workflowProvider } from '../workflow/workflow.provider';
 
 @Module({
     imports: [DatabaseModule],
@@ -22,6 +24,8 @@ import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provide
       teamRoleProvider,
       TeamRoleService,
       roleProvider,
+      WorkflowService,
+      workflowProvider,
       // JwtMiddleware,
       // EmployeeLoginService,
       // employeeLoginProvider,

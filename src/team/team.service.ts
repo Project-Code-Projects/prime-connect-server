@@ -2,6 +2,8 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Team } from './team.model';
 import { Role } from '../role/role.model';
 import { Pdf } from '../pdf/pdf.model';
+import { Department } from '../department/department.model';
+import { Workflow } from '../workflow/workflow.model';
 // import { Employee } from '../employee/employee.model';
 
 @Injectable()
@@ -35,8 +37,8 @@ export class TeamService {
     return team ? team.pdfs : [];
   }
 
-  async findOne(id: number): Promise<Team | null> {
-    return this.teamRepository.findOne<Team>({ where: { id },include: [{model:Role}] });
+  async findOne(id: number): Promise<any> {
+    return this.teamRepository.findOne<any>({ where: { id },include: [{model:Role},{model: Workflow}, {model: Department}] });
   }
   async updateTeam(id: string, updateData: Partial<any>): Promise<void> {
     await this.teamRepository.update(updateData, { where: { id } });

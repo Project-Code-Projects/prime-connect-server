@@ -30,6 +30,8 @@ import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { docuBucketProviders } from 'src/docu-bucket/docu-bucket.providers';
 import { EmployeeStatsService } from 'src/employee_stats/employee_stats.service';
 import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
+import { WorkflowService } from '../workflow/workflow.service';
+import { workflowProvider } from '../workflow/workflow.provider';
 
 
 
@@ -37,11 +39,13 @@ import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provide
   imports: [DatabaseModule],
   controllers: [DistributeWorkOrderController],
   providers: [
+    workflowProvider,
     DistributeWorkOrderService,
     TeamRoleService,
     EmployeeRoleService,
     FieldDataService,
     EmployeeService,
+    WorkflowService,
     AccountListService,
     MainWorkOrderService,
     FieldTableService,

@@ -20,7 +20,6 @@ import { EmployeeLoginModule } from './employee_login/employee_login.module';
 import { EmployeeStatsModule } from './employee_stats/employee_stats.module';
 import { AccountListModule } from './account-list/account-list.module';
 import { FormModule } from './form/form.module';
-import { TeamRoleModule } from './team_role_workflow/team_role_workflow.module';
 import { WorkflowModule } from './workflow/workflow.module';
 
 @Module({
@@ -30,7 +29,6 @@ import { WorkflowModule } from './workflow/workflow.module';
     CustomerModule,
     EmployeeModule,
     WorkFlowAssignLogModule,
-    TeamRoleModule,
     MainWorkOrderModule,
     PdfDataModule,
     EmployeeRoleModule,

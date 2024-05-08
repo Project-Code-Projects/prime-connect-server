@@ -6,8 +6,8 @@ import { Employee } from '../employee/employee.model';
 import { AccountList } from '../account-list/account-list.model';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CustomerService } from '../customer/customer.service';
-import { TeamRoleService } from '../team_role_workflow/team_role_workflow.service';
-import { TeamRole } from '../team_role_workflow/team_role_workflow.model';
+import { WorkflowService } from '../workflow/workflow.service';
+import { Workflow } from '../workflow/workflow.model';
 import { FieldData } from 'src/field-data/field-data.model';
 import { FieldTable } from 'src/field-table/field-table.model';
 import { IFieldData } from 'src/field-data/field-data.interface';
@@ -32,7 +32,7 @@ export class MainWorkOrderService {
     private readonly employeeModel: typeof Employee,
     @Inject('ACCOUNT_LIST_REPOSITORY')
     private readonly accountListModel: typeof AccountList,
-    private readonly teamRoleService: TeamRoleService,
+    private readonly teamRoleService: WorkflowService,
     @Inject('FIELD_DATA_REPOSITORY')
     private readonly fieldDataModel: typeof FieldData,
     @Inject('FIELD_TABLE_REPOSITORY')
@@ -40,7 +40,7 @@ export class MainWorkOrderService {
     @Inject('TEAM_FIELD_REPOSITORY')
     private readonly teamFieldModel: typeof TeamField,
     @Inject('TEAM_ROLE_REPOSITORY')
-    private readonly teamRoleModel: typeof TeamRole,
+    private readonly teamRoleModel: typeof Workflow,
     @Inject('FORM_REPOSITORY')
     private readonly formModel: typeof Form,
     @Inject('FORM_FIELD_REPOSITORY')
