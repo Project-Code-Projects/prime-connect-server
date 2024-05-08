@@ -86,6 +86,17 @@ export class FieldDataService {
     
   //   return updatedFields;
   // }
+
+  async getErrorFields(list: number[]): Promise<any>{
+    console.log('dog hit')
+    const err_list = [];
+    for(let i = 0; i < list.length; i++){
+      const fields = await this.fieldDataModel.findOne({ where: { id: list[i] }, attributes: ['err_comment'], raw: true });
+      err_list[i] = fields['err_comment'] !== '' ? fields['err_comment'] : null;
+    }
+    err_list[err_list.length] = null;
+    return err_list;
+  }
   
 
   }
