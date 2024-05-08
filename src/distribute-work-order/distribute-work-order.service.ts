@@ -239,6 +239,7 @@ export class DistributeWorkOrderService {
       let temp;
 
       const workOrderValues = await this.sumOfFields(work_order_id);
+      console.log('workOrderValues', workOrderValues);
 
       const approved = await this.distributeWorkOrderModel.update(
         { status: 'approved' },
