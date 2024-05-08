@@ -29,16 +29,20 @@ import { FormFieldService } from 'src/form-field/form-field.service';
 import { FormService } from 'src/form/form.service';
 import { PrimaryService } from '../Primary_data/primary.service';
 import { primaryProvider } from '../Primary_data/primary.provider';
+import { WorkflowService } from '../workflow/workflow.service';
+import { workflowProvider } from '../workflow/workflow.provider';
 
 @Module({
   // PdfDataModule, PdfModule, MainWorkOrderModule
   imports: [DatabaseModule],
   controllers: [CustomerController],
   providers: [
+    workflowProvider,
     CustomerService,
     PdfDataService,
     DocubucketService,
     PdfService,
+    WorkflowService,
     MainWorkOrderService,
     TeamRoleService,
     FieldDataService,

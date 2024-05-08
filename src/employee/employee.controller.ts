@@ -39,7 +39,8 @@ export class EmployeeController {
     const employee = await this.employeeService.findOne(id);
     const role = await this.roleService.findOne(employee.role_id);
     const team = await this.teamService.findOne(employee.team_id);
-    return { roleName: role?.name,teamName: team?.name, employee };
+    const department = team.department;
+    if(department) return { roleName: role?.name,teamName: team?.name, employee,department };
   }
 
   @Get('/role/:id')

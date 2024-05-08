@@ -4,20 +4,19 @@ import { Employee } from '../employee/employee.model';
 import { EmployeeService } from '../employee/employee.service';
 import { TeamRoleService } from '../team_role_workflow/team_role_workflow.service';
 import { TeamRole } from '../team_role_workflow/team_role_workflow.model';
+import { WorkflowService } from '../workflow/workflow.service';
 
 @Controller('/role')
 export class RoleController {
-  constructor(private readonly roleService: RoleService, private employeeService: EmployeeService, private teamRoleService: TeamRoleService) {}
+  constructor(private readonly workflowService: WorkflowService,private readonly roleService: RoleService, private employeeService: EmployeeService, private teamRoleService: TeamRoleService) {}
 
   @Post()
   async create(@Body() createRoleDto: any) {
     const { name,description,team_id,access,isAuthor,sequence } = createRoleDto;
-    if(isAuthor) {
-      await this.teamRoleService.updateAccessTeamRole(team_id);
-    }
-    const newRole = await this.roleService.createRole({name,description});
+    const newRole = await this.roleService.createRole({id:4,name,description,team_id});
     const { id } = newRole;
-    const teamRole = await this.teamRoleService.createTeamRole({ team_id, role_id: id, access, isAuthor, sequence });
+    const workflow = await this.workflowService.createWorkflow({ sequence,team_id, role_id: id, access, isAuthor });
+    const teamRole = await this.teamRoleService.createTeamRole({ team_id, role_id: id});
     return { id,name,description,TeamRole: teamRole};
   }
 

@@ -7,7 +7,7 @@ export class WorkflowController {
   constructor(private workflowService: WorkflowService) {}
 
   @Post()
-  async create(@Body() createWorkflowDto: Workflow) {
+  async create(@Body() createWorkflowDto: any) {
     return this.workflowService.createWorkflow(createWorkflowDto);
   }
 

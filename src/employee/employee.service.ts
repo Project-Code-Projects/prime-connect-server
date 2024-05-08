@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Employee } from './employee.model';
 import { TeamRoleService } from 'src/team_role_workflow/team_role_workflow.service';
 import { EmployeeStats } from 'src/employee_stats/employee_stats.model';
+import { WorkflowService } from '../workflow/workflow.service';
 
 @Injectable()
 export class EmployeeService {
@@ -9,6 +10,8 @@ export class EmployeeService {
     @Inject('EMPLOYEE_REPOSITORY')
     private employeeRepository: typeof Employee,
     private teamRoleService: TeamRoleService,
+
+    private readonly workflowService: WorkflowService,
 
     @Inject('EMPLOYEE_STATS_REPOSITORY')
     private employeeStatsRepository: typeof EmployeeStats
@@ -63,7 +66,7 @@ export class EmployeeService {
     console.log('hit')
     const prev_employee = await this.employeeRepository.findOne({ where: { id: id }, attributes: ['team_id', 'role_id'], raw: true });
     
-    const sequence = await this.teamRoleService.getSequence(prev_employee.team_id, prev_employee.role_id)
+    const sequence = await this.workflowService.getSequence(prev_employee.team_id, prev_employee.role_id)
     console.log('sequence', sequence)
     const employee = await this.employeeRepository.findAll({ where: { team_id: sequence.team_id, role_id: sequence.role_id }});
     console.log('employee', employee)
@@ -79,7 +82,7 @@ export class EmployeeService {
   
       const prev_employee = await this.employeeRepository.findOne({ where: { id: id }, attributes: ['team_id', 'role_id'], raw: true });
   
-      const sequence = await this.teamRoleService.getPrevSequence(prev_employee.team_id, prev_employee.role_id)
+      const sequence = await this.workflowService.getPrevSequence(prev_employee.team_id, prev_employee.role_id)
   
       const employee = await this.employeeRepository.findAll({ where: { team_id: sequence.team_id, role_id: sequence.role_id }});
     

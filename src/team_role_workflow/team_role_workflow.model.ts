@@ -19,24 +19,6 @@ export class TeamRole extends Model<TeamRole> {
 })
 id: number;
 
-  @Column({
-    type: DataTypes.STRING,
-    allowNull: false,
- })
- access: string;
- 
- @Column({
-   type: DataTypes.BOOLEAN,
-   allowNull: false,
-  })
-  isAuthor: boolean;
-
-  @Column({
-    type: DataTypes.INTEGER,
-    allowNull: false,
- })
- sequence: number;
-
   @ForeignKey(() => Team)
   @Column({
     type: DataTypes.INTEGER,

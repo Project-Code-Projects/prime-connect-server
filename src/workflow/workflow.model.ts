@@ -27,7 +27,7 @@ id: number;
  
  @Column({
    type: DataTypes.BOOLEAN,
-   allowNull: false,
+   allowNull: true,
   })
   isAuthor: boolean;
 

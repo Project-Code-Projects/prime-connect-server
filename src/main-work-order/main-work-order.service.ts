@@ -6,8 +6,8 @@ import { Employee } from '../employee/employee.model';
 import { AccountList } from '../account-list/account-list.model';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { CustomerService } from '../customer/customer.service';
-import { TeamRoleService } from '../team_role_workflow/team_role_workflow.service';
-import { TeamRole } from '../team_role_workflow/team_role_workflow.model';
+import { WorkflowService } from '../workflow/workflow.service';
+import { Workflow } from '../workflow/workflow.model';
 import { FieldData } from 'src/field-data/field-data.model';
 import { FieldTable } from 'src/field-table/field-table.model';
 import { IFieldData } from 'src/field-data/field-data.interface';
@@ -16,8 +16,6 @@ import { TeamField } from 'src/team-field/team_field.model';
 import { Form } from 'src/form/form.model';
 import { FormField } from 'src/form-field/form-field.model';
 import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
-
-
 
 @Injectable()
 export class MainWorkOrderService {
@@ -32,7 +30,7 @@ export class MainWorkOrderService {
     private readonly employeeModel: typeof Employee,
     @Inject('ACCOUNT_LIST_REPOSITORY')
     private readonly accountListModel: typeof AccountList,
-    private readonly teamRoleService: TeamRoleService,
+    private readonly teamRoleService: WorkflowService,
     @Inject('FIELD_DATA_REPOSITORY')
     private readonly fieldDataModel: typeof FieldData,
     @Inject('FIELD_TABLE_REPOSITORY')
@@ -40,13 +38,12 @@ export class MainWorkOrderService {
     @Inject('TEAM_FIELD_REPOSITORY')
     private readonly teamFieldModel: typeof TeamField,
     @Inject('TEAM_ROLE_REPOSITORY')
-    private readonly teamRoleModel: typeof TeamRole,
+    private readonly teamRoleModel: typeof Workflow,
     @Inject('FORM_REPOSITORY')
     private readonly formModel: typeof Form,
     @Inject('FORM_FIELD_REPOSITORY')
     private readonly formFieldModel: typeof FormField,
-    private readonly docuBucketService: DocubucketService
- 
+    private readonly docuBucketService: DocubucketService,
   ) {}
 
   async getWorkOrderByEmployeeId(id: number): Promise<any> {
@@ -162,20 +159,18 @@ export class MainWorkOrderService {
               where: { form_id: form.id },
             });
             for (const fieldId of fieldIds) {
-              // Get the ID of the associated field table
               // const tableField = await this.teamFieldModel.findOne({
               //   where: { field_id: fieldId.id },
               // });
               const estimatedTime = await this.fieldTableModel.findOne({
                 where: { id: fieldId.field_id },
               });
-              // Create a new FieldData record
+
               const fieldData = new FieldData({
-                work_order_id: taskForReviwer[j].id, // Set the work order ID
-                field_id: fieldId.id, // Use the ID of the associated field table
-                // Set other properties as needed
-                // For example:
-                value: null, // You may need to set appropriate values here
+                work_order_id: taskForReviwer[j].id,
+                field_id: fieldId.id,
+
+                value: null,
                 status: null,
                 estimated_time: estimatedTime.estimated_time,
                 assigned_time: null,
@@ -183,10 +178,9 @@ export class MainWorkOrderService {
                 err_comment: null,
                 sequence: parseInt(fieldId.sequence),
                 // page: parseInt(fieldId.page),
-                assigned_to: null, // You may need to set an appropriate value for assigned_to
+                assigned_to: null,
               });
 
-              // Save the new FieldData record to the database
               await fieldData.save();
             }
           }
@@ -210,8 +204,11 @@ export class MainWorkOrderService {
 
   async workOrderCustomerDetails(workOrderId: number) {
     try {
-      return await this.mainWorkOrderModel.findOne({ where: { id: workOrderId }, attributes: ['acc_id', 'customer_id'], raw: true });
-      
+      return await this.mainWorkOrderModel.findOne({
+        where: { id: workOrderId },
+        attributes: ['acc_id', 'customer_id'],
+        raw: true,
+      });
     } catch (error) {
       console.error('Error fetching customer details:', error);
       throw error; // Propagate the error

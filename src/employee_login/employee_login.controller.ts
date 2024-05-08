@@ -42,7 +42,7 @@ export class EmployeeLoginController {
 
     // Signin successful
     const token = this.jwtService.sign({ id: user.id, email: user.email });
-    return { message: `Signin successful as ${admin}`, token:'bearer ' + token, admin, id: user.employee.dataValues.id };
+    return { message: `Signin successful as ${admin}`, token:'bearer ' + token, admin, id: user.employee.dataValues.id, role: user.employee.dataValues.role_id };
   }
 
   @Get('/signin')

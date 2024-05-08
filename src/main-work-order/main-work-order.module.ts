@@ -36,6 +36,8 @@ import { PrimaryService } from '../Primary_data/primary.service';
 import { primaryProvider } from '../Primary_data/primary.provider';
 import { EmployeeStatsService } from 'src/employee_stats/employee_stats.service';
 import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
+import { WorkflowService } from '../workflow/workflow.service';
+import { workflowProvider } from '../workflow/workflow.provider';
 // import { DocubucketModule } from 'src/docu-bucket/docu-bucket.module';
 
 @Module({
@@ -49,10 +51,12 @@ import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provide
   ],
   controllers: [MainWorkOrderController],
   providers: [
+    workflowProvider,
     MainWorkOrderService,
     EmployeeService,
     PrimaryService ,
     WorkFlowAssignLogService,
+    WorkflowService,
     TeamRoleService,
     FieldDataService,
     FieldTableService,
