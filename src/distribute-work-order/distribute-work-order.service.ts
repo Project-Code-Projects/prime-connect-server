@@ -402,7 +402,7 @@ export class DistributeWorkOrderService {
   }
 
 
-  async postErrorFields(fields: number[], comments: any[], fields_assign: number[], work_order_id: number, assigned_to: number): Promise<any> {
+  async postErrorFields(fields: number[], comments: any[], fields_assign: number[], work_order_id: number, assigned_to: number, time_interval: number, error_count: number): Promise<any> {
     // const updatedFields = [];
     if(fields.length>0){
       const temp =  await this.employeeService.AuthorTeamId(assigned_to);
@@ -416,11 +416,11 @@ export class DistributeWorkOrderService {
       const least_work_load = temp[load_list.indexOf(Math.min(...load_list))];
 
 
-      for (let i = 0; i < fields.length; i++) {
+      for (let i = 0; i < fields_assign.length; i++) {
 
-        let field_assigned_to = await this.fieldDataModel.findOne({where: {id: fields[i]}, attributes: ['assigned_to'], raw: true});
+        let field_assigned_to = await this.fieldDataModel.findOne({where: {id: fields_assign[i]}, attributes: ['assigned_to'], raw: true});
         let employee_with_error = field_assigned_to.assigned_to;
-        const fieldId = fields[i];
+        const fieldId = fields_assign[i];
         const comment = comments[i] || ''; // To avoid out-of-bound access in case comments array is shorter
         console.log('employee error',typeof employee_with_error);
         try {
@@ -436,11 +436,11 @@ export class DistributeWorkOrderService {
           console.log('Update successful:', updatedField);
       } catch (error) {
           console.error('Error updating field:', error);
+      } 
       }
-      
       await this.createNewAuthorOrder(work_order_id, fields_assign, temp[load_list.indexOf(Math.min(...load_list))], 8);
-    
-      }
+
+      await this.postEmployeeStatsforReadWrite(work_order_id, time_interval, error_count, assigned_to, fields_assign)
     }else{
       await this.distributeWorkOrderModel.update(
         { status: 'Done' },
@@ -452,9 +452,11 @@ export class DistributeWorkOrderService {
   }
 
   async postEmployeeStats(work_order_id: number, time_interval: number, error_count: number, employee_id: number) {
+    console.log('check',work_order_id, time_interval, error_count, employee_id);
     const prev_employee = await Employee.findOne({ where: { id: employee_id }, attributes: ['team_id', 'role_id'], raw: true });
     const time = await this.distributeWorkOrderModel.findOne({ where: { work_order_id: work_order_id, assigned_to: employee_id }, attributes: ['estimated_time', 'createdAt'], raw: true });
     
+    console.log(time)
     const target_time = time.estimated_time;
     const time_allotted_ms = Date.now() - new Date(time.createdAt).getTime(); // Calculate the time difference in milliseconds
     const time_allotted = Math.floor(time_allotted_ms / (1000 * 60)); // Convert milliseconds to minutes
@@ -469,20 +471,27 @@ export class DistributeWorkOrderService {
         team_id: prev_employee.team_id, 
         role_id: prev_employee.role_id
     });
+    
 }
 
 
 async incrementErrorCount(list: number[]) {
+  console.log('great job', list)
   for (const field_id of list) {
+    console.log('inside for loop',field_id)
     const field_values = await FieldData.findOne({ where: { id: field_id }, attributes: ['work_order_id', 'prev_assigned'], raw: true });
+    console.log('field values', field_values)
     const work_order_id = field_values.work_order_id;
     const employee_id = field_values.prev_assigned[0];
+    
 
     // Find the existing EmployeeStats record for the given work_order_id and employee_id
     const employeeStats = await EmployeeStats.findOne({ where: { work_order_id, employee_id } });
 
     // If a record exists, increment the error_count
+    console.log('employee stats',employeeStats)
     if (employeeStats) {
+      console.log('incrementing error count');	
       await employeeStats.increment('error_count');
     }
   }
@@ -492,7 +501,7 @@ async incrementErrorCount(list: number[]) {
 async postEmployeeStatsforReadWrite(work_order_id: number, time_interval: number, error_count: number, employee_id: number, list: number[]) {
   const prev_employee = await Employee.findOne({ where: { id: employee_id }, attributes: ['team_id', 'role_id'], raw: true });
   const time = await this.distributeWorkOrderModel.findOne({ where: { work_order_id: work_order_id, assigned_to: employee_id }, attributes: ['estimated_time', 'createdAt'], raw: true });
-  
+  console.log('double hit')
   const target_time = time.estimated_time;
   const time_allotted_ms = Date.now() - new Date(time.createdAt).getTime(); // Calculate the time difference in milliseconds
   const time_allotted = Math.floor(time_allotted_ms / (1000 * 60)); // Convert milliseconds to minutes
@@ -507,7 +516,7 @@ async postEmployeeStatsforReadWrite(work_order_id: number, time_interval: number
       team_id: prev_employee.team_id, 
       role_id: prev_employee.role_id
   });
-
+  console.log(list)
   await this.incrementErrorCount(list);
 }
 

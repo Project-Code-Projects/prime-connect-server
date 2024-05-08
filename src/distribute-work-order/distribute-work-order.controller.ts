@@ -125,9 +125,9 @@ export class DistributeWorkOrderController {
   }
 
   @Put('post-error-fields') // Define the route for this method
-  async postErrorFields(@Body() requestBody: { fields: any[], comments: any[] , fields_assigned: number[], work_order_id: number, assigned_to: number}): Promise<any> {
-    const { fields, comments, fields_assigned, work_order_id , assigned_to} = requestBody;
-    return this.distributeWorkOrderService.postErrorFields(fields, comments, fields_assigned, work_order_id, assigned_to);
+  async postErrorFields(@Body() requestBody: { fields: any[], comments: any[] , fields_assigned: number[], work_order_id: number, assigned_to: number, time_interval: number, error_count: number}): Promise<any> {
+    const { fields, comments, fields_assigned, work_order_id , assigned_to, time_interval, error_count} = requestBody;
+    return this.distributeWorkOrderService.postErrorFields(fields, comments, fields_assigned, work_order_id, assigned_to, time_interval, error_count);
   }
 
 
@@ -135,6 +135,12 @@ export class DistributeWorkOrderController {
   async postEmployeeStats(@Body() employeeStats: any): Promise<any> {
     const { work_order_id, time_interval, error_count, employee_id } = employeeStats;
     return await this.distributeWorkOrderService.postEmployeeStats(work_order_id, time_interval, error_count, employee_id);
+  }
+  @Post('author_employee_stats')
+  async postAuthorEmployeeStats(@Body() employeeStats: any): Promise<any> {
+    console.log('hi')
+    const { work_order_id, time_interval, error_count, employee_id, list } = employeeStats;
+    return await this.distributeWorkOrderService.postEmployeeStatsforReadWrite(work_order_id, time_interval, error_count, employee_id, list);
   }
 
 }

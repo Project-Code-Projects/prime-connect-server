@@ -69,4 +69,10 @@ export class FieldDataController {
   //   return this.fieldDataService.postErrorFields(fields, comments);
   // }
 
+  @Get('error_fields/:list')
+  async getErrorFields(@Param('list') list: string): Promise<any> {
+    const idList: number[] = list.split(',').map(Number);
+    return this.fieldDataService.getErrorFields(idList);
+  }
+
 }
