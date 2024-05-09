@@ -44,6 +44,7 @@ export class FormController {
     async getformField(@Param('id') id: number, @Param('customer_id') customer_id: number, @Param('acc_id') acc_id: number): Promise<any> {
       console.log("fieldId: "+id+" customerId: "+customer_id+" accId: "+acc_id);
       const formFieldLocation = await this.formFieldService.getLocationByFieldId(id);
+      console.log('formFieldLocation: ',formFieldLocation);
       const images = [];
       console.log(formFieldLocation);
       if(formFieldLocation){

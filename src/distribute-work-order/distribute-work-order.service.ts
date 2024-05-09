@@ -241,17 +241,18 @@ export class DistributeWorkOrderService {
       const workOrderValues = await this.sumOfFields(work_order_id);
       console.log('workOrderValues', workOrderValues);
 
-      const approved = await this.distributeWorkOrderModel.update(
+      const approved = await this.distributeWorkOrderModel.update( //this part is approving the work order
         { status: 'approved' },
         { where: { work_order_id: work_order_id, assigned_to: assigned_to } },
       );
 
-      const checkApproved = await this.checkApproved(work_order_id);
-      console.log('idk', checkApproved);
-      if (checkApproved) {
-        const allApproved = checkApproved.every(
+        const checkAllApproved = await this.checkApproved(work_order_id);
+        console.log('idk', checkAllApproved);
+   
+        const allApproved = checkAllApproved.every(
           (workOrder) => workOrder.status === 'approved',
         );
+        console.log('all',allApproved )
         if (allApproved) {
           // const teamId = await this.employeeService.EmployeeTeamId(7);
           console.log('all aproved');
@@ -262,23 +263,22 @@ export class DistributeWorkOrderService {
             const load = await this.getEmployeeWorkLoad(temp[i]);
             load_list[i] = load.length;
           }
-        }
-      } else {
-        console.log('Work order not found or status not available.');
-      }
-
-      console.log(
-        'least work',
-        temp[load_list.indexOf(Math.min(...load_list))],
-      );
-      console.log('temp', temp);
-      console.log('wk', workOrderValues);
-      await this.createNewAuthorOrder(
+        
+          console.log(
+            'least work',
+            temp[load_list.indexOf(Math.min(...load_list))],
+          );
+        console.log('temp', temp);
+        console.log('wk', workOrderValues);
+        await this.createNewAuthorOrder(
         work_order_id,
         workOrderValues.field_id,
         temp[load_list.indexOf(Math.min(...load_list))],
         workOrderValues.estimated_time,
       );
+    }
+     
+ 
       return temp;
     } catch (error) {
       console.error(error);
@@ -419,6 +419,10 @@ export class DistributeWorkOrderService {
 
   async postErrorFields(fields: number[], comments: any[], fields_assign: number[], work_order_id: number, assigned_to: number, time_interval: number, error_count: number): Promise<any> {
     // const updatedFields = [];
+    await this.distributeWorkOrderModel.update(
+      { status: 'approved' },
+      { where: { work_order_id: work_order_id, assigned_to: assigned_to } },
+    );
     if (fields.length > 0) {
       const temp = await this.employeeService.AuthorTeamId(assigned_to);
       const load_list = [];
@@ -460,11 +464,6 @@ export class DistributeWorkOrderService {
       await this.createNewAuthorOrder(work_order_id, fields_assign, temp[load_list.indexOf(Math.min(...load_list))], 8);
 
       await this.postEmployeeStatsforReadWrite(work_order_id, time_interval, error_count, assigned_to, fields_assign)
-    }else{
-      await this.distributeWorkOrderModel.update(
-        { status: 'Done' },
-        { where: { work_order_id: work_order_id, assigned_to: assigned_to } },
-      );
     }
   }
 
@@ -486,7 +485,8 @@ export class DistributeWorkOrderService {
         error_count: error_count, // Convert error_count to string
         employee_id, 
         team_id: prev_employee.team_id, 
-        role_id: prev_employee.role_id
+        role_id: prev_employee.role_id,
+        date: new Date()
     });
     
 }

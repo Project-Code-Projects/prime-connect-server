@@ -21,7 +21,8 @@ export class FieldDataService {
   }
 
   async updateFieldDataByFieldId(value: string, order_id: number, field_id: number, time: number): Promise<void> {
-    await FieldData.update({ value: value}, { where: { work_order_id: order_id, field_id: field_id, time_interval: time } });
+    console.log('update check')
+    await FieldData.update({ value: value, time_interval: time}, { where: { work_order_id: order_id, field_id: field_id } });
   }
 
   async findOneFieldData(id: number): Promise<FieldData> {
@@ -33,7 +34,7 @@ export class FieldDataService {
 
   async findAllFieldByWorkOrderid(order_id: number, assigned_to: number): Promise<any> {
    const data = await FieldData.findAll({where: {work_order_id: order_id, assigned_to: assigned_to}});
-  
+    console.log('data',data)
    const fields = data.map((field) => field.field_id);
    console.log('field data check',fields);
   //  console.log(fields);
