@@ -18,6 +18,7 @@ import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { PdfService } from 'src/pdf/pdf.service';
 import { MainWorkOrderService } from 'src/main-work-order/main-work-order.service';
 import { PrimaryService } from '../Primary_data/primary.service';
+import { WorkflowService } from 'src/workflow/workflow.service';
 import * as Multer from 'multer';
 @Controller('customer')
 export class CustomerController {
@@ -29,6 +30,7 @@ export class CustomerController {
     private readonly pdfService: PdfService,
     private readonly mainWorkOrderService: MainWorkOrderService,
     private readonly primaryService: PrimaryService,
+    private readonly workflowService: WorkflowService,
   ) {}
 
   @Get()
@@ -45,8 +47,11 @@ export class CustomerController {
     const existingCustomer = await this.customerService.findByNid(
       customer.nid_no,
     );
+
     let nextAccId = 0;
     const { team_id, account_type } = customer;
+    const firstSequence =
+      await this.workflowService.getFirstSequenceByTeamId(team_id);
     const maxId = await this.customerService.findMaxAccId();
     nextAccId = maxId + 1;
 
@@ -65,17 +70,6 @@ export class CustomerController {
         status: 'need approval',
         current_state: 'pending',
       });
-      await this.mainWorkOrderService.createMainWorkOrder({
-        acc_id: nextAccId,
-        customer_id: existingCustomer.id,
-        acc_type: 'personal',
-        status: 'need approval',
-        team_id: 2,
-        assigned_to: null,
-        start_time: new Date(),
-        isAssigned: false,
-        checked: null,
-      });
 
       await Promise.all(
         matchedPdfIds.map(async (pdfId, index) => {
@@ -84,7 +78,7 @@ export class CustomerController {
               files[index].buffer,
             );
             console.log(pdfValue);
-
+            this.pdfs.push({ id: pdfId, pdf_values: pdfValue });
             await this.docubucketService.postPdf({
               acc_id: nextAccId,
               customer_id: existingCustomer.id,
@@ -94,6 +88,48 @@ export class CustomerController {
           }
         }),
       );
+      if (firstSequence.access == 'Read') {
+        await this.mainWorkOrderService.createMainWorkOrder({
+          acc_id: nextAccId,
+          customer_id: existingCustomer.id,
+          acc_type: 'personal',
+          status: 'Read',
+          team_id: team_id,
+          assigned_to: null,
+          start_time: new Date(),
+          isAssigned: false,
+          checked: false,
+        });
+        //assign
+        const primaryData = {
+          name: existingCustomer.name,
+          nid: existingCustomer.nid_no,
+          phone: existingCustomer.phone,
+          address: existingCustomer.address,
+          email: existingCustomer.email,
+          tin: existingCustomer.tin_no,
+          acc_type: account_type,
+          acc_id: nextAccId,
+          customer_id: existingCustomer.id,
+          team_id: team_id,
+          pdf: this.pdfs,
+          birth_certi: existingCustomer.birth_certificate_no,
+        };
+
+        this.primaryService.createPrimary(primaryData);
+      } else if (firstSequence.access == 'Write') {
+        await this.mainWorkOrderService.createMainWorkOrder({
+          acc_id: nextAccId,
+          customer_id: existingCustomer.id,
+          acc_type: 'personal',
+          status: 'Write',
+          team_id: team_id,
+          assigned_to: null,
+          start_time: new Date(),
+          isAssigned: false,
+          checked: false,
+        });
+      }
 
       throw new HttpException(
         { message: 'NID number already exists', existingCustomer },
@@ -109,17 +145,17 @@ export class CustomerController {
       status: 'need approval',
       current_state: 'pending',
     });
-    await this.mainWorkOrderService.createMainWorkOrder({
-      acc_id: nextAccId,
-      customer_id: createdCustomer.id,
-      acc_type: 'personal',
-      status: 'need approval',
-      team_id: 2,
-      assigned_to: null,
-      start_time: new Date(),
-      isAssigned: false,
-      checked: false,
-    });
+    // await this.mainWorkOrderService.createMainWorkOrder({
+    //   acc_id: nextAccId,
+    //   customer_id: createdCustomer.id,
+    //   acc_type: 'personal',
+    //   status: 'need approval',
+    //   team_id: 2,
+    //   assigned_to: null,
+    //   start_time: new Date(),
+    //   isAssigned: false,
+    //   checked: false,
+    // });
     await Promise.all(
       matchedPdfIds.map(async (pdfId, index) => {
         if (pdfId !== null) {
@@ -127,8 +163,8 @@ export class CustomerController {
             files[index].buffer,
           );
           console.log(pdfValue);
-          this.pdfs.push({ id: pdfId, pdf_values: pdfValue });
 
+          this.pdfs.push({ id: pdfId, pdf_values: pdfValue });
           await this.docubucketService.postPdf({
             acc_id: nextAccId,
             customer_id: createdCustomer.id,
@@ -138,7 +174,51 @@ export class CustomerController {
         }
       }),
     );
+    if (firstSequence.access == 'Read') {
+      await this.mainWorkOrderService.createMainWorkOrder({
+        acc_id: nextAccId,
+        customer_id: createdCustomer.id,
+        acc_type: 'personal',
+        status: 'Read',
+        team_id: team_id,
+        assigned_to: null,
+        start_time: new Date(),
+        isAssigned: false,
+        checked: false,
+      });
+      //assign
+      const primaryData = {
+        name: createdCustomer.name,
+        nid: createdCustomer.nid_no,
+        phone: createdCustomer.phone,
+        address: createdCustomer.address,
+        email: createdCustomer.email,
+        tin: createdCustomer.tin_no,
+        acc_type: account_type,
+        acc_id: nextAccId,
+        customer_id: existingCustomer.id,
+        team_id: team_id,
+        pdf: this.pdfs,
+        birth_certi: createdCustomer.birth_certificate_no,
+      };
+
+      this.primaryService.createPrimary(primaryData);
+    } else if (firstSequence.access == 'Write') {
+      await this.mainWorkOrderService.createMainWorkOrder({
+        acc_id: nextAccId,
+        customer_id: createdCustomer.id,
+        acc_type: 'personal',
+        status: 'Write',
+        team_id: team_id,
+        assigned_to: null,
+        start_time: new Date(),
+        isAssigned: false,
+        checked: false,
+      });
+    }
+
     const pdfData: IPdfData = {
+      //old data
       acc_id: 1,
       customer_id: createdCustomer.id,
       pdf_1: [],
@@ -156,23 +236,6 @@ export class CustomerController {
       }
       this.pdfDataService.postPdf(pdfData);
     }
-
-    const primaryData = {
-      name: customer.name,
-      nid: customer.nid_no,
-      phone: customer.phone,
-      address: customer.address,
-      email: customer.email,
-      tin: customer.tin_no,
-      acc_type: account_type,
-      acc_id: nextAccId,
-      customer_id: createdCustomer.id,
-      team_id: team_id,
-      pdf: this.pdfs,
-      birth_certi: customer.birth_certificate_no,
-    };
-
-    this.primaryService.createPrimary(primaryData);
 
     return createdCustomer;
   }

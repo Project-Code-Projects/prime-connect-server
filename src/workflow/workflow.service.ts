@@ -13,17 +13,20 @@ export class WorkflowService {
   // }
 
   async createWorkflow(createTeamRoleDto: any): Promise<Workflow> {
-    const { sequence,team_id, isAuthor  } = createTeamRoleDto;
+    const { sequence, team_id, isAuthor } = createTeamRoleDto;
 
-    if(isAuthor) {
-      await this.workflowRepository.update({ isAuthor: false }, {
-        where: { team_id, isAuthor: true },
-      });
+    if (isAuthor) {
+      await this.workflowRepository.update(
+        { isAuthor: false },
+        {
+          where: { team_id, isAuthor: true },
+        },
+      );
     }
 
     await this.workflowRepository.increment(
       { sequence: 1 },
-      { where: { sequence: { [Op.gte]: sequence },team_id } }
+      { where: { sequence: { [Op.gte]: sequence }, team_id } },
     );
     return await this.workflowRepository.create<Workflow>(createTeamRoleDto);
   }
@@ -36,7 +39,10 @@ export class WorkflowService {
     return this.workflowRepository.findOne<Workflow>({ where: { id } });
   }
 
-  async updateWorkflow(id: number, updateData: Partial<Workflow>): Promise<void> {
+  async updateWorkflow(
+    id: number,
+    updateData: Partial<Workflow>,
+  ): Promise<void> {
     await this.workflowRepository.update(updateData, { where: { id } });
   }
 
@@ -53,32 +59,54 @@ export class WorkflowService {
     return workflows;
   }
 
-    async getSequence(team_id: number, role_id: number): Promise<any> {
-    const sequence = await this.workflowRepository.findOne({ where: { team_id, role_id }, attributes: ['sequence'], raw: true });
-    const check_next_sequence = await this.workflowRepository.findOne({ where: { team_id, sequence: sequence.sequence + 1 }, attributes: ['sequence', 'role_id'	, 'team_id'	], raw: true });
-    if(check_next_sequence){
-      console.log('hit')
+  async getSequence(team_id: number, role_id: number): Promise<any> {
+    const sequence = await this.workflowRepository.findOne({
+      where: { team_id, role_id },
+      attributes: ['sequence'],
+      raw: true,
+    });
+    const check_next_sequence = await this.workflowRepository.findOne({
+      where: { team_id, sequence: sequence.sequence + 1 },
+      attributes: ['sequence', 'role_id', 'team_id'],
+      raw: true,
+    });
+    if (check_next_sequence) {
+      console.log('hit');
     }
-    return check_next_sequence; 
+    return check_next_sequence;
     // return sequence;
-}
-
-async getPrevSequence(team_id: number, role_id: number): Promise<any> {
-  const sequence = await this.workflowRepository.findOne({ where: { team_id, role_id }, attributes: ['sequence'], raw: true });
-  const check_next_sequence = await this.workflowRepository.findOne({ where: { team_id, sequence: sequence.sequence - 1 }, attributes: ['sequence', 'role_id'	, 'team_id'	], raw: true });
-  if(check_next_sequence){
-    console.log('hit')
   }
-  return check_next_sequence; 
-}
 
-async findAllByTeamId(team_id: number): Promise<Workflow[]> {
-  console.log('team_id', team_id)
-  const obj = await this.workflowRepository.findAll({
-    where: { team_id },
-  });
-  console.log(obj);
-  return obj;
-}
+  async getPrevSequence(team_id: number, role_id: number): Promise<any> {
+    const sequence = await this.workflowRepository.findOne({
+      where: { team_id, role_id },
+      attributes: ['sequence'],
+      raw: true,
+    });
+    const check_next_sequence = await this.workflowRepository.findOne({
+      where: { team_id, sequence: sequence.sequence - 1 },
+      attributes: ['sequence', 'role_id', 'team_id'],
+      raw: true,
+    });
+    if (check_next_sequence) {
+      console.log('hit');
+    }
+    return check_next_sequence;
+  }
 
+  async findAllByTeamId(team_id: number): Promise<Workflow[]> {
+    console.log('team_id', team_id);
+    const obj = await this.workflowRepository.findAll({
+      where: { team_id },
+    });
+    console.log(obj);
+    return obj;
+  }
+
+  async getFirstSequenceByTeamId(team_id: number): Promise<any> {
+    const sequence = await this.workflowRepository.findOne({
+      where: { team_id: team_id, sequence: 1 },
+    });
+    return sequence;
+  }
 }
