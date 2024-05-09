@@ -35,25 +35,25 @@ export class Employee extends Model<Employee> {
   name: string;
 
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
   })
-  age: string;
+  age: number;
 
   @Column({
     type: DataTypes.STRING,
     allowNull: false,
-    // unique: true
-    // validate: {
-    //   isEmail: true,
-    // },
+    unique: true,
+    validate: {
+      isEmail: true,
+    },
   })
   email: string;
 
   @Column({
     type: DataTypes.STRING,
     allowNull: false,
-    // unique: true,
+    unique: true,
   })
   phone: string;
 
@@ -65,27 +65,28 @@ export class Employee extends Model<Employee> {
 
   @Column({
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   })
   admin: string;
+
   @Column({
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   })
   profile_pic: string;
 
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
   })
-  team_id: string;
+  team_id: number;
 
   @ForeignKey(() => Role)
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
   })
-  role_id: string;
+  role_id: number;
 
   @BelongsTo(() => Role)
   role: Role;
@@ -99,3 +100,5 @@ export class Employee extends Model<Employee> {
   @HasMany(() => MainWorkOrder)
   employee: MainWorkOrder[];
 }
+
+
