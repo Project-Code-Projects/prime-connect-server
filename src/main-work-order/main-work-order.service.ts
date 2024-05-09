@@ -47,7 +47,7 @@ export class MainWorkOrderService {
   ) {}
 
   async getWorkOrderByEmployeeId(id: number): Promise<any> {
-    return this.mainWorkOrderModel.findAll({ where: { assigned_to: id } });
+    return this.mainWorkOrderModel.findAll({ where: { assigned_to: id , status: "Read"} });
   }
 
   async createMainWorkOrder(

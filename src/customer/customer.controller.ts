@@ -196,7 +196,7 @@ export class CustomerController {
         tin: createdCustomer.tin_no,
         acc_type: account_type,
         acc_id: nextAccId,
-        customer_id: existingCustomer.id,
+        customer_id:  createdCustomer.id,
         team_id: team_id,
         pdf: this.pdfs,
         birth_certi: createdCustomer.birth_certificate_no,
