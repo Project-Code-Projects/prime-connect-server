@@ -13,17 +13,22 @@ import { IMainWorkOrder } from './main-work-order.interface';
 
 @Controller('/main-work-order')
 export class MainWorkOrderController {
-  constructor(private readonly mainWorkOrderService: MainWorkOrderService, private readonly workDetails: PrimaryService ) {}
+  constructor(
+    private readonly mainWorkOrderService: MainWorkOrderService,
+    private readonly workDetails: PrimaryService,
+  ) {}
 
   @Get('/employee/:id')
-
   async getWorkOrderByEmployeeId(@Param('id') id: number): Promise<any> {
     return this.mainWorkOrderService.getWorkOrderByEmployeeId(id);
   }
 
   @Get('work/:acc_id/:team_id/:customer_id')
-
-  async getWorkDetails(@Param('acc_id') acc_id: number, @Param('team_id') team_id: number, @Param('customer_id') customer_id: number): Promise<any> {
+  async getWorkDetails(
+    @Param('acc_id') acc_id: number,
+    @Param('team_id') team_id: number,
+    @Param('customer_id') customer_id: number,
+  ): Promise<any> {
     return this.workDetails.getWorkDetails(acc_id, team_id, customer_id);
   }
 
@@ -72,7 +77,10 @@ export class MainWorkOrderController {
       return await this.mainWorkOrderService.workOrderCustomerDetails(orderId);
     } catch (error) {
       console.error('Error in getCustomerDetails:', error);
-      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }
