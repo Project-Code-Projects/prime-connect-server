@@ -50,6 +50,10 @@ export class MainWorkOrderService {
     return this.mainWorkOrderModel.findAll({ where: { assigned_to: id , status: "Read"} });
   }
 
+  async updateWorkDetails(acc_id: number, team_id: number, customer_id: number, updateData: any): Promise<any>{
+    return this.mainWorkOrderModel.update(updateData, { where: { acc_id, team_id, customer_id } });
+  }
+
   async createMainWorkOrder(
     revWorkOrder: IMainWorkOrder,
   ): Promise<MainWorkOrder> {
