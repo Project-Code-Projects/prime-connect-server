@@ -103,6 +103,10 @@ export class WorkflowService {
     return obj;
   }
 
+  async findOneByTeamRoleId(team_id: number, role_id: number): Promise<Workflow | null> {
+    return await this.workflowRepository.findOne({ where: { team_id, role_id } });
+  }
+
   async getFirstSequenceByTeamId(team_id: number): Promise<any> {
     const sequence = await this.workflowRepository.findAll({
       where: { team_id: team_id },

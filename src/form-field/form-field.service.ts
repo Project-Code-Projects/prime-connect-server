@@ -27,6 +27,11 @@ export class FormFieldService {
         return formField;
     }
 
+    async findByFormId(form_id: number): Promise<FormField[] | null> {
+        const formField = await this.formFieldRepository.findAll<FormField>({where: { form_id }});
+        return formField;
+    }
+
     async findByFieldId(field_id: number): Promise<FormField | null> {
         const formField = await this.formFieldRepository.findOne<FormField>({where: { field_id }});
         return formField;
@@ -43,6 +48,9 @@ export class FormFieldService {
     }
     async getLocationByFieldId(id: number): Promise<any> {
         return await FormField.findOne({where: {form_id: id}, attributes: ['location'], raw: true});
+    }
 
+    async deleteFormField(id: number): Promise<any> {
+        return await this.formFieldRepository.destroy({where: { form_id: id}});
     }
 }

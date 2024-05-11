@@ -4,5 +4,5 @@ export interface IDistributeWorkOrder {
   field_id: number[];
   assigned_to: number;
   estimated_time: number;
-  status: string;
+  status: string | null;
 }
