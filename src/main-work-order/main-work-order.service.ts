@@ -55,8 +55,15 @@ export class MainWorkOrderService {
     });
   }
 
-  async updateWorkDetails(acc_id: number, team_id: number, customer_id: number, updateData: any): Promise<any>{
-    return this.mainWorkOrderModel.update(updateData, { where: { acc_id, team_id, customer_id } });
+  async updateWorkDetails(
+    acc_id: number,
+    team_id: number,
+    customer_id: number,
+    updateData: any,
+  ): Promise<any> {
+    return this.mainWorkOrderModel.update(updateData, {
+      where: { acc_id, team_id, customer_id },
+    });
   }
 
   async createMainWorkOrder(
@@ -231,7 +238,7 @@ export class MainWorkOrderService {
       });
     } catch (error) {
       console.error('Error fetching work order:', error);
-      throw error; // Propagate the error
+      throw error;
     }
   }
 
@@ -244,7 +251,7 @@ export class MainWorkOrderService {
       });
     } catch (error) {
       console.error('Error fetching customer details:', error);
-      throw error; // Propagate the error
+      throw error;
     }
   }
   async explodeWorkOrder(teamId: number, workOrderId: number, access: string) {
@@ -263,7 +270,7 @@ export class MainWorkOrderService {
       });
       console.log('fieldIds', fieldIds);
       let i = await this.fieldDataModel.findOne({
-        order: [['createdAt', 'DESC']], // Replace 'createdAt' with the column you want to order by
+        order: [['createdAt', 'DESC']],
         limit: 1,
       });
       let j = 1;
@@ -294,7 +301,7 @@ export class MainWorkOrderService {
       this.distributeWorkOrderService.distributeTask(teamId, teamRole.role_id);
     } catch (error) {
       console.error('Error exploding work order:', error);
-      throw error; // Propagate the error
+      throw error;
     }
   }
 }
