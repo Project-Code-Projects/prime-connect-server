@@ -11,7 +11,7 @@ import { DataTypes } from 'sequelize';
 import { IEmployeeRole } from './employee-role.interface';
 import { WorkFlowAssignLog } from '../workflow-assign-log/workflow-assign-log.model';
 @Table({
-  tableName: 'role',
+  tableName: 'employee_role',
   timestamps: false, // Disable timestamps
   freezeTableName: true, // Prevent table name changes
 })

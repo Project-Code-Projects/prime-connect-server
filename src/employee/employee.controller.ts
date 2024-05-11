@@ -1,15 +1,50 @@
-import { Controller, Post, Get, Put, Delete, Body,Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Put,
+  Delete,
+  Body,
+  Param,
+} from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { TeamService } from '../team/team.service';
 import { RoleService } from '../role/role.service';
 
 @Controller('employee')
 export class EmployeeController {
-  constructor(private roleService: RoleService,private readonly employeeService: EmployeeService, private readonly teamService: TeamService) {}
+  constructor(
+    private roleService: RoleService,
+    private readonly employeeService: EmployeeService,
+    private readonly teamService: TeamService,
+  ) {}
 
   @Post()
   async createEmployee(@Body() createEmployeeDto: any) {
     // console.log(createEmployeeDto);
+    const {
+      name,
+      age,
+      email,
+      phone,
+      admin,
+      team_id,
+      role_id,
+      active,
+      profile_pic,
+    } = createEmployeeDto;
+    const employee = {
+      name,
+      age,
+      email,
+      phone,
+      active,
+      admin,
+      profile_pic,
+      team_id,
+      role_id,
+    };
+    console.log(employee);
     return this.employeeService.createEmployee(createEmployeeDto);
   }
 
@@ -22,7 +57,8 @@ export class EmployeeController {
   async findAllActiveEmployeeByTeamId(@Param('id') team_id: number) {
     const team = await this.teamService.findOne(team_id);
     const roles = team?.roles;
-    const employees = await this.employeeService.findAllActiveEmployeeByTeamId(team_id);
+    const employees =
+      await this.employeeService.findAllActiveEmployeeByTeamId(team_id);
     return { roles, employees };
   }
 
@@ -30,7 +66,8 @@ export class EmployeeController {
   async findAllEmployeeByTeamId(@Param('id') team_id: number) {
     const team = await this.teamService.findOne(team_id);
     const roles = team?.roles;
-    const employees = await this.employeeService.findAllEmployeeByTeamId(team_id);
+    const employees =
+      await this.employeeService.findAllEmployeeByTeamId(team_id);
     return { roles, employees };
   }
 
@@ -39,8 +76,14 @@ export class EmployeeController {
     const employee = await this.employeeService.findOne(id);
     const role = await this.roleService.findOne(employee.role_id);
     const team = await this.teamService.findOne(employee.team_id);
-    const department = team.department;
-    if(department) return { roleName: role?.name,teamName: team?.name, employee,department };
+    const department = team.department.name;
+    if (department)
+      return {
+        roleName: role?.name,
+        teamName: team?.name,
+        employee,
+        department,
+      };
   }
 
   @Get('/role/:id')
@@ -50,16 +93,24 @@ export class EmployeeController {
   }
 
   @Put()
-  async updateEmployeeInfo( @Body() updateData: Partial<any> ): Promise<any> {
-    const { email,admin } = updateData;
-    const updatedData = await this.employeeService.updateEmployeeInfo(email,{admin} );
+  async updateEmployeeInfo(@Body() updateData: Partial<any>): Promise<any> {
+    const { email, admin } = updateData;
+    const updatedData = await this.employeeService.updateEmployeeInfo(email, {
+      admin,
+    });
     // console.log(updatedData);
     return updatedData;
   }
   @Put('/:id')
-  async updateEmployee(@Param('id') id: number, @Body() updateData: Partial<any> ): Promise<any> {
+  async updateEmployee(
+    @Param('id') id: number,
+    @Body() updateData: Partial<any>,
+  ): Promise<any> {
     // const { email,admin } = updateData;
-    const updatedData = await this.employeeService.updateEmployee( id, updateData);
+    const updatedData = await this.employeeService.updateEmployee(
+      id,
+      updateData,
+    );
     // console.log(updatedData);
     return updatedData;
   }
@@ -76,8 +127,19 @@ export class EmployeeController {
 
   @Post('employee_stats')
   async postEmployeeStats(@Body() employeeStats: any): Promise<any> {
-    const { work_order_id, time_interval, error_count, employee_id } = employeeStats;
-    return await this.employeeService.postEmployeeStats(work_order_id, time_interval, error_count, employee_id);
+    const { work_order_id, time_interval, error_count, employee_id } =
+      employeeStats;
+    return await this.employeeService.postEmployeeStats(
+      work_order_id,
+      time_interval,
+      error_count,
+      employee_id,
+    );
   }
-
+  @Get('employee-active-stats')
+  async getEmployeeStats(): Promise<any> {
+    const { active, inActive } =
+      await this.employeeService.employeeActiveInfo();
+    return { active, inActive };
+  }
 }

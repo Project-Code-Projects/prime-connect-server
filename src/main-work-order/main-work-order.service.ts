@@ -16,6 +16,8 @@ import { TeamField } from 'src/team-field/team_field.model';
 import { Form } from 'src/form/form.model';
 import { FormField } from 'src/form-field/form-field.model';
 import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
+import { log } from 'console';
+import { DistributeWorkOrderService } from 'src/distribute-work-order/distribute-work-order.service';
 
 @Injectable()
 export class MainWorkOrderService {
@@ -37,17 +39,31 @@ export class MainWorkOrderService {
     private readonly fieldTableModel: typeof FieldTable,
     @Inject('TEAM_FIELD_REPOSITORY')
     private readonly teamFieldModel: typeof TeamField,
-    @Inject('TEAM_ROLE_REPOSITORY')
-    private readonly teamRoleModel: typeof Workflow,
+    @Inject('WORKFLOW_REPOSITORY')
+    private readonly workflowModel: typeof Workflow,
     @Inject('FORM_REPOSITORY')
     private readonly formModel: typeof Form,
     @Inject('FORM_FIELD_REPOSITORY')
     private readonly formFieldModel: typeof FormField,
     private readonly docuBucketService: DocubucketService,
+    private readonly distributeWorkOrderService: DistributeWorkOrderService,
   ) {}
 
   async getWorkOrderByEmployeeId(id: number): Promise<any> {
-    return this.mainWorkOrderModel.findAll({ where: { assigned_to: id } });
+    return this.mainWorkOrderModel.findAll({
+      where: { assigned_to: id, status: 'Read' },
+    });
+  }
+
+  async updateWorkDetails(
+    acc_id: number,
+    team_id: number,
+    customer_id: number,
+    updateData: any,
+  ): Promise<any> {
+    return this.mainWorkOrderModel.update(updateData, {
+      where: { acc_id, team_id, customer_id },
+    });
   }
 
   async createMainWorkOrder(
@@ -120,72 +136,85 @@ export class MainWorkOrderService {
     }
   }
 
-  async distributeTask(teamId: number = 2, rolId: number = 2): Promise<void> {
+  async distributeTask(
+    teamId: number = 2,
+    accId: number,
+    workOrderId: number,
+    rolId: number = 2,
+  ): Promise<void> {
     try {
       const activeEmployees = await this.employeeModel.findAll({
         where: { active: true, role_id: rolId, team_id: teamId },
+        include: [{ model: MainWorkOrder, as: 'employee' }],
       });
-      for (let i = 0; i < activeEmployees.length; i++) {
-        const taskForReviwer = await this.mainWorkOrderModel.findAll({
-          where: {
-            assigned_to: null,
-            isAssigned: false,
-            status: 'need approval',
-          },
-        });
-
-        for (let j = 0; j < taskForReviwer.length; j++) {
-          if (j < this.threshold) {
-            await this.assignTask(
-              taskForReviwer[j].id,
-              null,
-              activeEmployees[i].id,
-            );
-            await this.updateMainWorkOrder(
-              taskForReviwer[j].id,
-              taskForReviwer[j].acc_id,
-              activeEmployees[i].id,
-            );
-            const teamRole = await this.teamRoleModel.findOne({
-              where: { team_id: teamId, access: 'Write' },
-            });
-
-            const form = await this.formModel.findOne({
-              where: { team_id: teamId, role_id: teamRole.id },
-            });
-            console.log(form.id);
-
-            const fieldIds = await this.formFieldModel.findAll({
-              where: { form_id: form.id },
-            });
-            for (const fieldId of fieldIds) {
-              // const tableField = await this.teamFieldModel.findOne({
-              //   where: { field_id: fieldId.id },
-              // });
-              const estimatedTime = await this.fieldTableModel.findOne({
-                where: { id: fieldId.field_id },
-              });
-
-              const fieldData = new FieldData({
-                work_order_id: taskForReviwer[j].id,
-                field_id: fieldId.id,
-
-                value: null,
-                status: null,
-                estimated_time: estimatedTime.estimated_time,
-                assigned_time: null,
-                err_type: null,
-                err_comment: null,
-                sequence: parseInt(fieldId.sequence),
-                // page: parseInt(fieldId.page),
-                assigned_to: null,
-              });
-
-              await fieldData.save();
-            }
-          }
+      let minTasksCount = Infinity;
+      let employeeWithMinTasks: Employee | null = null;
+      activeEmployees.forEach((employee) => {
+        const tasksCount = employee.employee.length;
+        if (tasksCount < minTasksCount) {
+          minTasksCount = tasksCount;
+          employeeWithMinTasks = employee;
         }
-      }
+      });
+      console.log(employeeWithMinTasks.id);
+
+      // for (let i = 0; i < activeEmployees.length; i++) {
+      //   const taskForReviwer = await this.mainWorkOrderModel.findAll({
+      //     where: {
+      //       assigned_to: null,
+      //       isAssigned: false,
+      //       status: 'need approval',
+      //     },
+      //   });
+
+      // for (let j = 0; j < taskForReviwer.length; j++) {
+      //   if (j < this.threshold) {
+      await this.assignTask(workOrderId, null, employeeWithMinTasks.id);
+      await this.updateMainWorkOrder(
+        workOrderId,
+        accId,
+        employeeWithMinTasks.id,
+      );
+      // const teamRole = await this.workflowModel.findOne({
+      //   where: { team_id: teamId, access: 'Write' },
+      // });
+
+      // const form = await this.formModel.findOne({
+      //   where: { team_id: teamId, role_id: teamRole.id },
+      // });
+      // console.log(form.id);
+
+      // const fieldIds = await this.formFieldModel.findAll({
+      //   where: { form_id: form.id },
+      // });
+      // for (const fieldId of fieldIds) {
+      //   // const tableField = await this.teamFieldModel.findOne({
+      //   //   where: { field_id: fieldId.id },
+      //   // });
+      //   const estimatedTime = await this.fieldTableModel.findOne({
+      //     where: { id: fieldId.field_id },
+      //   });
+
+      //   const fieldData = new FieldData({
+      //     work_order_id: taskForReviwer[j].id,
+      //     field_id: fieldId.id,
+
+      //     value: null,
+      //     status: null,
+      //     estimated_time: estimatedTime.estimated_time,
+      //     assigned_time: null,
+      //     err_type: null,
+      //     err_comment: null,
+      //     sequence: parseInt(fieldId.sequence),
+      //     // page: parseInt(fieldId.page),
+      //     assigned_to: null,
+      //   });
+
+      //   await fieldData.save();
+      // }
+      // }
+      // }
+      // }
 
       console.log('Tasks distributed successfully.');
     } catch (error) {
@@ -198,7 +227,18 @@ export class MainWorkOrderService {
     this.logger.debug('Running distributeTask cron job...');
     const workflows = await this.teamRoleService.findAllByAccess('Read');
     for (const workflow of workflows) {
-      await this.distributeTask(workflow.team_id);
+      // await this.distributeTask(workflow.team_id);
+    }
+  }
+  async getWorkOrderByAccId(accId: number) {
+    try {
+      return await this.mainWorkOrderModel.findOne({
+        where: { acc_id: accId },
+        raw: true,
+      });
+    } catch (error) {
+      console.error('Error fetching work order:', error);
+      throw error;
     }
   }
 
@@ -211,7 +251,57 @@ export class MainWorkOrderService {
       });
     } catch (error) {
       console.error('Error fetching customer details:', error);
-      throw error; // Propagate the error
+      throw error;
+    }
+  }
+  async explodeWorkOrder(teamId: number, workOrderId: number, access: string) {
+    try {
+      const teamRole = await this.workflowModel.findOne({
+        where: { team_id: teamId, access: access },
+      });
+
+      // console.log('teamRole', teamRole.id);
+      const form = await this.formModel.findOne({
+        where: { team_id: teamId, role_id: teamRole.role_id },
+      });
+      console.log('form', form.id);
+      const fieldIds = await this.formFieldModel.findAll({
+        where: { form_id: form.id },
+      });
+      console.log('fieldIds', fieldIds);
+      let i = await this.fieldDataModel.findOne({
+        order: [['createdAt', 'DESC']],
+        limit: 1,
+      });
+      let j = 1;
+      for (const fieldId of fieldIds) {
+        // const tableField = await this.teamFieldModel.findOne({
+        //   where: { field_id: fieldId.id },
+        // });
+        const estimatedTime = await this.fieldTableModel.findOne({
+          where: { id: fieldId.field_id },
+        });
+        const fieldData = new FieldData({
+          id: i.id++ + j,
+          work_order_id: workOrderId,
+          field_id: fieldId.id,
+          value: null,
+          status: null,
+          estimated_time: estimatedTime.estimated_time,
+          assigned_time: null,
+          err_type: null,
+          err_comment: null,
+          sequence: parseInt(fieldId.sequence),
+          // page: parseInt(fieldId.page),
+          assigned_to: null,
+        });
+        await fieldData.save();
+        j++;
+      }
+      this.distributeWorkOrderService.distributeTask(teamId, teamRole.role_id);
+    } catch (error) {
+      console.error('Error exploding work order:', error);
+      throw error;
     }
   }
 }

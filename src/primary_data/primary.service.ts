@@ -1,5 +1,5 @@
-import { Injectable,Inject } from "@nestjs/common";
-import { Primary } from "./primary.model";
+import { Injectable, Inject } from '@nestjs/common';
+import { Primary } from './primary.model';
 
 @Injectable()
 export class PrimaryService {
@@ -9,6 +9,7 @@ export class PrimaryService {
   ) {}
 
   async createPrimary(createPrimaryDto: any): Promise<any> {
+    console.log(createPrimaryDto);
     return await this.primaryRepository.create<Primary>(createPrimaryDto);
   }
 
@@ -20,12 +21,16 @@ export class PrimaryService {
     return await this.primaryRepository.findOne<Primary>({ where: { id } });
   }
 
-  async getWorkDetails(acc_id: number, team_id: number, customer_id: number){
-    return await this.primaryRepository.findOne<any>({ where: { acc_id, team_id, customer_id } });
+  async getWorkDetails(acc_id: number, team_id: number, customer_id: number) {
+    return await this.primaryRepository.findOne<any>({
+      where: { acc_id, team_id, customer_id },
+    });
   }
 
   async updatePrimary(id: number, updatePrimaryDto: any): Promise<any> {
-    return await this.primaryRepository.update<Primary>(updatePrimaryDto, { where: { id } });
+    return await this.primaryRepository.update<Primary>(updatePrimaryDto, {
+      where: { id },
+    });
   }
 
   async removePrimary(id: number): Promise<any> {

@@ -464,16 +464,15 @@ export class DistributeWorkOrderService {
     const time_allotted_ms = Date.now() - new Date(time.createdAt).getTime(); // Calculate the time difference in milliseconds
     const time_allotted = Math.floor(time_allotted_ms / (1000 * 60)); // Convert milliseconds to minutes
     console.log(target_time, time_allotted);
-    await EmployeeStats.create({ 
-        work_order_id, 
-        target_time, 
-        time_interval, 
-        time_allotted: time_allotted, // Convert time_allotted to string
-        error_count: error_count, // Convert error_count to string
-        employee_id, 
-        team_id: prev_employee.team_id, 
-        role_id: prev_employee.role_id,
-        date: new Date()
+    await EmployeeStats.create({
+      work_order_id,
+      target_time,
+      time_interval,
+      time_allotted: time_allotted, // Convert time_allotted to string
+      error_count: error_count, // Convert error_count to string
+      employee_id,
+      team_id: Number(prev_employee.team_id),
+      role_id: Number(prev_employee.role_id),
     });
     
 }
@@ -516,10 +515,10 @@ async postEmployeeStatsforReadWrite(work_order_id: number, time_interval: number
       time_interval, 
       time_allotted: time_allotted, // Convert time_allotted to string
       error_count: error_count, // Convert error_count to string
-      employee_id, 
-      team_id: prev_employee.team_id, 
-      role_id: prev_employee.role_id
-  });
+      employee_id,
+      team_id: Number(prev_employee.team_id),
+      role_id: Number(prev_employee.role_id),
+    });
 
   await this.incrementErrorCount(list);
 }

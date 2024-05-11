@@ -31,6 +31,12 @@ import { PrimaryService } from '../Primary_data/primary.service';
 import { primaryProvider } from '../Primary_data/primary.provider';
 import { WorkflowService } from '../workflow/workflow.service';
 import { workflowProvider } from '../workflow/workflow.provider';
+import { DistributeWorkOrderService } from 'src/distribute-work-order/distribute-work-order.service';
+import { distributeWorkOrderProviders } from 'src/distribute-work-order/distribute-work-order.providers';
+import { EmployeeService } from 'src/employee/employee.service';
+import { employeeProvider } from 'src/employee/employee.provider';
+import { EmployeeStatsService } from 'src/employee_stats/employee_stats.service';
+import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
 
 @Module({
   // PdfDataModule, PdfModule, MainWorkOrderModule
@@ -51,6 +57,12 @@ import { workflowProvider } from '../workflow/workflow.provider';
     FormService,
     FormFieldService,
     PrimaryService,
+    DistributeWorkOrderService,
+    EmployeeService,
+    EmployeeStatsService,
+    employeeStatsProvider,
+    employeeProvider,
+    ...distributeWorkOrderProviders,
     ...customerProviders,
     ...pdfDataProviders,
     ...docuBucketProviders,

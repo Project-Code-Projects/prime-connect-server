@@ -65,12 +65,13 @@ export class Employee extends Model<Employee> {
 
   @Column({
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   })
   admin: string;
+
   @Column({
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
   })
   profile_pic: string;
 
@@ -82,6 +83,7 @@ export class Employee extends Model<Employee> {
 
   @ForeignKey(() => Role)
   @Column({
+    type: DataTypes.INTEGER,
     allowNull: false,
   })
   role_id: number;
@@ -98,3 +100,5 @@ export class Employee extends Model<Employee> {
   @HasMany(() => MainWorkOrder)
   employee: MainWorkOrder[];
 }
+
+

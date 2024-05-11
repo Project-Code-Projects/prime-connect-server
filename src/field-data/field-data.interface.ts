@@ -1,5 +1,5 @@
 export interface IFieldData {
-  id: number;
+  id?: number;
   work_order_id: number;
   field_id: number;
   value: string | null;
@@ -12,5 +12,5 @@ export interface IFieldData {
   page: number;
   assigned_to: number | null;
   time_interval: number | null;
-  prev_assigned: number [] | [];
+  prev_assigned: number[] | [];
 }
