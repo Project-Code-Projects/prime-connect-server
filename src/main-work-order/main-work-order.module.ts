@@ -38,6 +38,8 @@ import { EmployeeStatsService } from 'src/employee_stats/employee_stats.service'
 import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
 import { WorkflowService } from '../workflow/workflow.service';
 import { workflowProvider } from '../workflow/workflow.provider';
+import { DistributeWorkOrderService } from 'src/distribute-work-order/distribute-work-order.service';
+import { distributeWorkOrderProviders } from 'src/distribute-work-order/distribute-work-order.providers';
 // import { DocubucketModule } from 'src/docu-bucket/docu-bucket.module';
 
 @Module({
@@ -54,7 +56,7 @@ import { workflowProvider } from '../workflow/workflow.provider';
     workflowProvider,
     MainWorkOrderService,
     EmployeeService,
-    PrimaryService ,
+    PrimaryService,
     WorkFlowAssignLogService,
     WorkflowService,
     TeamRoleService,
@@ -65,6 +67,7 @@ import { workflowProvider } from '../workflow/workflow.provider';
     FormFieldService,
     DocubucketService,
     EmployeeStatsService,
+    DistributeWorkOrderService,
     employeeStatsProvider,
     primaryProvider,
     ...employeeProviders,
@@ -77,6 +80,7 @@ import { workflowProvider } from '../workflow/workflow.provider';
     teamFieldProvider,
     formProvider,
     formFieldProvider,
+    ...distributeWorkOrderProviders,
   ],
 })
 export class MainWorkOrderModule {}

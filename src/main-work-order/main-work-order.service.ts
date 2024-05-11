@@ -17,6 +17,7 @@ import { Form } from 'src/form/form.model';
 import { FormField } from 'src/form-field/form-field.model';
 import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { log } from 'console';
+import { DistributeWorkOrderService } from 'src/distribute-work-order/distribute-work-order.service';
 
 @Injectable()
 export class MainWorkOrderService {
@@ -38,13 +39,14 @@ export class MainWorkOrderService {
     private readonly fieldTableModel: typeof FieldTable,
     @Inject('TEAM_FIELD_REPOSITORY')
     private readonly teamFieldModel: typeof TeamField,
-    @Inject('TEAM_ROLE_REPOSITORY')
-    private readonly teamRoleModel: typeof Workflow,
+    @Inject('WORKFLOW_REPOSITORY')
+    private readonly workflowModel: typeof Workflow,
     @Inject('FORM_REPOSITORY')
     private readonly formModel: typeof Form,
     @Inject('FORM_FIELD_REPOSITORY')
     private readonly formFieldModel: typeof FormField,
     private readonly docuBucketService: DocubucketService,
+    private readonly distributeWorkOrderService: DistributeWorkOrderService,
   ) {}
 
   async getWorkOrderByEmployeeId(id: number): Promise<any> {
@@ -162,7 +164,7 @@ export class MainWorkOrderService {
         accId,
         employeeWithMinTasks.id,
       );
-      // const teamRole = await this.teamRoleModel.findOne({
+      // const teamRole = await this.workflowModel.findOne({
       //   where: { team_id: teamId, access: 'Write' },
       // });
 
@@ -243,16 +245,24 @@ export class MainWorkOrderService {
   }
   async explodeWorkOrder(teamId: number, workOrderId: number, access: string) {
     try {
-      const teamRole = await this.teamRoleModel.findOne({
+      const teamRole = await this.workflowModel.findOne({
         where: { team_id: teamId, access: access },
       });
+
+      // console.log('teamRole', teamRole.id);
       const form = await this.formModel.findOne({
-        where: { team_id: teamId, role_id: teamRole.id },
+        where: { team_id: teamId, role_id: teamRole.role_id },
       });
-      console.log(form.id);
+      console.log('form', form.id);
       const fieldIds = await this.formFieldModel.findAll({
         where: { form_id: form.id },
       });
+      console.log('fieldIds', fieldIds);
+      let i = await this.fieldDataModel.findOne({
+        order: [['createdAt', 'DESC']], // Replace 'createdAt' with the column you want to order by
+        limit: 1,
+      });
+      let j = 1;
       for (const fieldId of fieldIds) {
         // const tableField = await this.teamFieldModel.findOne({
         //   where: { field_id: fieldId.id },
@@ -261,6 +271,7 @@ export class MainWorkOrderService {
           where: { id: fieldId.field_id },
         });
         const fieldData = new FieldData({
+          id: i.id++ + j,
           work_order_id: workOrderId,
           field_id: fieldId.id,
           value: null,
@@ -274,7 +285,9 @@ export class MainWorkOrderService {
           assigned_to: null,
         });
         await fieldData.save();
+        j++;
       }
+      this.distributeWorkOrderService.distributeTask(teamId, teamRole.role_id);
     } catch (error) {
       console.error('Error exploding work order:', error);
       throw error; // Propagate the error

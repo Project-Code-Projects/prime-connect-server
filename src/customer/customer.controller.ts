@@ -108,22 +108,22 @@ export class CustomerController {
           workOrder.id,
         );
         //assign
-        // const primaryData = {
-        //   name: existingCustomer.name,
-        //   nid: existingCustomer.nid_no,
-        //   phone: existingCustomer.phone,
-        //   address: existingCustomer.address,
-        //   email: existingCustomer.email,
-        //   tin: existingCustomer.tin_no,
-        //   acc_type: account_type,
-        //   acc_id: nextAccId,
-        //   customer_id: existingCustomer.id,
-        //   team_id: team_id,
-        //   pdf: this.pdfs,
-        //   birth_certi: existingCustomer.birth_certificate_no,
-        // };
+        const primaryData = {
+          name: existingCustomer.name,
+          nid: existingCustomer.nid_no,
+          phone: existingCustomer.phone,
+          address: existingCustomer.address,
+          email: existingCustomer.email,
+          tin: existingCustomer.tin_no,
+          acc_type: account_type,
+          acc_id: nextAccId,
+          customer_id: existingCustomer.id,
+          team_id: team_id,
+          pdf: this.pdfs,
+          birth_certi: existingCustomer.birth_certificate_no,
+        };
 
-        // this.primaryService.createPrimary(primaryData);
+        this.primaryService.createPrimary(primaryData);
       } else if (firstSequence.access == 'Write') {
         await this.mainWorkOrderService.createMainWorkOrder({
           acc_id: nextAccId,
@@ -208,23 +208,23 @@ export class CustomerController {
         workOrder.acc_id,
         workOrder.id,
       );
-      //assign
-      // const primaryData = {
-      //   name: createdCustomer.name,
-      //   nid: createdCustomer.nid_no,
-      //   phone: createdCustomer.phone,
-      //   address: createdCustomer.address,
-      //   email: createdCustomer.email,
-      //   tin: createdCustomer.tin_no,
-      //   acc_type: account_type,
-      //   acc_id: nextAccId,
-      //   customer_id:  createdCustomer.id,
-      //   team_id: team_id,
-      //   pdf: this.pdfs,
-      //   birth_certi: createdCustomer.birth_certificate_no,
-      // };
+      // assign
+      const primaryData = {
+        name: createdCustomer.name,
+        nid: createdCustomer.nid_no,
+        phone: createdCustomer.phone,
+        address: createdCustomer.address,
+        email: createdCustomer.email,
+        tin: createdCustomer.tin_no,
+        acc_type: account_type,
+        acc_id: nextAccId,
+        customer_id: createdCustomer.id,
+        team_id: team_id,
+        pdf: this.pdfs,
+        birth_certi: createdCustomer.birth_certificate_no,
+      };
 
-      // this.primaryService.createPrimary(primaryData);
+      this.primaryService.createPrimary(primaryData);
     } else if (firstSequence.access == 'Write') {
       await this.mainWorkOrderService.createMainWorkOrder({
         acc_id: nextAccId,
