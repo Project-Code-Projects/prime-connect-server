@@ -14,7 +14,7 @@ import { IFieldData } from 'src/field-data/field-data.interface';
 import { EmployeeService } from 'src/employee/employee.service';
 import { FieldTableService } from 'src/field-table/field-table.service';
 import { FieldTable } from '../field-table/field-table.model';
-import sequelize from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 
 @Injectable()
 export class DistributeWorkOrderService {
@@ -237,24 +237,20 @@ export class DistributeWorkOrderService {
     try {
       let load_list = [];
       let temp;
-
-      const workOrderValues = await this.sumOfFields(work_order_id);
-      console.log('workOrderValues', workOrderValues);
-
-      const approved = await this.distributeWorkOrderModel.update(
+      const approved = await this.distributeWorkOrderModel.update( //this part is approving the work order
         { status: 'approved' },
         { where: { work_order_id: work_order_id, assigned_to: assigned_to } },
       );
 
-      const checkApproved = await this.checkApproved(work_order_id);
-      console.log('idk', checkApproved);
-      if (checkApproved) {
-        const allApproved = checkApproved.every(
-          (workOrder) => workOrder.status === 'approved',
+        const checkAllApproved = await this.checkApproved(work_order_id);
+   
+        const allApproved = checkAllApproved.every(
+          (workOrder) => workOrder.status === 'approved' || 'authorized',
         );
         if (allApproved) {
-          // const teamId = await this.employeeService.EmployeeTeamId(7);
-          console.log('all aproved');
+
+          const workOrderValues = await this.sumOfFields(work_order_id);
+  
           temp = await this.employeeService.EmployeeTeamId(assigned_to);
 
           for (let i = 0; i < temp.length; i++) {
@@ -262,23 +258,13 @@ export class DistributeWorkOrderService {
             const load = await this.getEmployeeWorkLoad(temp[i]);
             load_list[i] = load.length;
           }
-        }
-      } else {
-        console.log('Work order not found or status not available.');
-      }
-
-      console.log(
-        'least work',
-        temp[load_list.indexOf(Math.min(...load_list))],
-      );
-      console.log('temp', temp);
-      console.log('wk', workOrderValues);
-      await this.createNewAuthorOrder(
-        work_order_id,
-        workOrderValues.field_id,
-        temp[load_list.indexOf(Math.min(...load_list))],
-        workOrderValues.estimated_time,
-      );
+          await this.createNewAuthorOrder(
+          work_order_id,
+          workOrderValues.field_id,
+          temp[load_list.indexOf(Math.min(...load_list))],
+          workOrderValues.estimated_time,
+        );
+    }
       return temp;
     } catch (error) {
       console.error(error);
@@ -322,11 +308,12 @@ export class DistributeWorkOrderService {
     const fieldValueArray = [];
     let sumOfTiem = 0;
     const fieldsValue = await this.distributeWorkOrderModel.findAll({
-      where: { work_order_id: work_order_id },
+      where: { work_order_id: work_order_id , status: 'approved' },
       attributes: ['field_id', 'estimated_time'],
       raw: true, // Ensure raw data is returned
     });
-    fieldsValue.forEach((field) => {
+  
+    fieldsValue.forEach((field) => {        //poc of code
       field.field_id.forEach((id) => {
         fieldValueArray.push(id);
       });
@@ -419,6 +406,10 @@ export class DistributeWorkOrderService {
 
   async postErrorFields(fields: number[], comments: any[], fields_assign: number[], work_order_id: number, assigned_to: number, time_interval: number, error_count: number): Promise<any> {
     // const updatedFields = [];
+    await this.distributeWorkOrderModel.update(
+      { status: 'authorized' },
+      { where: { work_order_id: work_order_id, assigned_to: assigned_to } },
+    );
     if (fields.length > 0) {
       const temp = await this.employeeService.AuthorTeamId(assigned_to);
       const load_list = [];
@@ -436,7 +427,7 @@ export class DistributeWorkOrderService {
         let field_assigned_to = await this.fieldDataModel.findOne({where: {id: fields_assign[i]}, attributes: ['assigned_to'], raw: true});
         let employee_with_error = field_assigned_to.assigned_to;
         const fieldId = fields_assign[i];
-        const comment = comments[i] || ''; // To avoid out-of-bound access in case comments array is shorter
+        const comment = comments[i] || ''; 
         console.log('employee error', typeof employee_with_error);
         try {
           const updatedField = await this.fieldDataModel.update(
@@ -460,11 +451,6 @@ export class DistributeWorkOrderService {
       await this.createNewAuthorOrder(work_order_id, fields_assign, temp[load_list.indexOf(Math.min(...load_list))], 8);
 
       await this.postEmployeeStatsforReadWrite(work_order_id, time_interval, error_count, assigned_to, fields_assign)
-    }else{
-      await this.distributeWorkOrderModel.update(
-        { status: 'Done' },
-        { where: { work_order_id: work_order_id, assigned_to: assigned_to } },
-      );
     }
   }
 
