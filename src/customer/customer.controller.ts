@@ -136,6 +136,14 @@ export class CustomerController {
           isAssigned: false,
           checked: false,
         });
+        const workOrder =
+          await this.mainWorkOrderService.getWorkOrderByAccId(nextAccId);
+
+        this.mainWorkOrderService.explodeWorkOrder(
+          team_id,
+          workOrder.id,
+          'Write',
+        );
       }
 
       throw new HttpException(
@@ -229,6 +237,14 @@ export class CustomerController {
         isAssigned: false,
         checked: false,
       });
+      const workOrder =
+        await this.mainWorkOrderService.getWorkOrderByAccId(nextAccId);
+
+      this.mainWorkOrderService.explodeWorkOrder(
+        team_id,
+        workOrder.id,
+        'Write',
+      );
     }
 
     const pdfData: IPdfData = {

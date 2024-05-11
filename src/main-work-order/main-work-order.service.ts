@@ -241,4 +241,43 @@ export class MainWorkOrderService {
       throw error; // Propagate the error
     }
   }
+  async explodeWorkOrder(teamId: number, workOrderId: number, access: string) {
+    try {
+      const teamRole = await this.teamRoleModel.findOne({
+        where: { team_id: teamId, access: access },
+      });
+      const form = await this.formModel.findOne({
+        where: { team_id: teamId, role_id: teamRole.id },
+      });
+      console.log(form.id);
+      const fieldIds = await this.formFieldModel.findAll({
+        where: { form_id: form.id },
+      });
+      for (const fieldId of fieldIds) {
+        // const tableField = await this.teamFieldModel.findOne({
+        //   where: { field_id: fieldId.id },
+        // });
+        const estimatedTime = await this.fieldTableModel.findOne({
+          where: { id: fieldId.field_id },
+        });
+        const fieldData = new FieldData({
+          work_order_id: workOrderId,
+          field_id: fieldId.id,
+          value: null,
+          status: null,
+          estimated_time: estimatedTime.estimated_time,
+          assigned_time: null,
+          err_type: null,
+          err_comment: null,
+          sequence: parseInt(fieldId.sequence),
+          // page: parseInt(fieldId.page),
+          assigned_to: null,
+        });
+        await fieldData.save();
+      }
+    } catch (error) {
+      console.error('Error exploding work order:', error);
+      throw error; // Propagate the error
+    }
+  }
 }

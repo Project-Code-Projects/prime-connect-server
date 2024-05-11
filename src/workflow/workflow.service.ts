@@ -104,9 +104,11 @@ export class WorkflowService {
   }
 
   async getFirstSequenceByTeamId(team_id: number): Promise<any> {
-    const sequence = await this.workflowRepository.findOne({
-      where: { team_id: team_id, sequence: 1 },
+    const sequence = await this.workflowRepository.findAll({
+      where: { team_id: team_id },
+      order: [['sequence', 'ASC']],
+      limit: 1,
     });
-    return sequence;
+    return sequence[0];
   }
 }
