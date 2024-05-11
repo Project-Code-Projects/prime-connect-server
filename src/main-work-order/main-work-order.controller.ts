@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Body,
   HttpException,
   HttpStatus,
@@ -82,5 +83,10 @@ export class MainWorkOrderController {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  @Put('work/:acc_id/:team_id/:customer_id')
+  async updateMainWorkOrder( @Param('acc_id') acc_id: number, @Param('team_id') team_id: number, @Param('customer_id') customer_id: number, @Body() updateData: Partial<any>): Promise<any> {
+    return this.mainWorkOrderService.updateWorkDetails(acc_id, team_id, customer_id, updateData);
   }
 }
