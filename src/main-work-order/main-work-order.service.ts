@@ -264,11 +264,11 @@ export class MainWorkOrderService {
       const form = await this.formModel.findOne({
         where: { team_id: teamId, role_id: teamRole.role_id },
       });
-      console.log('form', form.id);
+      // console.log('form', form.id);
       const fieldIds = await this.formFieldModel.findAll({
         where: { form_id: form.id },
       });
-      console.log('fieldIds', fieldIds);
+      // console.log('fieldIds', fieldIds);
       let i = await this.fieldDataModel.findOne({
         order: [['createdAt', 'DESC']],
         limit: 1,

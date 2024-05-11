@@ -70,6 +70,7 @@ export class CustomerController {
         status: 'need approval',
         current_state: 'pending',
       });
+      console.log(files);
 
       await Promise.all(
         matchedPdfIds.map(async (pdfId, index) => {
@@ -77,7 +78,7 @@ export class CustomerController {
             const pdfValue = await convertPDFBufferToImagesAndUpload(
               files[index].buffer,
             );
-            console.log(pdfValue);
+            // console.log(pdfValue);
             this.pdfs.push({ id: pdfId, pdf_values: pdfValue });
             await this.docubucketService.postPdf({
               acc_id: nextAccId,
@@ -171,13 +172,14 @@ export class CustomerController {
     //   isAssigned: false,
     //   checked: false,
     // });
+
     await Promise.all(
       matchedPdfIds.map(async (pdfId, index) => {
         if (pdfId !== null) {
           const pdfValue = await convertPDFBufferToImagesAndUpload(
             files[index].buffer,
           );
-          console.log(pdfValue);
+          // console.log(pdfValue);
 
           this.pdfs.push({ id: pdfId, pdf_values: pdfValue });
           await this.docubucketService.postPdf({
@@ -262,7 +264,7 @@ export class CustomerController {
         pdfData[`pdf_${i + 1}`] = await convertPDFBufferToImagesAndUpload(
           files[i].buffer,
         );
-        console.log(pdfData[`pdf_${i + 1}`]);
+        // console.log(pdfData[`pdf_${i + 1}`]);
       }
       this.pdfDataService.postPdf(pdfData);
     }

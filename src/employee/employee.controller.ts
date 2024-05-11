@@ -136,10 +136,8 @@ export class EmployeeController {
       employee_id,
     );
   }
-  @Get('employee-active-stats')
+  @Get('active2/1')
   async getEmployeeStats(): Promise<any> {
-    const { active, inActive } =
-      await this.employeeService.employeeActiveInfo();
-    return { active, inActive };
+    return await this.employeeService.employeeActiveInfo();
   }
 }

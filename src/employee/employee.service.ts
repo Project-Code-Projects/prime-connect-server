@@ -137,12 +137,21 @@ export class EmployeeService {
     // return employee_team_role_id;
   }
   async employeeActiveInfo(): Promise<any> {
-    const employeeActive = await this.employeeRepository.count({
-      where: { active: true },
-    });
-    const employeeInActive = await this.employeeRepository.count({
-      where: { active: false },
-    });
-    return { active: employeeActive, inActive: employeeInActive };
+    try {
+      const active = await this.employeeRepository.count({
+        where: { active: true },
+      });
+      const inActive = await this.employeeRepository.count({
+        where: { active: false },
+      });
+      const activePercentage = Math.ceil((active / (active + inActive)) * 100);
+      const inActivePercentage = Math.floor(
+        (inActive / (active + inActive)) * 100,
+      );
+      return { active, inActive, activePercentage, inActivePercentage };
+    } catch (err) {
+      console.log(err);
+      throw err;
+    }
   }
 }
