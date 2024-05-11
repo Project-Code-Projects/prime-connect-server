@@ -14,6 +14,8 @@ import { IDistributeWorkOrder } from './distribute-work-order.interface';
 import { EmployeeRoleService } from 'src/employee-role/employee-role.service';
 import { IEmployeeRole } from 'src/employee-role/employee-role.interface';
 import { FieldTableService } from 'src/field-table/field-table.service';
+import { EmployeeService } from 'src/employee/employee.service';
+import { WorkflowService } from '../workflow/workflow.service';
 
 @Controller('distribute-work-order')
 export class DistributeWorkOrderController {
@@ -21,6 +23,8 @@ export class DistributeWorkOrderController {
     private readonly distributeWorkOrderService: DistributeWorkOrderService,
     private readonly employeeService: EmployeeRoleService,
     private readonly fieldTableService: FieldTableService,
+    private readonly employeService: EmployeeService,
+    private readonly workflowService: WorkflowService
   ) {}
   @Post('assign-task')
   async assignTask(): Promise<any> {
@@ -41,8 +45,10 @@ export class DistributeWorkOrderController {
 
   async getTasksByEmployeeId(@Param('id') id: number): Promise<any> {
     try {
-      return await this.distributeWorkOrderService.findDistributedWorksByEmployeeId(
-        id
+      const employee = await this.employeService.findOne(id);
+      const workflow = await this.workflowService.findOneByTeamRoleId(employee.team_id, employee.role_id);
+     if(workflow) return await this.distributeWorkOrderService.findDistributedWorksByEmployeeId(
+        id,workflow.access
       );
     } catch (error) {
       console.log(error);

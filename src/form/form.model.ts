@@ -47,6 +47,7 @@ import FieldTable from '../field-table/field-table.model';
     @ForeignKey(() => Role)
     @Column({
       allowNull: false,
+      unique: true,
     })
     role_id: number;
   

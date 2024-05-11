@@ -28,5 +28,9 @@ export class FieldTableService {
   async fieldNameForAuthorizer(id: number[]): Promise<any> { 
     return await FieldTable.findAll({ where : {id: id}, attributes: ['field_name']});
   }
+
+  async deleteFieldTable(id: number): Promise<any> {
+    return await FieldTable.destroy({ where: { id } });
+  }
   
 }

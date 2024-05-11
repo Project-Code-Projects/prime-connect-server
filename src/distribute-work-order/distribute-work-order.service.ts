@@ -48,9 +48,13 @@ export class DistributeWorkOrderService {
     return await this.distributeWorkOrderModel.findAll();
   }
 
-  async findDistributedWorksByEmployeeId(id: number) {
+  async findDistributedWorksByEmployeeId(id: number, access: string): Promise<any> {
+    let status: string | null;
+    if(access == 'Write') status = null;
+    if(access == 'Read_Write') status = "approved";
+    console.log(status);
     return await this.distributeWorkOrderModel.findAll({
-      where: { assigned_to: id },
+      where: { assigned_to: id, status: status },
     });
   }
   async createDistributeWorkOrder(
