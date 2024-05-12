@@ -36,6 +36,17 @@ export class FormController {
       return await this.formService.getFormByTeamIdRoleId(team_id, role_id);
     }
 
+    @Get('/:team_id')
+    async getFormByTeamId(@Param('team_id', ParseIntPipe) team_id: number): Promise<any> {
+      const forms = await this.formService.getFormByTeamId(team_id);
+      const roles: number[] = []; // Provide an initial value and type for the roles array
+      if (forms) forms.forEach((form: any) => {
+        roles.push(form.role_id);
+      });
+
+      return roles;
+    }
+
     @Post('/field')
     async createFormField(@Body() createFormFieldDto: any) {
       const { sequence, location } = createFormFieldDto;
@@ -103,7 +114,7 @@ export class FormController {
               const formField = { location,sequence,form_id: form.id,field_id: newField.id };
               // console.log("formField: ",formField);
              const newFormField = await this.formFieldService.createFormField(formField);
-             console.log("newFormField: ",newFormField);
+            //  console.log("newFormField: ",newFormField);
             }
           }
         }

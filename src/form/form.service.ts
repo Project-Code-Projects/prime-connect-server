@@ -21,4 +21,8 @@ export class FormService {
         return this.formRepository.findOne({ where: { team_id, role_id } });
     }
 
+    async getFormByTeamId(team_id: number): Promise<Form[] | null> {
+        return await this.formRepository.findAll({ where: { team_id },attributes:['role_id']});
+    }
+
 }
