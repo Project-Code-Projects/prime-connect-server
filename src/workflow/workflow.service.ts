@@ -46,9 +46,13 @@ export class WorkflowService {
     await this.workflowRepository.update(updateData, { where: { id } });
   }
 
-  async deleteWorkflow(id: number): Promise<any> {
-    const workflow = await this.workflowRepository.findOne({ where: { id } });
-    await this.workflowRepository.destroy({ where: { id } });
+  async deleteWorkflow(team_id: number,role_id: number): Promise<any> {
+    const workflow = await this.workflowRepository.findOne({ where: { team_id,role_id } });
+    await this.workflowRepository.destroy({ where: { team_id,role_id } });
+    if(workflow) await this.workflowRepository.decrement(
+      { sequence: 1 },
+      { where: { sequence: { [Op.gte]: workflow.sequence }, team_id } },
+    );
     return workflow;
   }
 
