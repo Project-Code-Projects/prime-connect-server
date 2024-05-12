@@ -9,4 +9,6 @@ export interface IMainWorkOrder {
   start_time: Date;
   isAssigned: boolean;
   checked: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

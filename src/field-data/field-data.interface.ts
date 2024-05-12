@@ -13,4 +13,6 @@ export interface IFieldData {
   assigned_to: number | null;
   time_interval: number | null;
   prev_assigned: number[] | [];
+  createdAt?: Date;
+  updatedAt?: Date;
 }

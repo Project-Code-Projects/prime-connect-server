@@ -48,10 +48,13 @@ export class DistributeWorkOrderService {
     return await this.distributeWorkOrderModel.findAll();
   }
 
-  async findDistributedWorksByEmployeeId(id: number, access: string): Promise<any> {
+  async findDistributedWorksByEmployeeId(
+    id: number,
+    access: string,
+  ): Promise<any> {
     let status: string | null;
-    if(access == 'Write') status = null;
-    if(access == 'Read_Write') status = "approved";
+    if (access == 'Write') status = null;
+    if (access == 'Read_Write') status = 'approved';
     console.log(status);
     return await this.distributeWorkOrderModel.findAll({
       where: { assigned_to: id, status: status },
@@ -581,5 +584,53 @@ export class DistributeWorkOrderService {
     });
 
     await this.incrementErrorCount(list);
+  }
+  async findWorkStatusByMonth(month: string = '2024-04') {
+    try {
+      // console.log('Month:', month);
+
+      const startOfMonth = new Date(month);
+      const endOfMonth = new Date(
+        startOfMonth.getFullYear(),
+        startOfMonth.getMonth() + 1,
+        0,
+      );
+
+      const totatlWorkOrders = await DistributeWorkOrder.count({
+        where: {
+          createdAt: {
+            [Op.between]: [startOfMonth, endOfMonth],
+          },
+        },
+      });
+      const workOrdersChecked = await DistributeWorkOrder.count({
+        where: {
+          createdAt: {
+            [Op.between]: [startOfMonth, endOfMonth],
+          },
+          status: {
+            [Op.not]: null,
+          },
+        },
+      });
+
+      const workOrdersNotChecked = await DistributeWorkOrder.count({
+        where: {
+          createdAt: {
+            [Op.between]: [startOfMonth, endOfMonth],
+          },
+          status: null,
+        },
+      });
+
+      return {
+        totatlWorkOrders: totatlWorkOrders,
+        workOrdersChecked: workOrdersChecked,
+        workOrdersNotChecked: workOrdersNotChecked,
+      };
+    } catch (error) {
+      console.error('Error finding work status by month:', error);
+      throw error;
+    }
   }
 }
