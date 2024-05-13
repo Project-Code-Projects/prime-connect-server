@@ -68,6 +68,8 @@ import { distributeWorkOrderProviders } from 'src/distribute-work-order/distribu
     DocubucketService,
     EmployeeStatsService,
     DistributeWorkOrderService,
+    CustomerService,
+    ...customerProviders,
     employeeStatsProvider,
     primaryProvider,
     ...employeeProviders,

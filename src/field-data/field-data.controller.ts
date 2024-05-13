@@ -27,10 +27,14 @@ export class FieldDataController {
 
   @Put('update')
   async updateFieldData(
-    @Body() updateFieldDataDto: UpdateFieldDataDto,
+    @Body() updateFieldDataDto: any,
   ): Promise<void> {
-    const { value, order_id, field_id, time_interval } = updateFieldDataDto;
-    return await this.fieldDataService.updateFieldDataByFieldId(value, order_id, field_id, time_interval);
+    const { value, order_id, field_id, time_interval, assigned_to } = updateFieldDataDto;
+    if(value){
+      console.log('update check 1', value, order_id, field_id, time_interval);
+      return await this.fieldDataService.updateFieldDataByFieldId(value, order_id, field_id, time_interval, assigned_to);
+    }
+   
   }
 
   @Get('fields/:id') // Define the route including the employee ID

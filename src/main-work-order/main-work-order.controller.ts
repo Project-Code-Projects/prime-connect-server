@@ -94,4 +94,12 @@ export class MainWorkOrderController {
     }
     return updatedWork;
   }
+
+
+  @Get('customer/:id')
+  async customerCredentials(@Param('id') id: string): Promise<any> {
+    const list = id.split(',');
+    return this.mainWorkOrderService.CustomerCredentials(list);  
+
+  }
 }

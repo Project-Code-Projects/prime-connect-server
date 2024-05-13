@@ -1,3 +1,4 @@
+import { CustomerController } from './../customer/customer.controller';
 import { Injectable, Inject } from '@nestjs/common';
 import { IFieldData } from './field-data.interface';
 import { FieldData } from './field-data.model';
@@ -20,9 +21,9 @@ export class FieldDataService {
     await FieldData.update({ assigned_to: employeeId }, { where: { id } });
   }
 
-  async updateFieldDataByFieldId(value: string, order_id: number, field_id: number, time: number): Promise<void> {
-    console.log('update check')
-    await FieldData.update({ value: value, time_interval: time}, { where: { work_order_id: order_id, field_id: field_id } });
+  async updateFieldDataByFieldId(value: string, order_id: number, field_id: number, time: number, assigned_to: number): Promise<void> {
+    console.log('update check', value, time, order_id, field_id, assigned_to)
+    await FieldData.update({ value: value, time_interval: time}, { where: { work_order_id: order_id, id: field_id, assigned_to: assigned_to } });
   }
 
   async findOneFieldData(id: number): Promise<FieldData> {
@@ -98,6 +99,9 @@ export class FieldDataService {
     err_list[err_list.length] = null;
     return err_list;
   }
+
+
+
   
 
   }

@@ -15,7 +15,10 @@ export class FieldTableService {
   }
 
   async findAllFieldById(id: any): Promise<any> {
-    return await FieldTable.findAll({ where : {id: id}, attributes: ['id', 'field_name' ]});
+    console.log('field data check 2',id);
+    const field_data =  await FieldTable.findAll({ where : {id: id}, attributes: ['id', 'field_name' ]});
+    console.log('field data check 3',field_data);
+    return field_data;
   }
 
   async findOneById(id: number): Promise<any> {
