@@ -109,7 +109,7 @@ export class MainWorkOrderController {
     }
     return updatedWork;
   }
-  @Get('get-date')
+  @Get('work-stats')
   async getWorkOrderDate(): Promise<any> {
     return this.mainWorkOrderService.findFirstDatesOfEachMonth();
   }
