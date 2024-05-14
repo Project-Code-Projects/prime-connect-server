@@ -70,7 +70,7 @@ export class CustomerController {
         status: 'need approval',
         current_state: 'pending',
       });
-      console.log(files);
+      // console.log(files);
 
       await Promise.all(
         matchedPdfIds.map(async (pdfId, index) => {

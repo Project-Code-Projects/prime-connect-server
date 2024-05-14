@@ -14,6 +14,8 @@ export class PdfDataService {
   }
 
   async postPdf(pdf: IPdfData): Promise<any> {
+    console.log('pdf', pdf);
+
     return await this.pdfDataModel.create(pdf);
   }
 }

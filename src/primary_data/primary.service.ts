@@ -9,7 +9,7 @@ export class PrimaryService {
   ) {}
 
   async createPrimary(createPrimaryDto: any): Promise<any> {
-    console.log('primarry dattta', createPrimaryDto);
+    // console.log('primarry dattta', createPrimaryDto);
     return await this.primaryRepository.create(createPrimaryDto);
   }
 
