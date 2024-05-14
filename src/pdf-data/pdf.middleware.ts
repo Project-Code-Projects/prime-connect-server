@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import { PassThrough } from 'stream'; // Update the import statement for PassThrough
+import { log } from 'console';
 
 // Configure Cloudinary with your credentials
 cloudinary.config({
@@ -14,6 +15,8 @@ export async function convertPDFBufferToImagesAndUpload(
   try {
     const pdf2img = require('pdf-img-convert'); // Import pdf-img-convert here
     const outputImages = await pdf2img.convert(pdfBuffer);
+    // console.log('output Images', outputImages);
+
     const imageUrls: string[] = [];
 
     for (let i = 0; i < outputImages.length; i++) {
@@ -48,6 +51,7 @@ export async function convertPDFBufferToImagesAndUpload(
       const imageUrl = await uploadPromise;
       imageUrls.push(imageUrl);
     }
+    // console.log('Image URLs:', imageUrls);
 
     return imageUrls;
   } catch (error) {

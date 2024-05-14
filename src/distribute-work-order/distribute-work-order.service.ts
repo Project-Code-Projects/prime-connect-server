@@ -142,7 +142,7 @@ export class DistributeWorkOrderService {
         },
       });
 
-      const threshold = Math.ceil(tasks.length / activeEmployees.length);
+      const threshold = Math.floor(Math.random() * 4) + 1;
       // console.log(threshold);
 
       for (let i = 0; i < activeEmployees.length; i++) {
