@@ -21,9 +21,10 @@ export class FieldDataService {
     await FieldData.update({ assigned_to: employeeId }, { where: { id } });
   }
 
-  async updateFieldDataByFieldId(value: string, order_id: number, field_id: number, time: number, assigned_to: number): Promise<void> {
+  async updateFieldDataByFieldId(value: string, order_id: number, field_id: number, time: number, assigned_to: number): Promise<any> {
     console.log('update check', value, time, order_id, field_id, assigned_to)
-    await FieldData.update({ value: value, time_interval: time}, { where: { work_order_id: order_id, id: field_id, assigned_to: assigned_to } });
+    const field_data =  await FieldData.update({ value: value, time_interval: time}, { where: { work_order_id: order_id, id: field_id, assigned_to: assigned_to } });
+    return field_data;
   }
 
   async findOneFieldData(id: number): Promise<FieldData> {
@@ -34,10 +35,11 @@ export class FieldDataService {
   }
 
   async findAllFieldByWorkOrderid(order_id: number, assigned_to: number): Promise<any> {
-   const data = await FieldData.findAll({where: {work_order_id: order_id, assigned_to: assigned_to}});
-    console.log('data',data)
+    
+   const data = await FieldData.findAll({where: {work_order_id: order_id, assigned_to: assigned_to, status: null}});
+   
    const fields = data.map((field) => field.field_id);
-   console.log('field data check',fields);
+   console.log('checking data', fields)
   //  console.log(fields);
    return await this.fieldTableService.findAllFieldById(fields);
   }

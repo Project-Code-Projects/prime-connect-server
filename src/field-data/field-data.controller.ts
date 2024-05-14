@@ -31,7 +31,7 @@ export class FieldDataController {
   ): Promise<void> {
     const { value, order_id, field_id, time_interval, assigned_to } = updateFieldDataDto;
     if(value){
-      console.log('update check 1', value, order_id, field_id, time_interval);
+      
       return await this.fieldDataService.updateFieldDataByFieldId(value, order_id, field_id, time_interval, assigned_to);
     }
    

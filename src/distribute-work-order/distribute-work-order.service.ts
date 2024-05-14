@@ -230,7 +230,7 @@ export class DistributeWorkOrderService {
   ): Promise<IDistributeWorkOrder[]> {
     try {
       const dist = await this.distributeWorkOrderModel.findAll({
-        where: { assigned_to: employeeId , [Op.or]: [{status: null}, {status: ''}]}, //need change here
+        where: { assigned_to: employeeId , [Op.or]: [{status: null}, {status: null}]}, //need change here
       });
       console.log('dist check for maker',dist)
       return dist;

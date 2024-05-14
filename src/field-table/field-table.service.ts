@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { IFieldTable } from './field-table.interface';
 import FieldTable from './field-table.model';
+import { group } from 'console';
 
 @Injectable()
 export class FieldTableService {
@@ -15,10 +16,15 @@ export class FieldTableService {
   }
 
   async findAllFieldById(id: any): Promise<any> {
-    console.log('field data check 2',id);
+    
+    const control_names = [];
     const field_data =  await FieldTable.findAll({ where : {id: id}, attributes: ['id', 'field_name' ]});
-    console.log('field data check 3',field_data);
-    return field_data;
+    for(let field of field_data){
+      // console.log(field.field_name)
+      control_names.push([field.field_name]);
+    }
+    // console.log('field data check 3', controlNames);
+    return {fieldData: field_data, controlNames: control_names};
   }
 
   async findOneById(id: number): Promise<any> {
