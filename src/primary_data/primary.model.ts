@@ -45,7 +45,7 @@ interface IPdf {
     @Column({ type: DataTypes.INTEGER })
     team_id: number;
 
-    @Column({ type: 'JSONB'})
+    @Column({ type: DataTypes.JSONB})
     pdf: IPdf[];
   
     @Column({ type: DataTypes.STRING})
