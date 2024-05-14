@@ -83,44 +83,44 @@ export class DistributeWorkOrderService {
       const workOrder = await this.distributeWorkOrderModel.findOne({
         where: { work_order_id: workOrder_id, assigned_to: employee_id },
       });
-      // if (!workOrder) {
-      await this.createDistributeWorkOrder({
-        work_order_id: tasks.work_order_id,
-        field_id: [tasks.id],
-        assigned_to: employee_id,
-        status: null,
-        estimated_time: tasks.estimated_time,
-      });
-      // }
-      // if (workOrder) {
-      //   const field: number[] = workOrder.field_id;
-      //   // field.push(tasks.id);
-      //   const estimated_time = workOrder.estimated_time;
-      //   const distributedTaskInfo = await this.distributeWorkOrderModel.findAll(
-      //     {
-      //       where: {
-      //         work_order_id: workOrder_id,
-      //         assigned_to: employee_id,
-      //       },
-      //     },
-      //   );
-      //   if (!field.includes(tasks.id)) {
-      //     field.push(tasks.id);
-      //     // console.log(field);
-      //   }
-      //   await this.distributeWorkOrderModel.update(
-      //     {
-      //       field_id: field,
-      //       estimated_time: tasks.estimated_time + estimated_time,
-      //     },
-      //     {
-      //       where: {
-      //         work_order_id: distributedTaskInfo[0].work_order_id,
-      //         assigned_to: employee_id,
-      //       },
-      //     },
-      //   );
-      // }
+      if (!workOrder) {
+        await this.createDistributeWorkOrder({
+          work_order_id: tasks.work_order_id,
+          field_id: [tasks.id],
+          assigned_to: employee_id,
+          status: null,
+          estimated_time: tasks.estimated_time,
+        });
+      }
+      if (workOrder) {
+        const field: number[] = workOrder.field_id;
+        // field.push(tasks.id);
+        const estimated_time = workOrder.estimated_time;
+        const distributedTaskInfo = await this.distributeWorkOrderModel.findAll(
+          {
+            where: {
+              work_order_id: workOrder_id,
+              assigned_to: employee_id,
+            },
+          },
+        );
+        if (!field.includes(tasks.id)) {
+          field.push(tasks.id);
+          // console.log(field);
+        }
+        await this.distributeWorkOrderModel.update(
+          {
+            field_id: field,
+            estimated_time: tasks.estimated_time + estimated_time,
+          },
+          {
+            where: {
+              work_order_id: distributedTaskInfo[0].work_order_id,
+              assigned_to: employee_id,
+            },
+          },
+        );
+      }
     } catch (error) {
       console.log(
         `Error assigning task ${workOrder_id} to ${employee_id}:`,
