@@ -30,9 +30,9 @@ export class WorkflowController {
     return this.workflowService.updateWorkflow(id, updateWorkflowDto);
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: number) {
-    return this.workflowService.deleteWorkflow(id);
+  @Delete('/:team_id/:role_id')
+  async delete(@Param('team_id') team_id: number, @Param('role_id') role_id: number) {
+    return this.workflowService.deleteWorkflow(team_id,role_id);
   }
 
   @Get('access/:access')

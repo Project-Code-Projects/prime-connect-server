@@ -86,11 +86,26 @@ export class MainWorkOrderController {
   }
 
   @Put('work/:acc_id/:team_id/:customer_id')
-  async updateMainWorkOrder( @Param('acc_id') acc_id: number, @Param('team_id') team_id: number, @Param('customer_id') customer_id: number, @Body() updateData: Partial<any>): Promise<any> {
-    const updatedWork = await this.mainWorkOrderService.updateWorkDetails(acc_id, team_id, customer_id, updateData);
-    const workOrder = await this.mainWorkOrderService.getWorkOrderByAccId(acc_id);
+  async updateMainWorkOrder(
+    @Param('acc_id') acc_id: number,
+    @Param('team_id') team_id: number,
+    @Param('customer_id') customer_id: number,
+    @Body() updateData: Partial<any>,
+  ): Promise<any> {
+    const updatedWork = await this.mainWorkOrderService.updateWorkDetails(
+      acc_id,
+      team_id,
+      customer_id,
+      updateData,
+    );
+    const workOrder =
+      await this.mainWorkOrderService.getWorkOrderByAccId(acc_id);
     if (workOrder) {
-      this.mainWorkOrderService.explodeWorkOrder(team_id, workOrder.id, 'Write');
+      this.mainWorkOrderService.explodeWorkOrder(
+        team_id,
+        workOrder.id,
+        'Write',
+      );
     }
     return updatedWork;
   }
@@ -101,5 +116,9 @@ export class MainWorkOrderController {
     const list = id.split(',');
     return this.mainWorkOrderService.CustomerCredentials(list);  
 
+  }
+  @Get('work-stats')
+  async getWorkOrderDate(): Promise<any> {
+    return this.mainWorkOrderService.findFirstDatesOfEachMonth();
   }
 }

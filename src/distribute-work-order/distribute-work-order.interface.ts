@@ -5,4 +5,6 @@ export interface IDistributeWorkOrder {
   assigned_to: number;
   estimated_time: number;
   status: string | null;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

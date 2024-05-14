@@ -20,6 +20,9 @@ import { log } from 'console';
 import { DistributeWorkOrderService } from 'src/distribute-work-order/distribute-work-order.service';
 import { Customer } from '../customer/customer.model';
 
+import { Sequelize, QueryTypes, Op, QueryOptions } from 'sequelize';
+import { DistributeWorkOrder } from '../distribute-work-order/distribute-work-order.model';
+import { FieldDataService } from 'src/field-data/field-data.service';
 @Injectable()
 export class MainWorkOrderService {
   private readonly logger = new Logger(MainWorkOrderService.name);
@@ -53,7 +56,7 @@ export class MainWorkOrderService {
    
     private readonly docuBucketService: DocubucketService,
     private readonly distributeWorkOrderService: DistributeWorkOrderService,
-    
+    private readonly fieldDataService: FieldDataService,
   ) {}
 
   async getWorkOrderByEmployeeId(id: number): Promise<any> {
@@ -311,7 +314,6 @@ export class MainWorkOrderService {
       throw error;
     }
   }
-
   async CustomerCredentials(fields: any[]): Promise<any> {
     
     const final_list = []
@@ -331,5 +333,122 @@ export class MainWorkOrderService {
   }
     
     return final_list;
+  }
+
+  async findFirstDatesOfEachMonth() {
+    try {
+      const firstDates = await MainWorkOrder.findAll({
+        attributes: [
+          [
+            Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt')),
+            'month',
+          ],
+        ],
+        group: [
+          Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt')),
+        ],
+        order: [
+          [
+            Sequelize.fn('DATE_TRUNC', 'month', Sequelize.col('createdAt')),
+            'ASC',
+          ],
+        ],
+        raw: true,
+      });
+      let targetWorkOrder = [];
+      let completedWorkOrder = [];
+      let workLeft = [];
+      const months = firstDates.map((entry: any) => {
+        return new Date(entry.month).toISOString().slice(0, 7) + '-01';
+      });
+      const workStatusPromises = months.map(async (date) => {
+        const status = await this.findWorkStatusByMonth(date);
+        return status;
+      });
+      const distributeWorkStatusPromises = months.map(async (date) => {
+        const status =
+          await this.distributeWorkOrderService.findWorkStatusByMonth(date);
+        return status;
+      });
+      const fieldDataStatusPromises = months.map(async (date) => {
+        const status = await this.fieldDataService.findWorkStatusByMonth(date);
+        return status;
+      });
+
+      const mainWorkOrderStatus = await Promise.all(workStatusPromises);
+      const distributeWorkOrderStatus = await Promise.all(
+        distributeWorkStatusPromises,
+      );
+      const fieldDataStatus = await Promise.all(fieldDataStatusPromises);
+
+      mainWorkOrderStatus.map((entry: any) => {
+        targetWorkOrder.push(entry.totatlWorkOrders);
+        completedWorkOrder.push(entry.workOrdersChecked);
+        workLeft.push(entry.workOrdersNotChecked);
+      });
+      distributeWorkOrderStatus.map((entry: any) => {
+        targetWorkOrder.push(entry.totatlWorkOrders);
+        completedWorkOrder.push(entry.workOrdersChecked);
+        workLeft.push(entry.workOrdersNotChecked);
+      });
+      fieldDataStatus.map((entry: any) => {
+        targetWorkOrder.push(entry.totatlWorkOrders);
+        completedWorkOrder.push(entry.workOrdersChecked);
+        workLeft.push(entry.workOrdersNotChecked);
+      });
+
+      const workStatus = { targetWorkOrder, completedWorkOrder, workLeft };
+
+      return { months, workStatus };
+    } catch (error) {
+      console.error('Error finding first dates of each month:', error);
+      throw error;
+    }
+  }
+  async findWorkStatusByMonth(month: string = '2024-04') {
+    try {
+      // console.log('Month:', month);
+
+      const startOfMonth = new Date(month);
+      const endOfMonth = new Date(
+        startOfMonth.getFullYear(),
+        startOfMonth.getMonth() + 1,
+        0,
+      );
+
+      const totatlWorkOrders = await MainWorkOrder.count({
+        where: {
+          createdAt: {
+            [Op.between]: [startOfMonth, endOfMonth],
+          },
+        },
+      });
+      const workOrdersChecked = await MainWorkOrder.count({
+        where: {
+          createdAt: {
+            [Op.between]: [startOfMonth, endOfMonth],
+          },
+          checked: true,
+        },
+      });
+
+      const workOrdersNotChecked = await MainWorkOrder.count({
+        where: {
+          createdAt: {
+            [Op.between]: [startOfMonth, endOfMonth],
+          },
+          checked: false,
+        },
+      });
+
+      return {
+        totatlWorkOrders: totatlWorkOrders,
+        workOrdersChecked: workOrdersChecked,
+        workOrdersNotChecked: workOrdersNotChecked,
+      };
+    } catch (error) {
+      console.error('Error finding work status by month:', error);
+      throw error;
+    }
   }
 }
