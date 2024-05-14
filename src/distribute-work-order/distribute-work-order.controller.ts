@@ -46,7 +46,9 @@ export class DistributeWorkOrderController {
   async getTasksByEmployeeId(@Param('id') id: number): Promise<any> {
     try {
       const employee = await this.employeService.findOne(id);
+      console.log('employee test',employee);	
       const workflow = await this.workflowService.findOneByTeamRoleId(employee.team_id, employee.role_id);
+      console.log('workflow test',workflow);	
      if(workflow) return await this.distributeWorkOrderService.findDistributedWorksByEmployeeId(
         id,workflow.access
       );
@@ -147,6 +149,12 @@ export class DistributeWorkOrderController {
     console.log('hi')
     const { work_order_id, time_interval, error_count, employee_id, list } = employeeStats;
     return await this.distributeWorkOrderService.postEmployeeStatsforReadWrite(work_order_id, time_interval, error_count, employee_id, list);
+  }
+
+
+  @Get('customer/:id')
+  async customerCredentials(@Param('id') id: string): Promise<any> {
+
   }
 
 }

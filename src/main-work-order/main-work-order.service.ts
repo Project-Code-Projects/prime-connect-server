@@ -18,6 +18,7 @@ import { FormField } from 'src/form-field/form-field.model';
 import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { log } from 'console';
 import { DistributeWorkOrderService } from 'src/distribute-work-order/distribute-work-order.service';
+import { Customer } from '../customer/customer.model';
 
 import { Sequelize, QueryTypes, Op, QueryOptions } from 'sequelize';
 import { DistributeWorkOrder } from '../distribute-work-order/distribute-work-order.model';
@@ -48,6 +49,11 @@ export class MainWorkOrderService {
     private readonly formModel: typeof Form,
     @Inject('FORM_FIELD_REPOSITORY')
     private readonly formFieldModel: typeof FormField,
+
+    @Inject('CUSTOMER_REPOSITORY')
+    private readonly customerModel: typeof Customer,
+    private readonly customerService: CustomerService,
+   
     private readonly docuBucketService: DocubucketService,
     private readonly distributeWorkOrderService: DistributeWorkOrderService,
     private readonly fieldDataService: FieldDataService,
@@ -307,6 +313,26 @@ export class MainWorkOrderService {
       console.error('Error exploding work order:', error);
       throw error;
     }
+  }
+  async CustomerCredentials(fields: any[]): Promise<any> {
+    
+    const final_list = []
+    const account_details = [];
+    for(let i=0; i<fields.length; i++){
+      const account_cred =  await this.mainWorkOrderModel.findOne({
+        where: { id: fields }, attributes: ['customer_id'], raw: true
+      });
+      account_details.push(account_cred.customer_id);
+    }
+  console.log(account_details);
+  for(let i=0; i<account_details.length; i++){
+   const customerId = account_details[i];
+  //  console.log('customerId', customerId);
+    const customer = await this.customerModel.findOne({ where: { id: customerId }, attributes: ['name', 'nid_no'], raw: true });
+    final_list.push(customer)
+  }
+    
+    return final_list;
   }
 
   async findFirstDatesOfEachMonth() {

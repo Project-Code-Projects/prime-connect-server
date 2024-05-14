@@ -1,4 +1,5 @@
 export interface ICustomer {
+  id?: number;
   name: string;
   nid_no: number;
   phone: number;

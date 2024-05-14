@@ -35,6 +35,8 @@ import { FormFieldService } from 'src/form-field/form-field.service';
 import { formFieldProvider } from 'src/form-field/form-field.provider';
 import { DocubucketService } from 'src/docu-bucket/docu-bucket.service';
 import { docuBucketProviders } from 'src/docu-bucket/docu-bucket.providers';
+import { CustomerService } from 'src/customer/customer.service';
+import { customerProviders } from 'src/customer/customer.providers';
 
 @Module({
   imports: [DatabaseModule],
@@ -70,6 +72,8 @@ import { docuBucketProviders } from 'src/docu-bucket/docu-bucket.providers';
     formFieldProvider,
     DocubucketService,
     ...docuBucketProviders,
+    CustomerService,
+    ...customerProviders,
 
     // DistributeWorkOrderService,
     // ...distributeWorkOrderProviders,
