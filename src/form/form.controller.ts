@@ -62,25 +62,48 @@ export class FormController {
       const formFieldLocation = await this.formFieldService.getLocationByFieldId(id);
       console.log('formFieldLocation: ',formFieldLocation);
       const images = [];
+      const co_ordinates = [];
       console.log(formFieldLocation);
       if(formFieldLocation){
         const location = formFieldLocation.location;
-        for( let loc of location) {
-          if(loc){
-            const pdf_id = loc.pdf_id; 
-            for( let pos of loc.position){
-             const image = await this.docuApi.getImages(acc_id,customer_id,pdf_id);
-             // console.log(image);
-             if(image){
-              images.push(image.pdf_values[pos.page - 1]);
-             }
+        // for( let loc of location) {
+        //   if(loc){
+        //     const pdf_id = loc.pdf_id; 
+        //     for( let pos of loc.position){
+        //      const image = await this.docuApi.getImages(acc_id,customer_id,pdf_id);
+        //      // console.log(image);
+        //      if(image){
+        //       images.push(image.pdf_values[pos.page - 1]);
+        //      }
+        //     }
+        //   }
+        // }
+        for(let i=0; i<location.length; i++){
+          if(location[i]){
+            const pdf_id = location[i].pdf_id;
+            const position = location[i].position;
+            co_ordinates[i] = position[i].co_ordinate
+            for( let pos of location[i].position){
+              const image = await this.docuApi.getImages(acc_id,customer_id,pdf_id);
+              console.log('images',image);
+              if(image){
+                images[i] = image.pdf_values[pos.page - 1];
+                
+              }
             }
           }
         }
       }
-      return {id: id,images: images};
+      console.log('images',images);	
+      console.log('co_ordinates',co_ordinates);
+
+
+      return {id: id,images: images, coordinates: co_ordinates};
       
     }
+
+
+
 
     @Get('/field/:form_id/:field_id')
 

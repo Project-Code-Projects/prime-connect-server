@@ -109,6 +109,14 @@ export class MainWorkOrderController {
     }
     return updatedWork;
   }
+
+
+  @Get('customer/:id')
+  async customerCredentials(@Param('id') id: string): Promise<any> {
+    const list = id.split(',');
+    return this.mainWorkOrderService.CustomerCredentials(list);  
+
+  }
   @Get('work-stats')
   async getWorkOrderDate(): Promise<any> {
     return this.mainWorkOrderService.findFirstDatesOfEachMonth();

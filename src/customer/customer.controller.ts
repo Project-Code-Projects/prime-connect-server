@@ -179,7 +179,7 @@ export class CustomerController {
           const pdfValue = await convertPDFBufferToImagesAndUpload(
             files[index].buffer,
           );
-          // console.log(pdfValue);
+          console.log(pdfValue);
 
           this.pdfs.push({ id: pdfId, pdf_values: pdfValue });
           await this.docubucketService.postPdf({

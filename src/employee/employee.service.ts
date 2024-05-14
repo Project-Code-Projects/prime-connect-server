@@ -71,7 +71,7 @@ export class EmployeeService {
   }
 
   async EmployeeTeamId(id: number): Promise<any> {
-    console.log('hit');
+   
     const prev_employee = await this.employeeRepository.findOne({
       where: { id: id },
       attributes: ['team_id', 'role_id'],

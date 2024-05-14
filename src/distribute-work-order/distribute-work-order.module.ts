@@ -32,6 +32,8 @@ import { EmployeeStatsService } from 'src/employee_stats/employee_stats.service'
 import { employeeStatsProvider } from 'src/employee_stats/employee_stats.provider';
 import { WorkflowService } from '../workflow/workflow.service';
 import { workflowProvider } from '../workflow/workflow.provider';
+import { CustomerService } from 'src/customer/customer.service';
+import { customerProviders } from 'src/customer/customer.providers';
 
 
 @Module({
@@ -54,6 +56,8 @@ import { workflowProvider } from '../workflow/workflow.provider';
     FormFieldService,
     DocubucketService,
     EmployeeStatsService,
+    CustomerService,
+    ...customerProviders,
     employeeStatsProvider,
     ...fieldTableProviders,
     ...docuBucketProviders,
