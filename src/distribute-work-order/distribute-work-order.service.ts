@@ -55,7 +55,7 @@ export class DistributeWorkOrderService {
   ): Promise<any> {
     let status: string | null;
     if(access == 'Write') status = null;   //chenging for code analysis
-    if(access == 'Read_Write') status = null ; 
+    if(access == 'Read_Write') status = null; 
     console.log(status);
       const distributed_work = await this.distributeWorkOrderModel.findAll({
       where: { assigned_to: id, status: status },

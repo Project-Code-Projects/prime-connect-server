@@ -62,30 +62,38 @@ export class FormController {
       const formFieldLocation = await this.formFieldService.getLocationByFieldId(id);
       console.log('formFieldLocation: ',formFieldLocation);
       const images = [];
-      const co_ordinates = [];
-      console.log(formFieldLocation);
+      const coordinates = [];
+     
       if(formFieldLocation){
         const location = formFieldLocation.location;
-        // for( let loc of location) {
-        //   if(loc){
-        //     const pdf_id = loc.pdf_id; 
-        //     for( let pos of loc.position){
-        //      const image = await this.docuApi.getImages(acc_id,customer_id,pdf_id);
-        //      // console.log(image);
-        //      if(image){
-        //       images.push(image.pdf_values[pos.page - 1]);
-        //      }
-        //     }
-        //   }
-        // }
+
+
+        for(let i=0; i<location.length; i++){
+          if(location[i]){
+    
+            const position = location[i].position;
+           if(position[i]){
+            coordinates[i] = position[i].co_ordinate
+           }   
+
+        }
+      }
+
         for(let i=0; i<location.length; i++){
           if(location[i]){
             const pdf_id = location[i].pdf_id;
             const position = location[i].position;
-            co_ordinates[i] = position[i].co_ordinate
+            // co_ordinates[i] = position[i].co_ordinate
+            // coordinates.push(position[i].co_ordinate)
+           
+            if(position[i]){
+              coordinates.push(position[i].co_ordinate)
+              // console.log('i', i)
+            }
+            // console.log('pos i',position[i])
             for( let pos of location[i].position){
               const image = await this.docuApi.getImages(acc_id,customer_id,pdf_id);
-              console.log('images',image);
+              // console.log('images',image);
               if(image){
                 images[i] = image.pdf_values[pos.page - 1];
                 
@@ -95,10 +103,10 @@ export class FormController {
         }
       }
       console.log('images',images);	
-      console.log('co_ordinates',co_ordinates);
+      console.log('co_ordinates',coordinates);
 
 
-      return {id: id,images: images, coordinates: co_ordinates};
+      return {id: id,images: images, coordinates: coordinates};
       
     }
 
