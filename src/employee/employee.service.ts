@@ -17,6 +17,20 @@ export class EmployeeService {
     private employeeStatsRepository: typeof EmployeeStats,
   ) {}
 
+  async findEmployeeAccess(employee_id: number): Promise<any> {
+    const employee = await this.employeeRepository.findOne({
+      where: { id: employee_id },
+      attributes: ['team_id', 'role_id'],
+    });
+   if(employee) {
+    const workflow = await this.workflowService.findOneByTeamRoleId(
+      employee.team_id,
+      employee.role_id,
+    );
+    if(workflow) return workflow.access;
+   }
+  }
+
   async createEmployee(createEmployeeDto: any): Promise<Employee> {
     return this.employeeRepository.create<Employee>(createEmployeeDto);
   }
@@ -52,6 +66,13 @@ export class EmployeeService {
     });
     // console.log(employees.map((employee) => employee));
     return employees;
+  }
+
+  async updateEmployeeAdminStatus(admin: string,team_id: number): Promise<void> {
+    await this.employeeRepository.update(
+      { admin: 'none' },
+      { where: { admin, team_id } },
+    );
   }
 
   async updateEmployeeInfo(

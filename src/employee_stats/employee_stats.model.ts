@@ -3,7 +3,7 @@ import { DataTypes } from 'sequelize';
 import { Employee } from '../employee/employee.model';
 
 @Table ({
-    timestamps: false, // Disable timestamps
+    timestamps: true, // Disable timestamps
     tableName: 'employee_stats',
     freezeTableName: true, // Prevent table name changes
 })
@@ -27,9 +27,6 @@ export class EmployeeStats extends Model<EmployeeStats> {
 
     @Column({ type: DataTypes.INTEGER })
     time_allotted: number;
-    
-    @Column({ type: DataTypes.INTEGER })
-    date: Date;
     
     @Column({
         allowNull: true,

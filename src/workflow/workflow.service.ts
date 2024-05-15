@@ -62,7 +62,12 @@ export class WorkflowService {
     });
     return workflows;
   }
-
+  async findAllByRoleId(role_id: number): Promise<Workflow | null> {
+    const workflow = await this.workflowRepository.findOne({
+      where: { role_id },
+    });
+    return workflow;
+  }
   async getSequence(team_id: number, role_id: number): Promise<any> {
     const sequence = await this.workflowRepository.findOne({
       where: { team_id, role_id },

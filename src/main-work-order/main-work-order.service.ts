@@ -279,11 +279,11 @@ export class MainWorkOrderService {
         where: { form_id: form.id },
       });
       console.log('fieldIds', fieldIds);
-      // let i = await this.fieldDataModel.findOne({
-      //   order: [['createdAt', 'DESC']],
-      //   limit: 1,
-      // });
-      // let j = 1;
+      let i = await this.fieldDataModel.findOne({
+        order: [['createdAt', 'DESC']],
+        limit: 1,
+      });
+      let j = 1;
       for (const fieldId of fieldIds) {
         // const tableField = await this.teamFieldModel.findOne({
         //   where: { field_id: fieldId.id },
@@ -292,7 +292,7 @@ export class MainWorkOrderService {
           where: { id: fieldId.field_id },
         });
         const fieldData = new FieldData({
-          // id: i.id++ + j,
+          id: i.id++ + j,
           work_order_id: workOrderId,
           field_id: fieldId.field_id,
           value: null,
@@ -306,7 +306,7 @@ export class MainWorkOrderService {
           assigned_to: null,
         });
         await fieldData.save();
-        // j++;
+        j++;
       }
       this.distributeWorkOrderService.distributeTask(teamId, teamRole.role_id);
     } catch (error) {
