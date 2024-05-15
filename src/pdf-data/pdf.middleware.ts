@@ -1,8 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { PassThrough } from 'stream'; // Update the import statement for PassThrough
-import { log } from 'console';
+import { PassThrough } from 'stream';
+import { randomBytes } from 'crypto'; // Import randomBytes for generating random strings
 
-// Configure Cloudinary with your credentials
 cloudinary.config({
   cloud_name: 'dr3buczbc',
   api_key: '831329449195399',
@@ -13,21 +12,22 @@ export async function convertPDFBufferToImagesAndUpload(
   pdfBuffer: Buffer,
 ): Promise<string[]> {
   try {
-    const pdf2img = require('pdf-img-convert'); // Import pdf-img-convert here
+    const pdf2img = require('pdf-img-convert');
     const outputImages = await pdf2img.convert(pdfBuffer);
-    // console.log('output Images', outputImages);
 
     const imageUrls: string[] = [];
 
     for (let i = 0; i < outputImages.length; i++) {
-      const imageData = outputImages[i]; // Get image data (this may not necessarily be a Buffer)
+      const imageData = outputImages[i];
 
-      // Create a promise to handle the upload and get the URL
+      const uniqueId = generateUniqueId();
+      const publicId = `image_${uniqueId}_${Date.now()}`;
+
       const uploadPromise = new Promise<string>((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
             folder: 'images',
-            public_id: `image${i}`,
+            public_id: publicId,
             overwrite: true,
           },
           (error, result) => {
@@ -41,21 +41,24 @@ export async function convertPDFBufferToImagesAndUpload(
           },
         );
 
-        // Pipe image data directly to Cloudinary upload stream
-        const imageStream = new PassThrough(); // Use PassThrough from 'stream'
-        imageStream.end(imageData); // Write image data to the stream
-        imageStream.pipe(uploadStream); // Pipe image data to Cloudinary upload stream
+        const imageStream = new PassThrough();
+        imageStream.end(imageData);
+        imageStream.pipe(uploadStream);
       });
 
-      // Wait for the upload to finish and get the URL
       const imageUrl = await uploadPromise;
+      console.log('Image URL: ', imageUrl);
+
       imageUrls.push(imageUrl);
     }
-    // console.log('Image URLs:', imageUrls);
 
     return imageUrls;
   } catch (error) {
     console.error('Error converting PDF to images and uploading: ', error);
-    throw error; // Rethrow the error to handle it in the calling function
+    throw error;
   }
+}
+
+function generateUniqueId(): string {
+  return randomBytes(8).toString('hex');
 }
