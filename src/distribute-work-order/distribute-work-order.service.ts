@@ -54,14 +54,14 @@ export class DistributeWorkOrderService {
     access: string,
   ): Promise<any> {
     let status: string | null;
-    if(access == 'Write') status = null;   //chenging for code analysis
-    if(access == 'Read_Write') status = null ; 
+    if (access == 'Write') status = null; //chenging for code analysis
+    if (access == 'Read_Write') status = null;
     console.log(status);
-      const distributed_work = await this.distributeWorkOrderModel.findAll({
+    const distributed_work = await this.distributeWorkOrderModel.findAll({
       where: { assigned_to: id, status: status },
     });
-    console.log('status check',status)
-    console.log('distributed_work',distributed_work);
+    console.log('status check', status);
+    console.log('distributed_work', distributed_work);
     return distributed_work;
   }
   async createDistributeWorkOrder(
@@ -233,9 +233,12 @@ export class DistributeWorkOrderService {
   ): Promise<IDistributeWorkOrder[]> {
     try {
       const dist = await this.distributeWorkOrderModel.findAll({
-        where: { assigned_to: employeeId , [Op.or]: [{status: null}, {status: null}]}, //need change here
+        where: {
+          assigned_to: employeeId,
+          [Op.or]: [{ status: null }, { status: null }],
+        }, //need change here
       });
-      console.log('dist check for maker',dist)
+      console.log('dist check for maker', dist);
       return dist;
     } catch (error) {
       console.log(error);
@@ -259,10 +262,11 @@ export class DistributeWorkOrderService {
       const checkAllApproved = await this.checkApproved(work_order_id);
 
       const allApproved = checkAllApproved.every(
-        (workOrder) => workOrder.status === 'approved' || workOrder.status === 'authorized'
+        (workOrder) =>
+          workOrder.status === 'approved' || workOrder.status === 'authorized',
       );
-      
-      console.log('all approved check',allApproved)
+
+      console.log('all approved check', allApproved);
       if (allApproved) {
         const workOrderValues = await this.sumOfFields(work_order_id);
 
@@ -353,23 +357,24 @@ export class DistributeWorkOrderService {
         limit: 1,
       });
       let j = i.id + 1;
-      console.log('i', i)
-      const newDistributeWorkOrder = await this.distributeWorkOrderModel.create({
-        id: j,
-        work_order_id: work_order_id,
-        field_id: field_id,
-        assigned_to: assigned_to,
-        estimated_time: estimated_time,
-        status: null,
-      });
-  
+      console.log('i', i);
+      const newDistributeWorkOrder = await this.distributeWorkOrderModel.create(
+        {
+          id: j,
+          work_order_id: work_order_id,
+          field_id: field_id,
+          assigned_to: assigned_to,
+          estimated_time: estimated_time,
+          status: null,
+        },
+      );
+
       // The newDistributeWorkOrder object will have the auto-generated id
       console.log(`New record inserted with ID: ${newDistributeWorkOrder.id}`);
     } catch (error) {
       console.error('Error inserting new record:', error);
     }
   }
-  
 
   async fieldsForReadWrite(
     work_order_id: number,
@@ -445,7 +450,7 @@ export class DistributeWorkOrderService {
     error_count: number,
   ): Promise<any> {
     // const updatedFields = [];
-    console.log('fields assign',fields_assign)
+    console.log('fields assign', fields_assign);
     await this.distributeWorkOrderModel.update(
       { status: 'authorized' },
       { where: { work_order_id: work_order_id, assigned_to: assigned_to } },
@@ -490,7 +495,7 @@ export class DistributeWorkOrderService {
           console.error('Error updating field:', error);
         }
       }
-      for(let i = 0; i < fields_assign.length; i++){
+      for (let i = 0; i < fields_assign.length; i++) {
         let field = [fields_assign[i]];
         await this.createNewAuthorOrder(
           work_order_id,
