@@ -97,6 +97,7 @@ export class FieldDataService {
 
   async getErrorFields(list: number[]): Promise<any> {
     console.log('dog hit');
+    console.log('list: temperr', list);	
     const err_list = [];
     for (let i = 0; i < list.length; i++) {
       const fields = await this.fieldDataModel.findOne({
@@ -107,6 +108,7 @@ export class FieldDataService {
       err_list[i] = fields['err_comment'] !== '' ? fields['err_comment'] : null;
     }
     err_list[err_list.length] = null;
+    console.log('err_list: ', err_list);
     return err_list;
   }
   async findWorkStatusByMonth(month: string = '2024-04') {

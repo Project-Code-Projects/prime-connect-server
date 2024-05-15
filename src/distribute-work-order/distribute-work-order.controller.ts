@@ -152,10 +152,7 @@ export class DistributeWorkOrderController {
   }
 
 
-  @Get('customer/:id')
-  async customerCredentials(@Param('id') id: string): Promise<any> {
 
-  }
 
 }
 
