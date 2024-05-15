@@ -44,6 +44,7 @@ export class EmployeeController {
       team_id,
       role_id,
     };
+    if(admin != 'none') this.employeeService.updateEmployeeAdminStatus(admin,team_id);
     console.log(employee);
     return this.employeeService.createEmployee(createEmployeeDto);
   }
@@ -84,6 +85,11 @@ export class EmployeeController {
         employee,
         department,
       };
+  }
+
+  @Get('access/:id')
+  async findEmployeeAccess(@Param('id') employee_id: number) {
+    return await this.employeeService.findEmployeeAccess(employee_id);
   }
 
   @Get('/role/:id')

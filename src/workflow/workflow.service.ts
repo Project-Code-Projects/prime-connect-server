@@ -46,13 +46,16 @@ export class WorkflowService {
     await this.workflowRepository.update(updateData, { where: { id } });
   }
 
-  async deleteWorkflow(team_id: number,role_id: number): Promise<any> {
-    const workflow = await this.workflowRepository.findOne({ where: { team_id,role_id } });
-    await this.workflowRepository.destroy({ where: { team_id,role_id } });
-    if(workflow) await this.workflowRepository.decrement(
-      { sequence: 1 },
-      { where: { sequence: { [Op.gte]: workflow.sequence }, team_id } },
-    );
+  async deleteWorkflow(team_id: number, role_id: number): Promise<any> {
+    const workflow = await this.workflowRepository.findOne({
+      where: { team_id, role_id },
+    });
+    await this.workflowRepository.destroy({ where: { team_id, role_id } });
+    if (workflow)
+      await this.workflowRepository.decrement(
+        { sequence: 1 },
+        { where: { sequence: { [Op.gte]: workflow.sequence }, team_id } },
+      );
     return workflow;
   }
 
@@ -62,7 +65,12 @@ export class WorkflowService {
     });
     return workflows;
   }
-
+  async findAllByRoleId(role_id: number): Promise<Workflow | null> {
+    const workflow = await this.workflowRepository.findOne({
+      where: { role_id },
+    });
+    return workflow;
+  }
   async getSequence(team_id: number, role_id: number): Promise<any> {
     const sequence = await this.workflowRepository.findOne({
       where: { team_id, role_id },
@@ -107,8 +115,13 @@ export class WorkflowService {
     return obj;
   }
 
-  async findOneByTeamRoleId(team_id: number, role_id: number): Promise<Workflow | null> {
-    return await this.workflowRepository.findOne({ where: { team_id, role_id } });
+  async findOneByTeamRoleId(
+    team_id: number,
+    role_id: number,
+  ): Promise<Workflow | null> {
+    return await this.workflowRepository.findOne({
+      where: { team_id, role_id },
+    });
   }
 
   async getFirstSequenceByTeamId(team_id: number): Promise<any> {
@@ -118,5 +131,17 @@ export class WorkflowService {
       limit: 1,
     });
     return sequence[0];
+  }
+
+  async getRoleIdByTeamIdAndAccess(
+    team_id: number,
+    access: string,
+  ): Promise<any> {
+    const roleId = await this.workflowRepository.findOne({
+      where: { team_id, access },
+      attributes: ['role_id'],
+      raw: true,
+    });
+    return roleId;
   }
 }
