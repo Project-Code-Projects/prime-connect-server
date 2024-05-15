@@ -20,6 +20,12 @@ export class WorkflowController {
     return this.workflowService.findAllWorkflow();
   }
 
+  @Get('role_id/:role_id')
+
+  async findByRoleId(@Param('role_id') role_id: number): Promise<Workflow | null> {
+    return await this.workflowService.findAllByRoleId(role_id);
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Workflow> {
     return this.workflowService.findOneWorkflow(id);
