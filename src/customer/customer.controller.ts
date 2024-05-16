@@ -20,6 +20,8 @@ import { MainWorkOrderService } from 'src/main-work-order/main-work-order.servic
 import { PrimaryService } from '../Primary_data/primary.service';
 import { WorkflowService } from 'src/workflow/workflow.service';
 import * as Multer from 'multer';
+import { Workflow } from 'src/workflow/workflow.model';
+import { Sequelize } from 'sequelize';
 @Controller('customer')
 export class CustomerController {
   pdfs: { id: number; pdf_values: string[] }[] = [];
@@ -105,12 +107,17 @@ export class CustomerController {
           isAssigned: false,
           checked: false,
         });
+        const workFlow = await this.workflowService.getRoleIdByTeamIdAndAccess(
+          team_id,
+          'Read',
+        );
         const workOrder =
           await this.mainWorkOrderService.getWorkOrderByAccId(nextAccId);
         this.mainWorkOrderService.distributeTask(
           team_id,
           workOrder.acc_id,
           workOrder.id,
+          workFlow.role_id,
         );
         //assign
         const primaryData = {
@@ -207,12 +214,17 @@ export class CustomerController {
         isAssigned: false,
         checked: false,
       });
+      const workFlow = await this.workflowService.getRoleIdByTeamIdAndAccess(
+        team_id,
+        'Read',
+      );
       const workOrder =
         await this.mainWorkOrderService.getWorkOrderByAccId(nextAccId);
       this.mainWorkOrderService.distributeTask(
         team_id,
         workOrder.acc_id,
         workOrder.id,
+        workFlow.role_id,
       );
       // assign
       const primaryData = {
@@ -243,6 +255,7 @@ export class CustomerController {
         isAssigned: false,
         checked: false,
       });
+
       const workOrder =
         await this.mainWorkOrderService.getWorkOrderByAccId(nextAccId);
 
