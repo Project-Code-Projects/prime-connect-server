@@ -88,13 +88,19 @@ export class DistributeWorkOrderService {
         where: { work_order_id: workOrder_id, assigned_to: employee_id },
       });
       // if (!workOrder) {
-        await this.createDistributeWorkOrder({
-          work_order_id: tasks.work_order_id,
-          field_id: [tasks.id],
-          assigned_to: employee_id,
-          status: null,
-          estimated_time: tasks.estimated_time,
-        });
+      let i = await this.distributeWorkOrderModel.findOne({
+        order: [['createdAt', 'DESC']],
+        limit: 1,
+      });
+
+      await this.createDistributeWorkOrder({
+        id: i.id + 1,
+        work_order_id: tasks.work_order_id,
+        field_id: [tasks.id],
+        assigned_to: employee_id,
+        status: null,
+        estimated_time: tasks.estimated_time,
+      });
       // }
       // if (workOrder) {
       //   const field: number[] = workOrder.field_id;
@@ -146,23 +152,22 @@ export class DistributeWorkOrderService {
         },
       });
       const len = tasks.length;
-      let  k = 0;
+      let k = 0;
       const threshold = Math.floor(Math.random() * len) + 1;
-      console.log("threshold: ",threshold);
+      console.log('threshold: ', threshold);
 
-    while(k < len){
-      for (let i = 0; i < activeEmployees.length; i++) {
-        // let fieldIds = [];
-        // const tasks = await this.fieldDataModel.findAll({
-        //   where: {
-        //     assigned_to: null,
-        //     value: null,
-        //   },
-        // });
-        // console.log(tasks);
+      while (k < len) {
+        for (let i = 0; i < activeEmployees.length; i++) {
+          // let fieldIds = [];
+          // const tasks = await this.fieldDataModel.findAll({
+          //   where: {
+          //     assigned_to: null,
+          //     value: null,
+          //   },
+          // });
+          // console.log(tasks);
 
-        for ( let j = 0; j < threshold && k < len; j++) {
-
+          for (let j = 0; j < threshold && k < len; j++) {
             await this.fieldDataModel.update(
               {
                 assigned_to: activeEmployees[i].id,
@@ -176,11 +181,10 @@ export class DistributeWorkOrderService {
               activeEmployees[i].id,
               tasks[k],
             );
-            k++;       
+            k++;
+          }
         }
       }
-    }
-     
 
       console.log('Tasks distributed successfully for maker.');
     } catch (error) {
