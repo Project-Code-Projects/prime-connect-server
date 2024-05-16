@@ -17,4 +17,9 @@ export class EmployeeStatsController {
   async getEmployeeStats(@Param('id') id: number): Promise<any> {
     return await this.statsService.workStatsByEmployeeId(id);
   }
+
+  @Get('stats/:id')
+  async getLast11DaysStats(@Param('id') id: number): Promise<any> {
+    return await this.statsService.getLast11DaysData();
+  }
 }
