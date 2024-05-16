@@ -12,6 +12,7 @@ import { Role } from '../role/role.model';
 import { EmployeeLogin } from '../employee_login/employee_login.model';
 import { EmployeeStats } from '../employee_stats/employee_stats.model';
 import MainWorkOrder from '../main-work-order/main-work-order.model';
+import { DistributeWorkOrder } from 'src/distribute-work-order/distribute-work-order.model';
 
 @Table({
   timestamps: false, // Disable timestamps
@@ -98,7 +99,7 @@ export class Employee extends Model<Employee> {
   statusLogs: EmployeeStats[];
 
   @HasMany(() => MainWorkOrder)
-  employee: MainWorkOrder[];
+  mEmployee: MainWorkOrder[];
+  @HasMany(() => DistributeWorkOrder)
+  dEmployee: DistributeWorkOrder[];
 }
-
-
