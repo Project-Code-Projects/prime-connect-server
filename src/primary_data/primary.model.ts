@@ -47,6 +47,7 @@ export class Primary extends Model<Primary> {
 
   @Column({ type: DataTypes.JSONB })
   pdf: IPdf[];
+  // pdf: { name: string, data: Buffer }[];
 
   @Column({ type: DataTypes.STRING })
   birth_certi: string;
