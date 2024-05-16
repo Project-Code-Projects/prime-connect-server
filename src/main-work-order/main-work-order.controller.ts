@@ -114,6 +114,7 @@ export class MainWorkOrderController {
   @Get('customer/:id')
   async customerCredentials(@Param('id') id: string): Promise<any> {
     const list = id.split(',');
+    console.log("customer_list: ",list);
     return this.mainWorkOrderService.CustomerCredentials(list);  
 
   }
