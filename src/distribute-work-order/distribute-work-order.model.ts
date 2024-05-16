@@ -12,6 +12,7 @@ import { DataTypes } from 'sequelize';
 import { IDistributeWorkOrder } from './distribute-work-order.interface';
 import FieldTable from 'src/field-table/field-table.model';
 import MainWorkOrder from 'src/main-work-order/main-work-order.model';
+import { Employee } from 'src/employee/employee.model';
 
 @Table({
   tableName: 'distribute_work_orders',
@@ -33,8 +34,12 @@ export class DistributeWorkOrder
 
   @Column(DataTypes.ARRAY(DataTypes.INTEGER))
   field_id: number[];
+
+  @ForeignKey(() => Employee)
   @Column
   assigned_to: number | null;
+  @BelongsTo(() => Employee)
+  assignedEmployee!: Employee;
 
   @Column
   estimated_time: number | null;

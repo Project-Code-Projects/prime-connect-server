@@ -53,7 +53,7 @@ export class MainWorkOrderService {
     @Inject('CUSTOMER_REPOSITORY')
     private readonly customerModel: typeof Customer,
     private readonly customerService: CustomerService,
-   
+
     private readonly docuBucketService: DocubucketService,
     private readonly distributeWorkOrderService: DistributeWorkOrderService,
     private readonly fieldDataService: FieldDataService,
@@ -155,12 +155,12 @@ export class MainWorkOrderService {
     try {
       const activeEmployees = await this.employeeModel.findAll({
         where: { active: true, role_id: rolId, team_id: teamId },
-        include: [{ model: MainWorkOrder, as: 'employee' }],
+        include: [{ model: MainWorkOrder, as: 'mEmployee' }],
       });
       let minTasksCount = Infinity;
       let employeeWithMinTasks: Employee | null = null;
       activeEmployees.forEach((employee) => {
-        const tasksCount = employee.employee.length;
+        const tasksCount = employee.mEmployee.length;
         if (tasksCount < minTasksCount) {
           minTasksCount = tasksCount;
           employeeWithMinTasks = employee;
@@ -315,23 +315,28 @@ export class MainWorkOrderService {
     }
   }
   async CustomerCredentials(fields: any[]): Promise<any> {
-    
-    const final_list = []
+    const final_list = [];
     const account_details = [];
-    for(let i=0; i<fields.length; i++){
-      const account_cred =  await this.mainWorkOrderModel.findOne({
-        where: { id: fields }, attributes: ['customer_id'], raw: true
+    for (let i = 0; i < fields.length; i++) {
+      const account_cred = await this.mainWorkOrderModel.findOne({
+        where: { id: fields },
+        attributes: ['customer_id'],
+        raw: true,
       });
       account_details.push(account_cred.customer_id);
     }
-  console.log(account_details);
-  for(let i=0; i<account_details.length; i++){
-   const customerId = account_details[i];
-  //  console.log('customerId', customerId);
-    const customer = await this.customerModel.findOne({ where: { id: customerId }, attributes: ['name', 'nid_no'], raw: true });
-    final_list.push(customer)
-  }
-    
+    console.log(account_details);
+    for (let i = 0; i < account_details.length; i++) {
+      const customerId = account_details[i];
+      //  console.log('customerId', customerId);
+      const customer = await this.customerModel.findOne({
+        where: { id: customerId },
+        attributes: ['name', 'nid_no'],
+        raw: true,
+      });
+      final_list.push(customer);
+    }
+
     return final_list;
   }
 
