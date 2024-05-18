@@ -114,12 +114,23 @@ export class MainWorkOrderController {
   @Get('customer/:id')
   async customerCredentials(@Param('id') id: string): Promise<any> {
     const list = id.split(',');
-    console.log("customer_list: ",list);
-    return this.mainWorkOrderService.CustomerCredentials(list);  
+    const set = Array.from(new Set(list.map(Number)));
+    return this.mainWorkOrderService.CustomerCredentials(set);  
 
   }
   @Get('work-stats')
   async getWorkOrderDate(): Promise<any> {
     return this.mainWorkOrderService.findFirstDatesOfEachMonth();
+  }
+
+
+  @Get('images/:work_order_ids/:fields_id/:uuid')
+  async getMakerImages(@Param('work_order_ids') work_order_ids: string, @Param('fields_id') fields_id: string, @Param('uuid') uid: string): Promise<any> {
+    const uuid = uid.split(',').map(Number);
+    const work_list = work_order_ids.split(',').map(Number);;
+    const field_list = fields_id.split(',').map(Number);;
+
+    return this.mainWorkOrderService.getImages(work_list, field_list, uuid);
+    // return this.mainWorkOrderService.getImg(list);
   }
 }

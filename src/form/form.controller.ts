@@ -68,16 +68,16 @@ export class FormController {
         const location = formFieldLocation.location;
 
 
-        for(let i=0; i<location.length; i++){
-          if(location[i]){
+      //   for(let i=0; i<location.length; i++){
+      //     if(location[i]){
     
-            const position = location[i].position;
-           if(position[i]){
-            coordinates[i] = position[i].co_ordinate
-           }   
+      //       const position = location[i].position;
+      //      if(position[i]){
+      //       coordinates[i] = position[i].co_ordinate
+      //      }   
 
-        }
-      }
+      //   }
+      // }
 
         for(let i=0; i<location.length; i++){
           if(location[i]){

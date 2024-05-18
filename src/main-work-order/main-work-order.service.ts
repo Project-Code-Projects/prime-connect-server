@@ -325,24 +325,23 @@ export class MainWorkOrderService {
   async CustomerCredentials(fields: any[]): Promise<any> {
     const final_list = [];
     const account_details = [];
-    for (let i = 0; i < fields.length; i++) {
-      const account_cred = await this.mainWorkOrderModel.findOne({
-        where: { id: fields },
-        attributes: ['customer_id'],
-        raw: true,
-      });
-      account_details.push(account_cred.customer_id);
-    }
-    console.log(account_details);
-    for (let i = 0; i < account_details.length; i++) {
-      const customerId = account_details[i];
-      //  console.log('customerId', customerId);
+
+    const account_cred = await this.mainWorkOrderModel.findAll({
+      where: { id: fields },
+      attributes: ['customer_id', 'id'],
+      raw: true,
+    });
+
+    console.log(account_cred);
+
+    for (let i = 0; i < account_cred.length; i++) {
       const customer = await this.customerModel.findOne({
-        where: { id: customerId },
+        where: { id: account_cred[i].customer_id },
         attributes: ['name', 'nid_no'],
         raw: true,
       });
-      final_list.push(customer);
+      // String(account_cred[i].id)
+      final_list.push({ [account_cred[i].id]: customer });
     }
 
     return final_list;
@@ -461,6 +460,67 @@ export class MainWorkOrderService {
       };
     } catch (error) {
       console.error('Error finding work status by month:', error);
+      throw error;
+    }
+  }
+
+  async getImages(
+    work_order_id: number[],
+    field_id: number[],
+    uuid: number[],
+  ): Promise<any> {
+    try {
+      const image_payload = [];
+
+      const customer_details = await this.mainWorkOrderModel.findAll({
+        where: { id: { [Op.in]: work_order_id } },
+        attributes: ['id', 'customer_id', 'acc_id'],
+        raw: true,
+      });
+      const form_field_data = await this.formFieldModel.findAll({
+        where: { field_id: { [Op.in]: field_id } },
+        attributes: ['field_id', 'location'],
+        raw: true,
+      });
+
+      for (let i = 0; i < work_order_id.length; i++) {
+        let customers = customer_details.find(
+          (customer: any) => customer.id === work_order_id[i],
+        );
+        let form_value = form_field_data.find(
+          (field: any) => field.field_id === field_id[i],
+        );
+        let customer_id = customers.customer_id;
+        let acc_id = customers.acc_id;
+        let location = form_value.location;
+
+        let coordinates: any[] = [];
+        let image_array: any[] = [];
+
+        for (const element of location) {
+          let images = await this.docuBucketService.getImages(
+            acc_id,
+            customer_id,
+            Number(element.pdf_id),
+          );
+          coordinates.push(element.position[0].co_ordinate);
+          image_array.push(
+            images.pdf_values[Number(element.position[0].page) - 1],
+          );
+        }
+
+        image_payload.push({
+          id: uuid[i],
+          coordinates: coordinates,
+          images: image_array,
+        });
+        // Here you can do something with coordinates and image_array if needed
+      }
+
+      // console.log(image_payload);
+      return image_payload;
+    } catch (error) {
+      console.error('Error fetching images:', error);
       throw error;
     }
   }
