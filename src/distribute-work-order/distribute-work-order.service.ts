@@ -58,7 +58,7 @@ export class DistributeWorkOrderService {
     if (access == 'Read_Write') status = null ;
     console.log(status);
     const distributed_work = await this.distributeWorkOrderModel.findAll({
-      where: { assigned_to: id, status: status },
+      where: { assigned_to: id, [Op.or]: [{ status: null }, { status: '' }] },
     });
     console.log('status check', status);
     console.log('distributed_work', distributed_work);
@@ -235,14 +235,13 @@ export class DistributeWorkOrderService {
 
       
       const new_field_array = dist.map((field)=> field.field_id[0]);
-      console.log('dist fuck', new_field_array);
 
       const fields = await FieldData.findAll({
         where: { work_order_id: work_order_id, status: null },
         attributes: ['id'],
         raw: true,
       });
-      const fields_array = fields.map((field) => field.id);
+      const fields_array = fields.map((field) => field.id);   //might need this part for analysis
 
       return {dist: dist, fields: new_field_array}; //could make this part efficient
     } catch (error) {

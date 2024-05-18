@@ -23,7 +23,7 @@ export class FieldDataService {
 
   async updateFieldDataByFieldId(value: string, order_id: number, field_id: number, time: number, assigned_to: number): Promise<any> {
     console.log('update check', value, time, order_id, field_id, assigned_to)
-    const field_data =  await FieldData.update({ value: value, time_interval: time}, { where: { work_order_id: order_id, id: field_id, assigned_to: assigned_to } });
+    const field_data =  await FieldData.update({ value: value, time_interval: time, status:'checked'}, { where: { work_order_id: order_id, id: field_id, assigned_to: assigned_to } });
     return field_data;
   }
 
@@ -36,14 +36,9 @@ export class FieldDataService {
 
   async findAllFieldByWorkOrderid(order_id: number, assigned_to: number): Promise<any> {
     
-   const data = await FieldData.findAll({where: {assigned_to: assigned_to, status: null}, attributes: ['id','field_id','work_order_id'], raw: true});
+   const data = await FieldData.findAll({where: {assigned_to: assigned_to, [Op.or]: [{status: null}, {status: ''}]}, attributes: ['id','field_id','work_order_id'], raw: true});
    console.log('dat',data)
    
-  //  const fields = data.map((field) => field.field_id);
-  //  const uuid = data.map((field) => { field.id, field.field_id});
-  //  console.log('uuid',uuid)
-  //  console.log('checking data', fields)
-  //  console.log(fields);
    return await this.fieldTableService.findAllFieldById(data);
   }
 
@@ -99,20 +94,20 @@ export class FieldDataService {
   // }
 
   async getErrorFields(list: number[]): Promise<any> {
-    console.log('dog hit');
-    console.log('list: temperr', list);	
+
     const err_list = [];
-    for (let i = 0; i < list.length; i++) {
-      const fields = await this.fieldDataModel.findOne({
-        where: { id: list[i] },
-        attributes: ['err_comment'],
+   
+      const fields = await this.fieldDataModel.findAll({
+        where: { id: list },
+        attributes: ['err_comment', 'id', 'field_id'],
         raw: true,
       });
-      err_list[i] = fields['err_comment'] !== '' ? fields['err_comment'] : null;
-    }
-    err_list[err_list.length] = null;
-    console.log('err_list: ', err_list);
-    return err_list;
+    //   err_list[i] = fields['err_comment'] !== '' ? fields['err_comment'] : null;
+    
+    // err_list[err_list.length] = null;
+    // console.log('err_list: ', err_list);
+    // return err_list;
+    return fields;
   }
   async findWorkStatusByMonth(month: string = '2024-04') {
     try {
