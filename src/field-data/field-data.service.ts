@@ -23,7 +23,7 @@ export class FieldDataService {
 
   async updateFieldDataByFieldId(value: string, order_id: number, field_id: number, time: number, assigned_to: number): Promise<any> {
     console.log('update check', value, time, order_id, field_id, assigned_to)
-    const field_data =  await FieldData.update({ value: value, time_interval: time, status:'checked'}, { where: { work_order_id: order_id, id: field_id, assigned_to: assigned_to } });
+    const field_data =  await FieldData.update({ value: value, time_interval: time}, { where: { work_order_id: order_id, id: field_id, assigned_to: assigned_to } });
     return field_data;
   }
 
