@@ -92,9 +92,15 @@ export class DistributeWorkOrderService {
         order: [['createdAt', 'DESC']],
         limit: 1,
       });
+      let id = 0;
+      if (i) {
+        id = i.id;
+      } else {
+        id = 0;
+      }
 
-      await this.createDistributeWorkOrder({
-        id: i.id + 1,
+      await this.distributeWorkOrderModel.create({
+        // id: id + 1,
         work_order_id: tasks.work_order_id,
         field_id: [tasks.id],
         assigned_to: employee_id,
@@ -141,10 +147,10 @@ export class DistributeWorkOrderService {
 
   async distributeTask(teamId: number = 2, roleId: number = 3): Promise<void> {
     try {
-      // const activeEmployees = await this.employeeModel.findAll({
-      //   where: { active: true, role_id: roleId, team_id: teamId },
-      // });
-
+      const activeEmployees = await this.employeeModel.findAll({
+        where: { active: true, role_id: roleId, team_id: teamId },
+      });
+      const empLen = activeEmployees.length;
       // console.log(activeEmployees.length);
       const tasks = await this.fieldDataModel.findAll({
         where: {
@@ -158,53 +164,65 @@ export class DistributeWorkOrderService {
       console.log('threshold: ', threshold);
 
       while (k < len) {
-        // for (let i = 0; i < activeEmployees.length; i++) {
-        // let fieldIds = [];
-        // const tasks = await this.fieldDataModel.findAll({
-        //   where: {
-        //     assigned_to: null,
-        //     value: null,
-        //   },
-        // });
-        // console.log(tasks);
-        const activeEmployees = await this.employeeModel.findAll({
-          where: { active: true, role_id: roleId, team_id: teamId },
-          include: [
-            {
-              model: DistributeWorkOrder,
-              as: 'dEmployee',
-              where: { [Op.or]: [{ status: null }, { status: '' }] },
-            },
-          ],
-        });
-        let minTasksCount = Infinity;
-        let employeeWithMinTasks: Employee | null = null;
-        activeEmployees.forEach((employee) => {
-          const tasksCount = employee.dEmployee.length;
-          if (tasksCount < minTasksCount) {
-            minTasksCount = tasksCount;
-            employeeWithMinTasks = employee;
-          }
-        });
-        console.log(employeeWithMinTasks.id);
+        for (let i = 0; i < empLen; i++) {
+          // let fieldIds = [];
+          // const tasks = await this.fieldDataModel.findAll({
+          //   where: {
+          //     assigned_to: null,
+          //     value: null,
+          //   },
+          // });
+          // console.log(tasks);
+          // let activeEmployees;
+          // let minTasksCount = Infinity;
+          // let employeeWithMinTasks: Employee | null = null;
+          // const work = await this.distributeWorkOrderModel.count({});
+          // if (work > 0) {
+          //   activeEmployees = await this.employeeModel.findAll({
+          //     where: { active: true, role_id: roleId, team_id: teamId },
+          //     include: [
+          //       {
+          //         model: DistributeWorkOrder,
+          //         as: 'dEmployee',
+          //         where: { [Op.or]: [{ status: null }, { status: '' }] },
+          //       },
+          //     ],
+          //   });
 
-        for (let j = 0; j < threshold && k < len; j++) {
-          await this.fieldDataModel.update(
-            {
-              assigned_to: employeeWithMinTasks.id,
-              assigned_time: new Date(),
-            },
-            { where: { id: tasks[k].id } },
-          );
-          await this.assignTask(
-            tasks[k].work_order_id,
-            // tasks[j].field_id,
-            employeeWithMinTasks.id,
-            tasks[k],
-          );
-          k++;
+          //   activeEmployees.forEach((employee) => {
+          //     const tasksCount = employee.dEmployee.length;
+          //     if (tasksCount < minTasksCount) {
+          //       minTasksCount = tasksCount;
+          //       employeeWithMinTasks = employee;
+          //     }
+          //   });
+          // } else {
+          //   activeEmployees = await this.employeeModel.findAll({
+          //     where: { active: true, role_id: roleId, team_id: teamId },
+          //   });
+
+          //   employeeWithMinTasks = activeEmployees[0];
+          // }
+
+          // console.log(employeeWithMinTasks.id);
+
+          for (let j = 0; j < threshold && k < len; j++) {
+            await this.fieldDataModel.update(
+              {
+                assigned_to: activeEmployees[i].id,
+                assigned_time: new Date(),
+              },
+              { where: { id: tasks[k].id } },
+            );
+            await this.assignTask(
+              tasks[k].work_order_id,
+              // tasks[j].field_id,
+              activeEmployees[i].id,
+              tasks[k],
+            );
+            k++;
+          }
         }
-        // }
       }
 
       console.log('Tasks distributed successfully for maker.');

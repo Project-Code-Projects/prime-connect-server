@@ -283,7 +283,15 @@ export class MainWorkOrderService {
         order: [['createdAt', 'DESC']],
         limit: 1,
       });
-      let j = 1;
+      let j = 0;
+      let id = 0;
+      if (i) {
+        id = i.id;
+        j = 1;
+      } else {
+        id = 1;
+        j = 0;
+      }
       for (const fieldId of fieldIds) {
         // const tableField = await this.teamFieldModel.findOne({
         //   where: { field_id: fieldId.id },
@@ -292,7 +300,7 @@ export class MainWorkOrderService {
           where: { id: fieldId.field_id },
         });
         const fieldData = new FieldData({
-          id: i.id++ + j,
+          id: id + j,
           work_order_id: workOrderId,
           field_id: fieldId.field_id,
           value: null,
