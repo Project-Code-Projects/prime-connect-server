@@ -283,7 +283,15 @@ export class MainWorkOrderService {
         order: [['createdAt', 'DESC']],
         limit: 1,
       });
-      let j = 1;
+      let j = 0;
+      let id = 0;
+      if (i) {
+        id = i.id;
+        j = 1;
+      } else {
+        id = 1;
+        j = 0;
+      }
       for (const fieldId of fieldIds) {
         // const tableField = await this.teamFieldModel.findOne({
         //   where: { field_id: fieldId.id },
@@ -292,7 +300,7 @@ export class MainWorkOrderService {
           where: { id: fieldId.field_id },
         });
         const fieldData = new FieldData({
-      
+          id: id + j,
           work_order_id: workOrderId,
           field_id: fieldId.field_id,
           value: null,
@@ -315,25 +323,27 @@ export class MainWorkOrderService {
     }
   }
   async CustomerCredentials(fields: any[]): Promise<any> {
-    
-    
-    const final_list = []
+    const final_list = [];
     const account_details = [];
-    
-      const account_cred =  await this.mainWorkOrderModel.findAll({
-        where: { id: fields }, attributes: ['customer_id', 'id'], raw: true
+
+    const account_cred = await this.mainWorkOrderModel.findAll({
+      where: { id: fields },
+      attributes: ['customer_id', 'id'],
+      raw: true,
+    });
+
+    console.log(account_cred);
+
+    for (let i = 0; i < account_cred.length; i++) {
+      const customer = await this.customerModel.findOne({
+        where: { id: account_cred[i].customer_id },
+        attributes: ['name', 'nid_no'],
+        raw: true,
       });
-      
-      console.log(account_cred);
-
-      for(let i=0; i<account_cred.length; i++){
-        const customer = await this.customerModel.findOne({ where: { id: account_cred[i].customer_id }, attributes: ['name', 'nid_no'], raw: true });
-        // String(account_cred[i].id)
-        final_list.push({ [account_cred[i].id]: customer}	)
-
-      }
-      
-    
+      // String(account_cred[i].id)
+      final_list.push({ [account_cred[i].id]: customer });
+    }
+    console.log('final_list',final_list);
     return final_list;
   }
 
@@ -454,10 +464,13 @@ export class MainWorkOrderService {
     }
   }
 
-  async getImages(work_order_id: number[], field_id: number[], uuid: number[]): Promise<any> {
+  async getImages(
+    work_order_id: number[],
+    field_id: number[],
+    uuid: number[],
+  ): Promise<any> {
     try {
-
-      const image_payload = []
+      const image_payload = [];
 
       const customer_details = await this.mainWorkOrderModel.findAll({
         where: { id: { [Op.in]: work_order_id } },
@@ -469,29 +482,41 @@ export class MainWorkOrderService {
         attributes: ['field_id', 'location'],
         raw: true,
       });
-  
+
       for (let i = 0; i < work_order_id.length; i++) {
-        let customers = customer_details.find((customer: any) => customer.id === work_order_id[i]);
-        let form_value = form_field_data.find((field: any) => field.field_id === field_id[i]);
+        let customers = customer_details.find(
+          (customer: any) => customer.id === work_order_id[i],
+        );
+        let form_value = form_field_data.find(
+          (field: any) => field.field_id === field_id[i],
+        );
         let customer_id = customers.customer_id;
         let acc_id = customers.acc_id;
         let location = form_value.location;
-  
+
         let coordinates: any[] = [];
         let image_array: any[] = [];
-  
+
         for (const element of location) {
-          let images = await this.docuBucketService.getImages(acc_id, customer_id, Number(element.pdf_id));
+          let images = await this.docuBucketService.getImages(
+            acc_id,
+            customer_id,
+            Number(element.pdf_id),
+          );
           coordinates.push(element.position[0].co_ordinate);
-          image_array.push(images.pdf_values[Number(element.position[0].page) - 1]);
-          
+          image_array.push(
+            images.pdf_values[Number(element.position[0].page) - 1],
+          );
         }
-  
-      
-        image_payload.push({id: uuid[i], coordinates: coordinates, images: image_array});
+
+        image_payload.push({
+          id: uuid[i],
+          coordinates: coordinates,
+          images: image_array,
+        });
         // Here you can do something with coordinates and image_array if needed
       }
-      
+
       // console.log(image_payload);
       return image_payload;
     } catch (error) {

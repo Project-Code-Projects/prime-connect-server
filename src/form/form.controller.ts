@@ -60,7 +60,7 @@ export class FormController {
     async getformField(@Param('id') id: number, @Param('customer_id') customer_id: number, @Param('acc_id') acc_id: number): Promise<any> {
       console.log("fieldId: "+id+" customerId: "+customer_id+" accId: "+acc_id);
       const formFieldLocation = await this.formFieldService.getLocationByFieldId(id);
-      console.log('formFieldLocation: ',formFieldLocation);
+      console.log("field_id"+id+ 'formFieldLocation: '+ formFieldLocation);
       const images = [];
       const coordinates = [];
      
@@ -87,7 +87,7 @@ export class FormController {
             // coordinates.push(position[i].co_ordinate)
            
             if(position[i]){
-              coordinates.push(position[i].co_ordinate)
+              coordinates.push(position[i].co_ordinate);
               // console.log('i', i)
             }
             // console.log('pos i',position[i])
