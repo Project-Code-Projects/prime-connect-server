@@ -50,6 +50,10 @@ export class CustomerController {
       customer.nid_no,
     );
 
+  //   const pdfs = files.map(file => ({
+  //     name: file.originalname,
+  //     data: file.buffer
+  // }));
     let nextAccId = 0;
     const { team_id, account_type } = customer;
     const firstSequence =

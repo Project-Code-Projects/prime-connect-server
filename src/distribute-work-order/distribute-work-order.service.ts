@@ -141,9 +141,10 @@ export class DistributeWorkOrderService {
 
   async distributeTask(teamId: number = 2, roleId: number = 3): Promise<void> {
     try {
-      const activeEmployees = await this.employeeModel.findAll({
-        where: { active: true, role_id: roleId, team_id: teamId },
-      });
+      // const activeEmployees = await this.employeeModel.findAll({
+      //   where: { active: true, role_id: roleId, team_id: teamId },
+      // });
+
       // console.log(activeEmployees.length);
       const tasks = await this.fieldDataModel.findAll({
         where: {
@@ -157,33 +158,53 @@ export class DistributeWorkOrderService {
       console.log('threshold: ', threshold);
 
       while (k < len) {
-        for (let i = 0; i < activeEmployees.length; i++) {
-          // let fieldIds = [];
-          // const tasks = await this.fieldDataModel.findAll({
-          //   where: {
-          //     assigned_to: null,
-          //     value: null,
-          //   },
-          // });
-          // console.log(tasks);
-
-          for (let j = 0; j < threshold && k < len; j++) {
-            await this.fieldDataModel.update(
-              {
-                assigned_to: activeEmployees[i].id,
-                assigned_time: new Date(),
-              },
-              { where: { id: tasks[k].id } },
-            );
-            await this.assignTask(
-              tasks[k].work_order_id,
-              // tasks[j].field_id,
-              activeEmployees[i].id,
-              tasks[k],
-            );
-            k++;
+        // for (let i = 0; i < activeEmployees.length; i++) {
+        // let fieldIds = [];
+        // const tasks = await this.fieldDataModel.findAll({
+        //   where: {
+        //     assigned_to: null,
+        //     value: null,
+        //   },
+        // });
+        // console.log(tasks);
+        const activeEmployees = await this.employeeModel.findAll({
+          where: { active: true, role_id: roleId, team_id: teamId },
+          include: [
+            {
+              model: DistributeWorkOrder,
+              as: 'dEmployee',
+              where: { [Op.or]: [{ status: null }, { status: '' }] },
+            },
+          ],
+        });
+        let minTasksCount = Infinity;
+        let employeeWithMinTasks: Employee | null = null;
+        activeEmployees.forEach((employee) => {
+          const tasksCount = employee.dEmployee.length;
+          if (tasksCount < minTasksCount) {
+            minTasksCount = tasksCount;
+            employeeWithMinTasks = employee;
           }
+        });
+        console.log(employeeWithMinTasks.id);
+
+        for (let j = 0; j < threshold && k < len; j++) {
+          await this.fieldDataModel.update(
+            {
+              assigned_to: employeeWithMinTasks.id,
+              assigned_time: new Date(),
+            },
+            { where: { id: tasks[k].id } },
+          );
+          await this.assignTask(
+            tasks[k].work_order_id,
+            // tasks[j].field_id,
+            employeeWithMinTasks.id,
+            tasks[k],
+          );
+          k++;
         }
+        // }
       }
 
       console.log('Tasks distributed successfully for maker.');
@@ -217,7 +238,9 @@ export class DistributeWorkOrderService {
       console.log('dist fuck', new_field_array);
 
       const fields = await FieldData.findAll({
-        where: { work_order_id: work_order_id, status: null }, attributes: ['id'], raw: true,
+        where: { work_order_id: work_order_id, status: null },
+        attributes: ['id'],
+        raw: true,
       });
       const fields_array = fields.map((field) => field.id);
 
@@ -255,7 +278,6 @@ export class DistributeWorkOrderService {
         temp = await this.employeeService.EmployeeTeamId(assigned_to);
 
         for (let i = 0; i < temp.length; i++) {
-     
           const load = await this.getEmployeeWorkLoad(temp[i]);
           load_list[i] = load.length;
         }
@@ -317,9 +339,9 @@ export class DistributeWorkOrderService {
 
     fieldsValue.forEach((field) => {
       //poc of code
-      
-        fieldValueArray.push(field.id);
-    
+
+      fieldValueArray.push(field.id);
+
       sumOfTiem += field.estimated_time;
       // field.field_id.concat(fieldValueArray);
     });
@@ -340,7 +362,7 @@ export class DistributeWorkOrderService {
         limit: 1,
       });
       let j = i.id + 1;
-      
+
       const newDistributeWorkOrder = await this.distributeWorkOrderModel.create(
         {
           id: j,
@@ -353,7 +375,6 @@ export class DistributeWorkOrderService {
       );
 
       // The newDistributeWorkOrder object will have the auto-generated id
-     
     } catch (error) {
       console.error('Error inserting new record:', error);
     }
@@ -380,7 +401,6 @@ export class DistributeWorkOrderService {
         [field4field[0].field_id]: id,
       });
     });
-   
 
     // const field_value_id = await this.fieldDataService.fieldIdAndValuesAuthorized(fields);
     const field_id_value = await FieldData.findAll({
@@ -390,7 +410,6 @@ export class DistributeWorkOrderService {
     });
     const field_id_array = [];
     for (let i = 0; i < field_id_value.length; i++) {
-      
       field_id_array[i] = field_id_value[i].field_id;
     }
 
@@ -400,13 +419,11 @@ export class DistributeWorkOrderService {
       raw: true,
     });
 
-
     for (let i = 0; i < field_value.length; i++) {
       field_value[i]['value'] = field_id_value.find(
         (info) => info.field_id === field_value[i].id,
       ).value;
     }
-
 
     return { fields: fieldsArray, fieldValue: field_value };
   }
@@ -428,8 +445,6 @@ export class DistributeWorkOrderService {
     time_interval: number,
     error_count: number,
   ): Promise<any> {
- 
-    
     await this.distributeWorkOrderModel.update(
       { status: 'authorized' },
       { where: { work_order_id: work_order_id, assigned_to: assigned_to } },
@@ -439,7 +454,6 @@ export class DistributeWorkOrderService {
       const load_list = [];
 
       for (let i = 0; i < temp.length; i++) {
-    
         const load = await this.getEmployeeWorkLoad(temp[i]);
         load_list[i] = load.length;
       }
@@ -454,7 +468,7 @@ export class DistributeWorkOrderService {
         let employee_with_error = field_assigned_to.assigned_to;
         const fieldId = fields_assign[i];
         const comment = comments[i] || '';
-        
+
         try {
           const updatedField = await this.fieldDataModel.update(
             {
@@ -468,9 +482,8 @@ export class DistributeWorkOrderService {
               err_comment: comment,
               assigned_to: least_work_load,
             },
-            { where: { id: fieldId , work_order_id} },
+            { where: { id: fieldId, work_order_id } },
           );
-          
         } catch (error) {
           console.error('Error updating field:', error);
         }
@@ -481,17 +494,15 @@ export class DistributeWorkOrderService {
         raw: true,
       });
       const all_fields_array = all_fields.map((field) => field.field_id);
-      
+
       const filtered_array = all_fields_array.filter(
         (item) => !fields.includes(item),
       );
 
       await this.fieldDataModel.update(
         { status: 'checked' },
-        { where: { field_id: filtered_array , work_order_id} },
+        { where: { field_id: filtered_array, work_order_id } },
       );
-
-
 
       for (let i = 0; i < fields_assign.length; i++) {
         let field = [fields_assign[i]];
@@ -503,7 +514,6 @@ export class DistributeWorkOrderService {
         );
       }
 
-
       await this.postEmployeeStatsforReadWrite(
         work_order_id,
         time_interval,
@@ -511,12 +521,11 @@ export class DistributeWorkOrderService {
         assigned_to,
         fields_assign,
       );
-    }
-    else{
+    } else {
       //all fields will be checked
       await this.fieldDataModel.update(
         { status: 'checked' },
-        { where: { work_order_id} },
+        { where: { work_order_id } },
       );
     }
   }
@@ -527,7 +536,6 @@ export class DistributeWorkOrderService {
     error_count: number,
     employee_id: number,
   ) {
-
     const prev_employee = await Employee.findOne({
       where: { id: employee_id },
       attributes: ['team_id', 'role_id'],
@@ -539,11 +547,10 @@ export class DistributeWorkOrderService {
       raw: true,
     });
 
-
     const target_time = time.estimated_time;
     const time_allotted_ms = Date.now() - new Date(time.createdAt).getTime(); // Calculate the time difference in milliseconds
     const time_allotted = Math.floor(time_allotted_ms / (1000 * 60)); // Convert milliseconds to minutes
- 
+
     await EmployeeStats.create({
       work_order_id,
       target_time,
@@ -557,15 +564,13 @@ export class DistributeWorkOrderService {
   }
 
   async incrementErrorCount(list: number[]) {
-
     for (const field_id of list) {
-     
       const field_values = await FieldData.findOne({
         where: { id: field_id },
         attributes: ['work_order_id', 'prev_assigned'],
         raw: true,
       });
-   
+
       const work_order_id = field_values.work_order_id;
       const employee_id = field_values.prev_assigned[0];
 

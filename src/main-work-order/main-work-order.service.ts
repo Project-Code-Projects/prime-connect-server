@@ -53,7 +53,7 @@ export class MainWorkOrderService {
     @Inject('CUSTOMER_REPOSITORY')
     private readonly customerModel: typeof Customer,
     private readonly customerService: CustomerService,
-   
+
     private readonly docuBucketService: DocubucketService,
     private readonly distributeWorkOrderService: DistributeWorkOrderService,
     private readonly fieldDataService: FieldDataService,
@@ -155,12 +155,12 @@ export class MainWorkOrderService {
     try {
       const activeEmployees = await this.employeeModel.findAll({
         where: { active: true, role_id: rolId, team_id: teamId },
-        include: [{ model: MainWorkOrder, as: 'employee' }],
+        include: [{ model: MainWorkOrder, as: 'mEmployee' }],
       });
       let minTasksCount = Infinity;
       let employeeWithMinTasks: Employee | null = null;
       activeEmployees.forEach((employee) => {
-        const tasksCount = employee.employee.length;
+        const tasksCount = employee.mEmployee.length;
         if (tasksCount < minTasksCount) {
           minTasksCount = tasksCount;
           employeeWithMinTasks = employee;
