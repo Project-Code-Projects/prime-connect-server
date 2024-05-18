@@ -47,7 +47,7 @@ export class FormFieldService {
 
     }
     async getLocationByFieldId(id: number): Promise<any> {
-        return await FormField.findOne({where: {form_id: id}, attributes: ['location'], raw: true});
+        return await FormField.findOne({where: {field_id: id}, attributes: ['location'], raw: true});
     }
 
     async deleteFormField(id: number): Promise<any> {

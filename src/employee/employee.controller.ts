@@ -46,7 +46,7 @@ export class EmployeeController {
     };
     if(admin != 'none') this.employeeService.updateEmployeeAdminStatus(admin,team_id);
     console.log(employee);
-    return this.employeeService.createEmployee(createEmployeeDto);
+   return await this.employeeService.createEmployee(createEmployeeDto);
   }
 
   @Get()

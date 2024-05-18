@@ -319,13 +319,13 @@ export class MainWorkOrderService {
     const account_details = [];
     for (let i = 0; i < fields.length; i++) {
       const account_cred = await this.mainWorkOrderModel.findOne({
-        where: { id: fields },
+        where: { id: fields[i] },
         attributes: ['customer_id'],
         raw: true,
       });
       account_details.push(account_cred.customer_id);
     }
-    console.log(account_details);
+    console.log('account_details',account_details);
     for (let i = 0; i < account_details.length; i++) {
       const customerId = account_details[i];
       //  console.log('customerId', customerId);
@@ -336,7 +336,7 @@ export class MainWorkOrderService {
       });
       final_list.push(customer);
     }
-
+    console.log('final_list',final_list);
     return final_list;
   }
 

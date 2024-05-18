@@ -115,7 +115,9 @@ export class MainWorkOrderController {
   async customerCredentials(@Param('id') id: string): Promise<any> {
     const list = id.split(',');
     console.log("customer_list: ",list);
-    return this.mainWorkOrderService.CustomerCredentials(list);  
+    const result = await this.mainWorkOrderService.CustomerCredentials(list);  
+    console.log("result: ",result);
+    return result;
 
   }
   @Get('work-stats')
