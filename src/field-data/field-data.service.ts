@@ -36,12 +36,15 @@ export class FieldDataService {
 
   async findAllFieldByWorkOrderid(order_id: number, assigned_to: number): Promise<any> {
     
-   const data = await FieldData.findAll({where: {work_order_id: order_id, assigned_to: assigned_to, status: null}});
+   const data = await FieldData.findAll({where: {assigned_to: assigned_to, status: null}, attributes: ['id','field_id','work_order_id'], raw: true});
+   console.log('dat',data)
    
-   const fields = data.map((field) => field.field_id);
-   console.log('checking data', fields)
+  //  const fields = data.map((field) => field.field_id);
+  //  const uuid = data.map((field) => { field.id, field.field_id});
+  //  console.log('uuid',uuid)
+  //  console.log('checking data', fields)
   //  console.log(fields);
-   return await this.fieldTableService.findAllFieldById(fields);
+   return await this.fieldTableService.findAllFieldById(data);
   }
 
   async getFieldValues(order_id: number): Promise<any> {
