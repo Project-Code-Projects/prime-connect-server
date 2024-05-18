@@ -54,8 +54,8 @@ export class DistributeWorkOrderService {
     access: string,
   ): Promise<any> {
     let status: string | null;
-    if (access == 'Write') status = null ; //chenging for code analysis
-    if (access == 'Read_Write') status = null ;
+    if (access == 'Write') status = null; //chenging for code analysis
+    if (access == 'Read_Write') status = null;
     console.log(status);
     const distributed_work = await this.distributeWorkOrderModel.findAll({
       where: { assigned_to: id, status: status },
@@ -98,9 +98,10 @@ export class DistributeWorkOrderService {
       } else {
         id = 0;
       }
+      console.log('id', id);
 
       await this.distributeWorkOrderModel.create({
-        // id: id + 1,
+        id: id + 1,
         work_order_id: tasks.work_order_id,
         field_id: [tasks.id],
         assigned_to: employee_id,
@@ -248,11 +249,11 @@ export class DistributeWorkOrderService {
         where: {
           assigned_to: employeeId,
           [Op.or]: [{ status: null }, { status: '' }], //analysis make null
-        }, raw: true//need change here
+        },
+        raw: true, //need change here
       });
 
-      
-      const new_field_array = dist.map((field)=> field.field_id[0]);
+      const new_field_array = dist.map((field) => field.field_id[0]);
       console.log('dist fuck', new_field_array);
 
       const fields = await FieldData.findAll({
@@ -262,7 +263,7 @@ export class DistributeWorkOrderService {
       });
       const fields_array = fields.map((field) => field.id);
 
-      return {dist: dist, fields: new_field_array}; //could make this part efficient
+      return { dist: dist, fields: new_field_array }; //could make this part efficient
     } catch (error) {
       console.log(error);
       throw error;
