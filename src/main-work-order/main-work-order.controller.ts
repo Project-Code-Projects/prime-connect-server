@@ -126,9 +126,10 @@ export class MainWorkOrderController {
 
   @Get('images/:work_order_ids/:fields_id/:uuid')
   async getMakerImages(@Param('work_order_ids') work_order_ids: string, @Param('fields_id') fields_id: string, @Param('uuid') uid: string): Promise<any> {
-    const uuid = uid.split(',').map(Number);
-    const work_list = work_order_ids.split(',').map(Number);;
-    const field_list = fields_id.split(',').map(Number);;
+    
+    const work_list = work_order_ids.split(',').map(Number).sort((a, b) => a - b);
+    const field_list = fields_id.split(',').map(Number).sort((a, b) => a - b);
+    const uuid = uid.split(',').map(Number).sort((a, b) => a - b);
 
     return this.mainWorkOrderService.getImages(work_list, field_list, uuid);
     // return this.mainWorkOrderService.getImg(list);

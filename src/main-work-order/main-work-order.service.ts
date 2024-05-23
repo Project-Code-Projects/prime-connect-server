@@ -471,18 +471,19 @@ export class MainWorkOrderService {
   ): Promise<any> {
     try {
       const image_payload = [];
-
+  
       const customer_details = await this.mainWorkOrderModel.findAll({
         where: { id: { [Op.in]: work_order_id } },
         attributes: ['id', 'customer_id', 'acc_id'],
         raw: true,
       });
+  
       const form_field_data = await this.formFieldModel.findAll({
         where: { field_id: { [Op.in]: field_id } },
         attributes: ['field_id', 'location'],
         raw: true,
       });
-
+  
       for (let i = 0; i < work_order_id.length; i++) {
         let customers = customer_details.find(
           (customer: any) => customer.id === work_order_id[i],
@@ -490,34 +491,41 @@ export class MainWorkOrderService {
         let form_value = form_field_data.find(
           (field: any) => field.field_id === field_id[i],
         );
+  
+        if (!customers || !form_value) {
+          // Handle the case where no matching customer or form field data is found
+          continue;
+        }
+  
         let customer_id = customers.customer_id;
         let acc_id = customers.acc_id;
         let location = form_value.location;
-
+  
         let coordinates: any[] = [];
         let image_array: any[] = [];
-
+  
+        console.log('loc', location);
+  
         for (const element of location) {
-          let images = await this.docuBucketService.getImages(
+          const images = await this.docuBucketService.getImages(
             acc_id,
             customer_id,
             Number(element.pdf_id),
           );
-          coordinates.push(element.position[0].co_ordinate);
-          image_array.push(
-            images.pdf_values[Number(element.position[0].page) - 1],
-          );
+  
+          for (const pos of element.position) {
+            coordinates.push(pos.co_ordinate);
+            image_array.push(images.pdf_values[Number(pos.page) - 1]);
+          }
         }
-
+  
         image_payload.push({
           id: uuid[i],
           coordinates: coordinates,
           images: image_array,
         });
-        // Here you can do something with coordinates and image_array if needed
       }
-
-      // console.log(image_payload);
+  
       return image_payload;
     } catch (error) {
       console.error('Error fetching images:', error);
